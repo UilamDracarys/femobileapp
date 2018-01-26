@@ -9,7 +9,6 @@ public class Person {
     public static final String TAG = Person.class.getSimpleName();
     public static final String TABLE = "person";
 
-
     //Column Names
     public static final String COL_PRSN_ID = "person_id";
     public static final String COL_PRSN_NAME = "person_name";

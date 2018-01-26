@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">FE Mobile Beta v2.0</string>
+    <string name="btnFarms">Farms</string>
+    <string name="btnPlanters">Planters</string>
+    <string name="btnOverseers">Overseers</string>
+    <string name="btnPeople">People</string>
+    <string name="list_of_planters">List of Planters</string>
+    <string name="list_of_people">List of People</string>
+    <string name="bntAddPlanter">Add</string>
+    <string name="btnSave">Save</string>
+    <string name="btnClose">Close</string>
+    <string name="list_of_ovsrs">List of Overseers</string>
+    <string name="list_of_farms">Farms Masterlist</string>
+    <string name="bntAddOvsr">Add</string>
+    <string name="bntAddFarm">Add</string>
+</resources>

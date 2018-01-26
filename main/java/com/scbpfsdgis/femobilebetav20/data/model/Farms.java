@@ -6,8 +6,6 @@ package com.scbpfsdgis.femobilebetav20.data.model;
 
 public class Farms {
 
-    Person person;
-
     public static final String TAG = Farms.class.getSimpleName();
     public static final String TABLE = "farms";
 
