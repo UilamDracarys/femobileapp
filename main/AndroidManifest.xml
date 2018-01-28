@@ -30,6 +30,12 @@
                 android:value="com.scbpfsdgis.femobilebetav20.MainActivity" />
         </activity>
         <activity android:name=".PersonDetailActivity"/>
+        <activity android:name=".FieldsListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.scbpfsdgis.femobilebetav20.MainActivity" />
+        </activity>
+        <activity android:name=".FieldDetailActivity"/>
     </application>
 
 </manifest>

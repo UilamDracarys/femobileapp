@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scbpfsdgis.femobilebetav20.data.DBHelper;
+import com.scbpfsdgis.femobilebetav20.data.model.Farms;
 import com.scbpfsdgis.femobilebetav20.data.repo.FarmsRepo;
 import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
 
@@ -49,18 +50,34 @@ public class FarmsListActivity extends ListActivity implements android.view.View
     }
 
     private void listAll() {
-        FarmsRepo repo = new FarmsRepo();
+        final FarmsRepo repo = new FarmsRepo();
         ArrayList<HashMap<String, String>> farmsList =  repo.getFarmsList();
         if(farmsList.size()!=0) {
             ListView lv = getListView();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    tvFarmID = view.findViewById(R.id.farmID);
-                    String farmID = tvFarmID.getText().toString();
-                    Intent objIndent = new Intent(getApplicationContext(),FarmDetailActivity.class);
-                    objIndent.putExtra("farmID", Integer.parseInt(farmID));
-                    startActivity(objIndent);
+
+                    Intent intent = getIntent();
+                    Bundle b = intent.getExtras();
+
+                    if (b!=null) {
+                        String action = b.get("action").toString();
+                        tvFarmID = view.findViewById(R.id.farmID);
+                        String farmID = tvFarmID.getText().toString();
+                        Farms farm = repo.getFarmByID(Integer.parseInt(farmID));
+                        String farmName = farm.getFarmName();
+                        Intent objIndent;
+                        if (action.equalsIgnoreCase("Farm Details")) {
+                            objIndent = new Intent(getApplicationContext(), FarmDetailActivity.class);
+                            objIndent.putExtra("farmID", Integer.parseInt(farmID));
+                        } else {
+                            objIndent = new Intent(getApplicationContext(), FieldsListActivity.class);
+                            objIndent.putExtra("farmID", Integer.parseInt(farmID));
+                            objIndent.putExtra("farmName", farmName);
+                        }
+                        startActivity(objIndent);
+                    }
                 }
             });
             ListAdapter adapter = new SimpleAdapter( FarmsListActivity.this,farmsList, R.layout.view_farm_list_item, new String[] { "id","farmName", "planterName"}, new int[] {R.id.farmID, R.id.farmName, R.id.farmOwner});

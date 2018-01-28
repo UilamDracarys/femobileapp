@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FE Mobile Beta v2.0</string>
+    <string name="app_name">FE Mobile Beta</string>
     <string name="btnFarms">Farms</string>
     <string name="btnPlanters">Planters</string>
     <string name="btnOverseers">Overseers</string>
@@ -13,4 +13,84 @@
     <string name="list_of_farms">Farms Masterlist</string>
     <string name="bntAddOvsr">Add</string>
     <string name="bntAddFarm">Add</string>
+    <string name="btnMngFields">Manage Fields</string>
+    <string name="list_of_fields">Fields List</string>
+    <string name="bntAddField">Add</string>
+    <string-array name="soilTypes">
+        <item>Sandy Clay Loam (SCL)</item>
+        <item>Sandy Loam (SL)</item>
+        <item>Sandy (S)</item>
+        <item>Loamy Sand (LS)</item>
+        <item>Loam (L)</item>
+        <item>Clay Loam (CL)</item>
+        <item>Clay (C)</item>
+        <item>Heavy Clay (HC)</item>
+    </string-array>
+    <string-array name="suitability">
+        <item>Suitable</item>
+        <item>Partially Suitable</item>
+        <item>Conditionally Suitable</item>
+        <item>Not Suitable</item>
+        <item>Not in Use</item>
+        <item>TBD</item>
+    </string-array>
+    <string-array name="limitations">
+        <item>Area less than 0.80ha</item>
+        <item>Hindrance - Boulders</item>
+        <item>Hindrance - Canal</item>
+        <item>Hindrance - Rocks</item>
+        <item>Hindrance - Row width less than 1.2m</item>
+        <item>Hindrance - Soil Type</item>
+        <item>Hindrance - Stones</item>
+        <item>Hindrance - Too many trees</item>
+        <item>Not collectible - Trash farming</item>
+        <item>Steepness - Slope</item>
+        <item>Steepness - Hilly</item>
+        <item>Wagon access - Entry rd. inaccessible</item>
+        <item>Wagon access - No entry rd.</item>
+        <item>Wagon access - Entry via river</item>
+        <item>Wagon access - Maneuver difficult</item>
+    </string-array>
+    <string-array name="YesNo">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+    <string-array name="rowdir">
+        <item>Along entry rd.</item>
+        <item>Perpendicular to entry rd.</item>
+    </string-array>
+    <string-array name="roadcond">
+        <item>Asphalt-OK-Less3m</item>
+        <item>Asphalt-Good-Less3m</item>
+        <item>Asphalt-Poor-Less3m</item>
+        <item>Asphalt-OK-MoreOrEqual3m</item>
+        <item>Asphalt-Graded-MoreOrEqual3m</item>
+        <item>Asphalt-Poor-MoreOrEqual3m</item>
+        <item>Graded-OK-Less3m</item>
+        <item>Graded-Graded-Less3m</item>
+        <item>Graded-Poor-Less3m</item>
+        <item>Graded-OK-MoreOrEqual3m</item>
+        <item>Graded-Graded-MoreOrEqual3m</item>
+        <item>Graded-Poor-MoreOrEqual3m</item>
+        <item>NotGraded-OK-Less3m</item>
+        <item>NotGraded-Graded-Less3m</item>
+        <item>NotGraded-Poor-Less3m</item>
+        <item>NotGraded-OK-MoreOrEqual3m</item>
+        <item>NotGraded-Graded-MoreOrEqual3m</item>
+        <item>NotGraded-Poor-MoreOrEqual3m</item>
+    </string-array>
+    <string-array name="cropclass">
+        <item>New Plant</item>
+        <item>1st Rtn</item>
+        <item>2nd Rtn</item>
+        <item>3rd Rtn</item>
+        <item>4th Rtn</item>
+        <item>5th Rtn</item>
+        <item>6th Rtn</item>
+        <item>7th Rtn</item>
+    </string-array>
+    <string-array name="hvstmeth">
+        <item>By Ton</item>
+        <item>Linear</item>
+    </string-array>
 </resources>

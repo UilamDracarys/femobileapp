@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.scbpfsdgis.femobilebetav20.FarmsListActivity"
     android:padding="16dp">
+
     <TextView
         android:id="@+id/tvListLabel"
         android:layout_width="match_parent"
@@ -16,6 +17,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:background="#A5D6A7"/>
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="wrap_content"

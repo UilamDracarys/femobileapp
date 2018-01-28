@@ -78,9 +78,6 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
 
         etPersonName.setText(person.getPersonName());
         etPersonCont.setText(person.getPersonCont());
-
-
-
     }
 
 
@@ -117,10 +114,8 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(this,"Record updated",Toast.LENGTH_SHORT).show();
                 finish();
             }
-        } else if (view== findViewById(R.id.btnClose)){
+        } else if (view== findViewById(R.id.btnClose)) {
             finish();
         }
-
-
     }
 }

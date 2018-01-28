@@ -8,6 +8,10 @@ import com.scbpfsdgis.femobilebetav20.data.DBHelper;
 import com.scbpfsdgis.femobilebetav20.data.DatabaseManager;
 import com.scbpfsdgis.femobilebetav20.data.model.Farms;
 import com.scbpfsdgis.femobilebetav20.data.model.Fields;
+import com.scbpfsdgis.femobilebetav20.data.model.Person;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by William on 1/7/2018.
@@ -100,6 +104,33 @@ public class FieldsRepo {
 
         db.insert(Fields.TABLE_OTHERS, null, values);
         db.close();
+    }
+
+    //Get List of Farms
+    public ArrayList<HashMap<String, String>> getFieldsList(int farmID) {
+
+        //Open connection to read only
+        //db = DatabaseManager.getInstance().openDatabase();
+        dbHelper = new DBHelper();
+        db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT * FROM " + Fields.TABLE_BSC + " WHERE fld_farm_id =?";
+
+        ArrayList<HashMap<String, String>> fieldsList = new ArrayList<HashMap<String, String>>();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> fields = new HashMap<String, String>();
+                fields.put("id", cursor.getString(0));
+                fields.put("fieldName", cursor.getString(1));
+                fieldsList.add(fields);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return fieldsList;
     }
 
     public int getFldId() {

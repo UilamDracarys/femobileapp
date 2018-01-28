@@ -21,6 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void showFarms(View view) {
         Intent intent = new Intent(this, FarmsListActivity.class);
+        intent.putExtra("action", "Farm Details");
+        startActivity(intent);
+    }
+
+    public void showFieldManager(View view) {
+        Intent intent = new Intent(this, FarmsListActivity.class);
+        intent.putExtra("action", "Manage Fields");
         startActivity(intent);
     }
 
