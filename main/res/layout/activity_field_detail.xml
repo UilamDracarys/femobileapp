@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context="com.scbpfsdgis.femobilebetav20.FieldDetailActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/farmID"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/etFieldName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Field Name"
+                android:inputType="textPersonName"/>
+
+            <EditText
+                android:id="@+id/etFieldArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Field Area"
+                android:inputType="numberDecimal"/>
+
+            <EditText
+                android:id="@+id/etFieldVar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Variety"
+                android:inputType="text"/>
+
+            <Spinner
+                android:id="@+id/spnSoilTyp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/soilTypes"/>
+
+            <Spinner
+                android:id="@+id/spnSuit"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"/>
+
+            <Spinner
+                android:id="@+id/spnMainLim"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/limitations"/>
+
+            <Spinner
+                android:id="@+id/spnSecLim"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/limitations"/>
+
+            <Spinner
+                android:id="@+id/spnTertLim"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/limitations"/>
+
+            <Spinner
+                android:id="@+id/spnMechMeth"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/YesNo"/>
+
+            <Spinner
+                android:id="@+id/spnTract"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/YesNo"/>
+
+            <Spinner
+                android:id="@+id/spnHarvMeth"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/hvstmeth"/>
+
+            <Spinner
+                android:id="@+id/spnRowDir"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/rowdir"/>
+
+            <EditText
+                android:id="@+id/etRowWidth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Row Width"
+                android:inputType="numberDecimal"
+            />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
