@@ -21,9 +21,7 @@ public class Fields {
 
     ///Suitability
     public static final String COL_FLD_SUIT = "fld_suit";
-    public static final String COL_FLD_MAINLIM = "fld_mainlim";
-    public static final String COL_FLD_SECLIM = "fld_seclim";
-    public static final String COL_FLD_TERTLIM = "fld_tertlim";
+    public static final String COL_FLD_LIMITS = "fld_limits";
     public static final String COL_FLD_RDCOND = "fld_rdcond";
 
     ///Other Attributes
@@ -32,30 +30,38 @@ public class Fields {
     public static final String COL_FLD_MECHMETH = "fld_mechmeth";
     public static final String COL_FLD_ROWDIR = "fld_rowdir";
     public static final String COL_FLD_ROWWIDTH = "fld_rowwidth";
-    public static final String COL_FLD_CANAL = "fld_canal";
+    public static final String COL_FLD_CANAL = "fld_canals";
+    public static final String COL_FLD_CROPCLS = "fld_cropcls";
     public static final String COL_FLD_CMT = "fld_cmt";
 
     private String fldId;
     private String fldName;
-    private String fldArea;
+    private double fldArea;
     private String fldVar;
     private String fldSoilTyp;
     private String fldFarmId;
     private String fldSuit;
-    private String fldMainLim;
-    private String fldSecLim;
-    private String fldTertLim;
+    private String fldLimits;
     private String fldRdCond;
     private String fldTractAcc;
     private String fldHarvMeth;
     private String fldMechMeth;
     private String fldRowDir;
     private String fldRowWidth;
-    private String fldCanal;
+    private String fldCanals;
+    private String fldCropCls;
     private String fldCmt;
 
     public String getFldId() {
         return fldId;
+    }
+
+    public String getFldCropCls() {
+        return fldCropCls;
+    }
+
+    public void setFldCropCls(String fldCropCls) {
+        this.fldCropCls = fldCropCls;
     }
 
     public void setFldId(String fldId) {
@@ -66,16 +72,16 @@ public class Fields {
         return fldName;
     }
 
-    public void setFldName(String fldName) {
-        this.fldName = fldName;
-    }
-
-    public String getFldArea() {
+    public double getFldArea() {
         return fldArea;
     }
 
-    public void setFldArea(String fldArea) {
+    public void setFldArea(double fldArea) {
         this.fldArea = fldArea;
+    }
+
+    public void setFldName(String fldName) {
+        this.fldName = fldName;
     }
 
     public String getFldVar() {
@@ -110,28 +116,12 @@ public class Fields {
         this.fldSuit = fldSuit;
     }
 
-    public String getFldMainLim() {
-        return fldMainLim;
+    public String getFldLimits() {
+        return fldLimits;
     }
 
-    public void setFldMainLim(String fldMainLim) {
-        this.fldMainLim = fldMainLim;
-    }
-
-    public String getFldSecLim() {
-        return fldSecLim;
-    }
-
-    public void setFldSecLim(String fldSecLim) {
-        this.fldSecLim = fldSecLim;
-    }
-
-    public String getFldTertLim() {
-        return fldTertLim;
-    }
-
-    public void setFldTertLim(String fldTertLim) {
-        this.fldTertLim = fldTertLim;
+    public void setFldLimits(String fldLimits) {
+        this.fldLimits = fldLimits;
     }
 
     public String getFldRdCond() {
@@ -182,12 +172,12 @@ public class Fields {
         this.fldRowWidth = fldRowWidth;
     }
 
-    public String getFldCanal() {
-        return fldCanal;
+    public String getFldCanals() {
+        return fldCanals;
     }
 
-    public void setFldCanal(String fldCanal) {
-        this.fldCanal = fldCanal;
+    public void setFldCanals(String fldCanals) {
+        this.fldCanals = fldCanals;
     }
 
     public String getFldCmt() {

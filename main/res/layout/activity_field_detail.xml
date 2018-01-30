@@ -6,9 +6,47 @@
     android:padding="16dp"
     tools:context="com.scbpfsdgis.femobilebetav20.FieldDetailActivity">
 
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:id="@+id/titleActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#B9F6CA">
+
+        <TextView
+            android:id="@+id/formTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:gravity="center_vertical"
+            android:text="Add Field to"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/frmName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/formTitle"
+            android:paddingLeft="6dp"
+            android:gravity="center_vertical"
+            android:textSize="23sp"
+            android:textStyle="bold"/>
+        <Button
+            android:id="@+id/btnSaveFld"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Save"/>
+
+    </RelativeLayout>
+
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/titleActionBar">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
@@ -36,21 +74,6 @@
                 android:hint="Field Area"
                 android:inputType="numberDecimal"/>
 
-            <EditText
-                android:id="@+id/etFieldVar"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:ems="10"
-                android:hint="Variety"
-                android:inputType="text"/>
-
-            <Spinner
-                android:id="@+id/spnSoilTyp"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:ems="10"
-                android:entries="@array/soilTypes"/>
-
             <Spinner
                 android:id="@+id/spnSuit"
                 android:layout_width="match_parent"
@@ -58,11 +81,40 @@
                 android:ems="10"
                 android:entries="@array/suitability"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Limitations:"
+                android:textColor="#424242"
+                android:textStyle="italic"
+                android:background="#E0E0E0"/>
+
             <com.guna.libmultispinner.MultiSelectionSpinner
                 android:id="@+id/spnMainLim"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:ems="10"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Canals:"
+                android:textColor="#424242"
+                android:textStyle="italic"
+                android:background="#E0E0E0"/>
+
+            <com.guna.libmultispinner.MultiSelectionSpinner
+                android:id="@+id/spnCanals"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"/>
+
+            <Spinner
+                android:id="@+id/spnRdCond"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/roadcond"/>
 
             <Spinner
                 android:id="@+id/spnMechMeth"
@@ -78,12 +130,13 @@
                 android:ems="10"
                 android:entries="@array/tract"/>
 
-            <Spinner
-                android:id="@+id/spnHarvMeth"
+            <EditText
+                android:id="@+id/etRowWidth"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:ems="10"
-                android:entries="@array/hvstmeth"/>
+                android:hint="Row Width"
+                android:inputType="numberDecimal"/>
 
             <Spinner
                 android:id="@+id/spnRowDir"
@@ -92,14 +145,45 @@
                 android:ems="10"
                 android:entries="@array/rowdir"/>
 
-            <EditText
-                android:id="@+id/etRowWidth"
+            <Spinner
+                android:id="@+id/spnSoilTyp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:ems="10"
-                android:hint="Row Width"
-                android:inputType="numberDecimal"
-            />
+                android:entries="@array/soilTypes"/>
+
+            <EditText
+                android:id="@+id/etFieldVar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:hint="Variety"
+                android:inputType="text"/>
+
+            <Spinner
+                android:id="@+id/spnHarvMeth"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/hvstmeth" />
+
+            <Spinner
+                android:id="@+id/spnCropCls"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/cropclass"/>
+
+            <EditText
+                android:id="@+id/etFldCmt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:hint="Comments/Remarks"
+                android:inputType="textLongMessage"/>
+
         </LinearLayout>
+
     </ScrollView>
+
 </RelativeLayout>

@@ -22,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private static final int DATABASE_VERSION =12;
+    private static final int DATABASE_VERSION =15;
     // Database Name
     private static final String DATABASE_NAME = "FEMobile.db";
     private static final String TAG = DBHelper.class.getSimpleName();

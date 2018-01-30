@@ -5,16 +5,13 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scbpfsdgis.femobilebetav20.data.model.Farms;
-import com.scbpfsdgis.femobilebetav20.data.model.Person;
 import com.scbpfsdgis.femobilebetav20.data.repo.FarmsRepo;
 import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
 
@@ -31,20 +28,12 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_farm_detail);
-        btnSave = (Button) findViewById(R.id.btnSaveFarm);
-        btnClose = (Button) findViewById(R.id.btnClose);
 
-        etFarmName = (EditText) findViewById(R.id.etFarmName);
-        spnPltr = (Spinner) findViewById(R.id.spnPlanter);
-        spnOvsr = (Spinner) findViewById(R.id.spnOvsr);
-        etFarmLoc = (EditText) findViewById(R.id.etFarmLoc);
-        etFarmCity = (EditText) findViewById(R.id.etFarmCity);
-        etFarmCmt = (EditText) findViewById(R.id.etFarmCmt);
-
+        initialize();
         btnSave.setOnClickListener(this);
         btnClose.setOnClickListener(this);
 
-        farmID =0;
+        farmID = 0;
         Intent intent = getIntent();
         farmID = intent.getIntExtra("farmID", 0);
 
@@ -68,7 +57,16 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
         loadOverseers(farmID, ovsrID);
     }
 
-
+    private void initialize() {
+        btnSave = (Button) findViewById(R.id.btnSaveFarm);
+        btnClose = (Button) findViewById(R.id.btnClose);
+        etFarmName = (EditText) findViewById(R.id.etFarmName);
+        spnPltr = (Spinner) findViewById(R.id.spnPlanter);
+        spnOvsr = (Spinner) findViewById(R.id.spnOvsr);
+        etFarmLoc = (EditText) findViewById(R.id.etFarmLoc);
+        etFarmCity = (EditText) findViewById(R.id.etFarmCity);
+        etFarmCmt = (EditText) findViewById(R.id.etFarmCmt);
+    }
 
     private void loadPlanters(int farmID, int pltrID) {
 
@@ -77,7 +75,6 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
         List planterList =  pltrRepo.getPersonNamesList(cls);
         String planterName;
         addDefaultChoice(planterList, cls);
-
 
         if(planterList.size()!=0) {
 
@@ -135,7 +132,7 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
             FarmsRepo repo = new FarmsRepo();
             Farms farm = new Farms();
 
-            if (isValid() == true){
+            if (isValid()){
                 String planter = spnPltr.getSelectedItem().toString();
                 String ovsr = spnOvsr.getSelectedItem().toString();
                 farm.setFarmID(farmID);
@@ -163,7 +160,6 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
     }
 
     private boolean isValid() {
-        String farmName, planterName, ovsrName;
         if (etFarmName.getText().toString().equals("")) {
             Toast.makeText(this,"Farm Name required.",Toast.LENGTH_SHORT).show();
             return false;
@@ -173,6 +169,7 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
             Toast.makeText(this,"Assign a planter.",Toast.LENGTH_SHORT).show();
             return false;
         }
+
         if (spnOvsr.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Assign an overseer. Choose N/A if none.",Toast.LENGTH_SHORT).show();
             return false;

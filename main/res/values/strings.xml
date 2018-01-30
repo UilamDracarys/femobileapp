@@ -29,12 +29,12 @@
     </string-array>
     <string-array name="suitability">
         <item>- Suitability -</item>
-        <item>Suitable</item>
-        <item>Partially Suitable</item>
-        <item>Conditionally Suitable</item>
-        <item>Not Suitable</item>
-        <item>Not in Use</item>
-        <item>TBD</item>
+        <item>Suitable (S)</item>
+        <item>Partially Suitable (PS)</item>
+        <item>Conditionally Suitable (CS)</item>
+        <item>Not Suitable (NS)</item>
+        <item>Not in Use (NU)</item>
+        <item>TBD (TBD)</item>
     </string-array>
     <string-array name="limitations">
         <item>Area less than 0.80ha (HAR)</item>
@@ -53,55 +53,61 @@
         <item>Wagon access - Maneuver difficult (WAMD)</item>
     </string-array>
     <string-array name="mechMeth">
-        <item>- Mechanized Method</item>
-        <item>Yes</item>
-        <item>No</item>
+        <item>- Mechanized Method -</item>
+        <item>Yes (0)</item>
+        <item>No (1)</item>
     </string-array>
     <string-array name="tract">
         <item>- Tractor Access -</item>
-        <item>Yes</item>
-        <item>No</item>
+        <item>Yes (0)</item>
+        <item>No (1)</item>
     </string-array>
     <string-array name="rowdir">
         <item>- Row Direction -</item>
-        <item>Along entry rd.</item>
-        <item>Perpendicular to entry rd.</item>
+        <item>Along entry rd. (A)</item>
+        <item>Perpendicular to entry rd. (P)</item>
     </string-array>
     <string-array name="roadcond">
         <item>- Road Condition -</item>
-        <item>Asphalt-OK-Less3m</item>
-        <item>Asphalt-Good-Less3m</item>
-        <item>Asphalt-Poor-Less3m</item>
-        <item>Asphalt-OK-MoreOrEqual3m</item>
-        <item>Asphalt-Graded-MoreOrEqual3m</item>
-        <item>Asphalt-Poor-MoreOrEqual3m</item>
-        <item>Graded-OK-Less3m</item>
-        <item>Graded-Graded-Less3m</item>
-        <item>Graded-Poor-Less3m</item>
-        <item>Graded-OK-MoreOrEqual3m</item>
-        <item>Graded-Graded-MoreOrEqual3m</item>
-        <item>Graded-Poor-MoreOrEqual3m</item>
-        <item>NotGraded-OK-Less3m</item>
-        <item>NotGraded-Graded-Less3m</item>
-        <item>NotGraded-Poor-Less3m</item>
-        <item>NotGraded-OK-MoreOrEqual3m</item>
-        <item>NotGraded-Graded-MoreOrEqual3m</item>
-        <item>NotGraded-Poor-MoreOrEqual3m</item>
+        <item>Asphalt-OK-&lt;3m (AO&lt;3)</item>
+        <item>Asphalt-Good-&lt;3m (AG&lt;3)</item>
+        <item>Asphalt-Poor-&lt;3m (AP&lt;3)</item>
+        <item>Asphalt-OK-&gt;=3m (AO&gt;=3)</item>
+        <item>Asphalt-Graded-&gt;=3m (AG&gt;=3)</item>
+        <item>Asphalt-Poor-&gt;=3m (AP&gt;=3</item>
+        <item>Graded-OK-&lt;3m (GO&lt;3)</item>
+        <item>Graded-Graded-&lt;3m (GG&lt;3)</item>
+        <item>Graded-Poor-&lt;3m (GP&lt;3)</item>
+        <item>Graded-OK-&gt;=3m (GO&gt;=3)</item>
+        <item>Graded-Graded-&gt;=3m (GG&gt;=3)</item>
+        <item>Graded-Poor-&gt;=3m (GP&gt;=3)</item>
+        <item>NotGraded-OK-&lt;3m (NGO&lt;3)</item>
+        <item>NotGraded-Graded-&lt;3m (NGG&lt;3)</item>
+        <item>NotGraded-Poor-&lt;3m (NGP&lt;3)</item>
+        <item>NotGraded-OK-&gt;=3m (NGO&gt;=3)</item>
+        <item>NotGraded-Graded-&gt;=3m (NGG&gt;=3)</item>
+        <item>NotGraded-Poor-&gt;=3m (NGP&gt;=3)</item>
     </string-array>
     <string-array name="cropclass">
         <item>- Crop Class -</item>
-        <item>New Plant</item>
-        <item>1st Rtn</item>
-        <item>2nd Rtn</item>
-        <item>3rd Rtn</item>
-        <item>4th Rtn</item>
-        <item>5th Rtn</item>
-        <item>6th Rtn</item>
-        <item>7th Rtn</item>
+        <item>New Plant (NP)</item>
+        <item>1st Rtn (R1)</item>
+        <item>2nd Rtn (R2)</item>
+        <item>3rd Rtn (R3)</item>
+        <item>4th Rtn (R4)</item>
+        <item>5th Rtn (R5)</item>
+        <item>6th Rtn (R6)</item>
+        <item>7th Rtn (R7)</item>
     </string-array>
     <string-array name="hvstmeth">
         <item>- Harvest Method -</item>
-        <item>By Ton</item>
-        <item>Linear</item>
+        <item>By Ton (T)</item>
+        <item>Linear (L)</item>
+    </string-array>
+    <string-array name="canals">
+        <item>Front (F)</item>
+        <item>Left (L)</item>
+        <item>Back (B)</item>
+        <item>Right (R)</item>
     </string-array>
 </resources>

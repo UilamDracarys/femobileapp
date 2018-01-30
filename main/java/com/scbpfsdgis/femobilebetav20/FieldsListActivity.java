@@ -24,14 +24,21 @@ import java.util.HashMap;
 
 public class FieldsListActivity extends ListActivity implements android.view.View.OnClickListener {
     Button btnAdd;
-    TextView tvFarmID;
+    TextView tvFieldID;
     TextView tvFarmName;
+    String farmName;
     int farmID;
     @Override
     public void onClick(View view) {
         if (view == findViewById(R.id.btnAddField)){
+            Intent prIntent = getIntent();
+            farmName = prIntent.getStringExtra("farmName");
+            farmID = prIntent.getIntExtra("farmID", 0);
+
             Intent intent = new Intent(this,FieldDetailActivity.class);
             intent.putExtra("fieldId",0);
+            intent.putExtra("farmID", farmID);
+            intent.putExtra("farmName", farmName);
             startActivity(intent);
         }
     }
@@ -63,7 +70,11 @@ public class FieldsListActivity extends ListActivity implements android.view.Vie
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                    tvFieldID = findViewById(R.id.fieldID);
+                    String fieldID = tvFieldID.getText().toString();
+                    Intent objIndent;
+                    objIndent = new Intent(getApplicationContext(), FarmDetailActivity.class);
+                    objIndent.putExtra("farmID", fieldID);
                 }
 
             });
