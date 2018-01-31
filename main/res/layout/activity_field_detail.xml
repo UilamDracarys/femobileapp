@@ -30,7 +30,6 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/btnSaveFld"
         android:layout_below="@id/my_toolbar"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -175,22 +174,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <Button
-        android:id="@+id/btnSaveFld"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_marginStart="8dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"/>
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnCancel"
-        android:layout_toEndOf="@+id/btnSaveFld"
-        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

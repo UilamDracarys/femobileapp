@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,13 +26,12 @@ import java.util.List;
  * Created by William on 1/27/2018.
  */
 
-public class FieldDetailActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, android.view.View.OnClickListener {
+public class FieldDetailActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener{
 
     Spinner spnMechMeth, spnTract, spnSuit, spnRdCond, spnRowDir, spnSoilType, spnCropClass, spnHarvMeth;
     EditText etFldName, etFldArea, etRowWidth, etVar, etCmt;
     MultiSelectionSpinner mssLimits, mssCanals;
     TextView frmName;
-    Button btnSave, btnCancel;
     private int fieldId, farmId;
     String farmName;
 
@@ -39,9 +40,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
-
-        btnSave = findViewById(R.id.btnSaveFld);
-        btnCancel = findViewById(R.id.btnCancel);
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -72,8 +70,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         getSupportActionBar().setTitle(title);
 
         frmName.setText(farmName);
-        btnSave.setOnClickListener(this);
-        btnCancel.setOnClickListener(this);
 
         if (fieldId != 0) {
             System.out.println("Field ID in Details: " + fieldId);
@@ -88,6 +84,26 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         mssLimits.setListener(this);
         mssCanals.setItems(canalList);
         mssCanals.setListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the save_cancel; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.save_cancel, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                save();
+                return true;
+            case R.id.action_cancel:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initialize() {
@@ -108,59 +124,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         etCmt = findViewById(R.id.etFldCmt);
         frmName = findViewById(R.id.frmName);
 
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view == findViewById(R.id.btnSaveFld)){
-            FieldsRepo repo = new FieldsRepo();
-            Fields fields = new Fields();
-
-            if (isValid()){
-
-                if (fieldId == 0){
-
-                    fields.setFldName(etFldName.getText().toString());
-                    fields.setFldArea(Double.parseDouble(etFldArea.getText().toString()));
-                    fields.setFldSuit(getCode(spnSuit.getSelectedItem().toString()));
-                    fields.setFldFarmId(String.valueOf(farmId));
-                    String limits = mssLimits.getSelectedItemsAsString();
-                    String canals = mssCanals.getSelectedItemsAsString();
-                    if (limits.equalsIgnoreCase("")) {
-                        limits = "-";
-                    }
-                    if (canals.equalsIgnoreCase("")) {
-                        canals = "TBD";
-                    }
-                    fields.setFldLimits(limits);
-                    fields.setFldCanals(canals);
-                    fields.setFldRdCond(getCode(spnRdCond.getSelectedItem().toString()));
-                    fields.setFldMechMeth(getCode(spnMechMeth.getSelectedItem().toString()));
-                    fields.setFldTractAcc(getCode(spnTract.getSelectedItem().toString()));
-                    fields.setFldRowWidth(etRowWidth.getText().toString());
-                    fields.setFldRowDir(getCode(spnRowDir.getSelectedItem().toString()));
-                    fields.setFldSoilTyp(getCode(spnSoilType.getSelectedItem().toString()));
-                    fields.setFldVar(etVar.getText().toString());
-                    fields.setFldHarvMeth(getCode(spnHarvMeth.getSelectedItem().toString()));
-                    fields.setFldCropCls(getCode(spnCropClass.getSelectedItem().toString()));
-                    fields.setFldCmt(etCmt.getText().toString());
-
-                    //fieldId = Integer.parseInt(fields.getFldId());
-                    repo.insertBsc(fields);
-                    fields.setFldId(String.valueOf(repo.getFldId()));
-                    repo.insertSuit(fields);
-                    repo.insertOthers(fields);
-                    Toast.makeText(this,"New Field Added",Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    //repo.update(farm);
-                    Toast.makeText(this,"Field Record updated",Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-        } else if (view == findViewById(R.id.btnCancel)){
-            finish();
-        }
     }
 
     public String getCode(String str) {
@@ -234,15 +197,64 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             return false;
         }
 
-        if (repo.isFieldExisting(fieldName, farmID)) {
-            Toast.makeText(this,"Field " + fieldName + " of " + farmName + " already exists.",Toast.LENGTH_SHORT).show();
-            etFldName.requestFocus();
-            return false;
-        }
+
 
         return true;
     }
 
+    private void save() {
+        FieldsRepo repo = new FieldsRepo();
+        Fields fields = new Fields();
+
+        if (isValid()) {
+
+            if (fieldId == 0) {
+
+                fields.setFldName(etFldName.getText().toString());
+                fields.setFldArea(Double.parseDouble(etFldArea.getText().toString()));
+                fields.setFldSuit(getCode(spnSuit.getSelectedItem().toString()));
+                fields.setFldFarmId(String.valueOf(farmId));
+                String limits = mssLimits.getSelectedItemsAsString();
+                String canals = mssCanals.getSelectedItemsAsString();
+                if (limits.equalsIgnoreCase("")) {
+                    limits = "-";
+                }
+                if (canals.equalsIgnoreCase("")) {
+                    canals = "TBD";
+                }
+                fields.setFldLimits(limits);
+                fields.setFldCanals(canals);
+                fields.setFldRdCond(getCode(spnRdCond.getSelectedItem().toString()));
+                fields.setFldMechMeth(getCode(spnMechMeth.getSelectedItem().toString()));
+                fields.setFldTractAcc(getCode(spnTract.getSelectedItem().toString()));
+                fields.setFldRowWidth(etRowWidth.getText().toString());
+                fields.setFldRowDir(getCode(spnRowDir.getSelectedItem().toString()));
+                fields.setFldSoilTyp(getCode(spnSoilType.getSelectedItem().toString()));
+                fields.setFldVar(etVar.getText().toString());
+                fields.setFldHarvMeth(getCode(spnHarvMeth.getSelectedItem().toString()));
+                fields.setFldCropCls(getCode(spnCropClass.getSelectedItem().toString()));
+                fields.setFldCmt(etCmt.getText().toString());
+
+                if (repo.isFieldExisting(fields.getFldName(), Integer.parseInt(fields.getFldFarmId()))) {
+                    Toast.makeText(this, "Field " + fields.getFldName() + " of " + farmName + " already exists.", Toast.LENGTH_SHORT).show();
+                    etFldName.requestFocus();
+                    return;
+                }
+
+                //fieldId = Integer.parseInt(fields.getFldId());
+                repo.insertBsc(fields);
+                fields.setFldId(String.valueOf(repo.getFldId()));
+                repo.insertSuit(fields);
+                repo.insertOthers(fields);
+                Toast.makeText(this, "New Field Added", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                //repo.update(farm);
+                Toast.makeText(this, "Field Record updated", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
 
     @Override
     public void selectedIndices(List<Integer> indices) {

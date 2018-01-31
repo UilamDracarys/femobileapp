@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -27,26 +29,12 @@ import java.util.HashMap;
  * Created by William on 1/27/2018.
  */
 
-public class FieldsListActivity extends AppCompatActivity implements android.view.View.OnClickListener {
+public class FieldsListActivity extends AppCompatActivity {
     Button btnAdd;
     TextView tvFieldID;
     TextView tvFarmName;
     String farmName;
     int farmID;
-    @Override
-    public void onClick(View view) {
-        if (view == findViewById(R.id.btnAddField)){
-            Intent prIntent = getIntent();
-            farmName = prIntent.getStringExtra("farmName");
-            farmID = prIntent.getIntExtra("farmID", 0);
-
-            Intent intent = new Intent(this,FieldDetailActivity.class);
-            intent.putExtra("fieldId",0);
-            intent.putExtra("farmID", farmID);
-            intent.putExtra("farmName", farmName);
-            startActivity(intent);
-        }
-    }
 
     @Override
     public void onRestart(){
@@ -62,10 +50,6 @@ public class FieldsListActivity extends AppCompatActivity implements android.vie
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        btnAdd = findViewById(R.id.btnAddField);
-        btnAdd.setOnClickListener(this);
-
-
         Intent intent = getIntent();
         getSupportActionBar().setTitle("Field List - " + intent.getStringExtra("farmName"));
 
@@ -73,6 +57,36 @@ public class FieldsListActivity extends AppCompatActivity implements android.vie
         farmID = intent.getIntExtra("farmID", 0);
 
         listAll(farmID);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the save_cancel; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.add_back, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                Intent prIntent = getIntent();
+                farmName = prIntent.getStringExtra("farmName");
+                farmID = prIntent.getIntExtra("farmID", 0);
+
+                Intent intent = new Intent(this,FieldDetailActivity.class);
+                intent.putExtra("fieldId",0);
+                intent.putExtra("farmID", farmID);
+                intent.putExtra("farmName", farmName);
+                startActivity(intent);
+                return true;
+
+            case R.id.action_back:
+                finish();
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void listAll(final int farmId) {

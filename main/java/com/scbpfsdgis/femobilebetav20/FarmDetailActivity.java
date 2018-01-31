@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -17,12 +17,11 @@ import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
 
 import java.util.List;
 
-public class FarmDetailActivity extends AppCompatActivity implements android.view.View.OnClickListener{
+public class FarmDetailActivity extends AppCompatActivity {
 
     Spinner spnPltr, spnOvsr;
-    Button btnSave, btnClose;
     EditText etFarmName, etFarmLoc, etFarmCity, etFarmCmt;
-    private int farmID = 0, planterID, ovsrID;
+    private int farmID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +32,6 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
         setSupportActionBar(myToolbar);
 
         initialize();
-        btnSave.setOnClickListener(this);
-        btnClose.setOnClickListener(this);
 
         farmID = 0;
         Intent intent = getIntent();
@@ -48,6 +45,8 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
         etFarmLoc.setText(farm.getFarmLoc());
         etFarmCity.setText(farm.getFarmCity());
         etFarmCmt.setText(farm.getFarmCmt());
+        int planterID;
+        int ovsrID;
         if (farmID != 0) {
             planterID = Integer.parseInt(farm.getFarmPltrID());
             String ovsrIDStr = farm.getFarmOvsrID();
@@ -64,9 +63,27 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
         loadOverseers(farmID, ovsrID);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the save_cancel; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.save_cancel, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                save();
+                return true;
+            case R.id.action_cancel:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void initialize() {
-        btnSave = findViewById(R.id.btnSaveFarm);
-        btnClose = findViewById(R.id.btnCancel);
         etFarmName =  findViewById(R.id.etFarmName);
         spnPltr = findViewById(R.id.spnPlanter);
         spnOvsr = findViewById(R.id.spnOvsr);
@@ -127,47 +144,45 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == findViewById(R.id.btnSaveFarm)){
-            FarmsRepo repo = new FarmsRepo();
-            Farms farm = new Farms();
+    private void save() {
+        FarmsRepo repo = new FarmsRepo();
+        Farms farm = new Farms();
 
-            if (isValid()){
+        if (isValid()){
 
-                String planter = spnPltr.getSelectedItem().toString();
-                int ovsrIdx = spnOvsr.getSelectedItemPosition();
-                String ovsr = spnOvsr.getSelectedItem().toString();
-                farm.setFarmID(farmID);
-                farm.setFarmName(etFarmName.getText().toString());
-                farm.setFarmPltrID(planter.substring(planter.lastIndexOf("ID:")+3));
-                if (ovsrIdx == 0) {
-                    farm.setFarmOvsrID("N/A");
-                } else {
-                    farm.setFarmOvsrID(ovsr.substring(ovsr.lastIndexOf("ID:") + 3));
-                }
-                farm.setFarmLoc(etFarmLoc.getText().toString());
-                farm.setFarmCity(etFarmCity.getText().toString());
-                farm.setFarmCmt(etFarmCmt.getText().toString());
-
-                if (farmID == 0){
-                    farmID = farm.getFarmID();
-                    repo.insert(farm);
-                    Toast.makeText(this,"New Farm Added",Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    repo.update(farm);
-                    Toast.makeText(this,"Farm Record updated",Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+            String planter = spnPltr.getSelectedItem().toString();
+            int ovsrIdx = spnOvsr.getSelectedItemPosition();
+            String ovsr = spnOvsr.getSelectedItem().toString();
+            farm.setFarmID(farmID);
+            farm.setFarmName(etFarmName.getText().toString());
+            farm.setFarmPltrID(planter.substring(planter.lastIndexOf("ID:")+3));
+            if (ovsrIdx == 0) {
+                farm.setFarmOvsrID("N/A");
+            } else {
+                farm.setFarmOvsrID(ovsr.substring(ovsr.lastIndexOf("ID:") + 3));
             }
-        } else if (view == findViewById(R.id.btnCancel)){
-            finish();
+            farm.setFarmLoc(etFarmLoc.getText().toString());
+            farm.setFarmCity(etFarmCity.getText().toString());
+            farm.setFarmCmt(etFarmCmt.getText().toString());
+
+            if (farmID == 0){
+                if (repo.isFarmExisting(farm.getFarmName())) {
+                    Toast.makeText(this,"Farm " + farm.getFarmName() + " already exists.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                farmID = farm.getFarmID();
+                repo.insert(farm);
+                Toast.makeText(this,"New Farm Added",Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                repo.update(farm);
+                Toast.makeText(this,"Farm Record updated",Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 
     private boolean isValid() {
-        FarmsRepo repo = new FarmsRepo();
         String farmName = etFarmName.getText().toString();
 
         if (farmName.equals("")) {
@@ -180,10 +195,6 @@ public class FarmDetailActivity extends AppCompatActivity implements android.vie
             return false;
         }
 
-        if (repo.isFarmExisting(farmName)) {
-            Toast.makeText(this,"Farm " + farmName + " already exists.",Toast.LENGTH_SHORT).show();
-            return false;
-        }
         return true;
     }
 

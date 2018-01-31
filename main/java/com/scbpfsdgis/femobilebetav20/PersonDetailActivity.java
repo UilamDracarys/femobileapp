@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,7 +19,7 @@ import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonDetailActivity extends AppCompatActivity implements View.OnClickListener{
+public class PersonDetailActivity extends AppCompatActivity {
 
     Button btnSavePrsn, btnClose;
     EditText etPersonName;
@@ -34,9 +36,6 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
         Toolbar myToolbar =  findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        btnSavePrsn =  findViewById(R.id.btnSavePerson);
-        btnClose =  findViewById(R.id.btnCancel);
-
         etPersonName =  findViewById(R.id.etPersonName);
         etPersonCont =  findViewById(R.id.etPersonCont);
 
@@ -51,9 +50,6 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, personCls);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnClass.setAdapter(adapter);
-
-        btnSavePrsn.setOnClickListener(this);
-        btnClose.setOnClickListener(this);
 
         personID = 0;
         Intent intent = getIntent();
@@ -83,44 +79,64 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
     }
 
 
-    public void onClick(View view) {
-        if (view == findViewById(R.id.btnSavePerson)){
-            PersonRepo repo = new PersonRepo();
-            Person planter = new Person();
-            planter.setPersonCont(etPersonCont.getText().toString());
-            planter.setPersonName(etPersonName.getText().toString());
-            planter.setPersonID(personID);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the save_cancel; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.save_cancel, menu);
+        return true;
+    }
 
-            if (isValid()) {
-                int personClsInt = spnClass.getSelectedItemPosition();
-                String personCls;
-                switch (personClsInt) {
-                    case 1:
-                        personCls = "O";
-                        break;
-                    case 2:
-                        personCls = "PO";
-                        break;
-                    default:
-                        personCls = "P";
-                }
-                planter.setPersonCls(personCls);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                save();
+                return true;
+            case R.id.action_cancel:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-                if (personID == 0) {
-                    personID = planter.getPersonID();
-                    repo.insert(planter, personCls);
-                    Toast.makeText(this, "New Person Added", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
+    private void save() {
+        PersonRepo repo = new PersonRepo();
+        Person planter = new Person();
+        planter.setPersonCont(etPersonCont.getText().toString());
+        planter.setPersonName(etPersonName.getText().toString());
+        planter.setPersonID(personID);
 
-                    repo.update(planter);
-                    Toast.makeText(this, "Record updated", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+        if (isValid()) {
+            int personClsInt = spnClass.getSelectedItemPosition();
+            String personCls;
+            switch (personClsInt) {
+                case 1:
+                    personCls = "O";
+                    break;
+                case 2:
+                    personCls = "PO";
+                    break;
+                default:
+                    personCls = "P";
             }
-        } else if (view == findViewById(R.id.btnCancel)) {
-            System.out.println("FUCK");
-            finish();
+            planter.setPersonCls(personCls);
+
+            if (personID == 0) {
+
+                if (repo.isPersonExisting(planter.getPersonName())) {
+                    Toast.makeText(this,planter.getPersonName() + " already exists.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                personID = planter.getPersonID();
+                repo.insert(planter, personCls);
+                Toast.makeText(this, "New Person Added", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+
+                repo.update(planter);
+                Toast.makeText(this, "Record updated", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 
@@ -135,10 +151,6 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
             return false;
         }
 
-        if (repo.isPersonExisting(personName)) {
-            Toast.makeText(this,personName + " already exists.",Toast.LENGTH_SHORT).show();
-            return false;
-        }
         return true;
     }
 }

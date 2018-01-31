@@ -1,40 +1,27 @@
 package com.scbpfsdgis.femobilebetav20;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.scbpfsdgis.femobilebetav20.data.DBHelper;
 import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PeopleListActivity extends AppCompatActivity implements View.OnClickListener {
+public class PeopleListActivity extends AppCompatActivity{
 
-    Button btnAdd;
     TextView tvPersonID;
-
-
-    @Override
-    public void onClick(View view) {
-        if (view == findViewById(R.id.btnAddPerson)){
-            Intent intent = new Intent(this, PersonDetailActivity.class);
-            intent.putExtra("personID",0);
-            startActivity(intent);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +31,31 @@ public class PeopleListActivity extends AppCompatActivity implements View.OnClic
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        btnAdd = findViewById(R.id.btnAddPerson);
-        btnAdd.setOnClickListener(this);
-
         listAll();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the save_cancel; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.add_back, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                Intent intent = new Intent(this, PersonDetailActivity.class);
+                intent.putExtra("personID",0);
+                startActivity(intent);
+                return true;
+
+            case R.id.action_back:
+                finish();
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
