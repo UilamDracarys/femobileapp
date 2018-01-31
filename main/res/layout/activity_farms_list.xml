@@ -3,8 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/AppTheme"
     tools:context="com.scbpfsdgis.femobilebetav20.FarmsListActivity"
-    android:padding="16dp">
+    android:paddingBottom="8dp">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#69F0AE"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <TextView
         android:id="@+id/tvListLabel"
@@ -16,15 +27,23 @@
         android:textColor="#1B5E20"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:background="#A5D6A7"/>
+        android:background="#B9F6CA"
+        android:visibility="gone"/>
 
+    <!--
+    Removed: android:layout_below="@+id/tvListLabel"
+    android:layout_above="@+id/btnAddFarm"
+        -->
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvListLabel"
-        android:layout_above="@+id/btnAddFarm"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/my_toolbar"
+        android:layout_above="@id/btnAddFarm"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"/>
 
     <Button
         android:id="@+id/btnAddFarm"
@@ -32,6 +51,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:text="@string/bntAddFarm"/>
+        android:text="@string/bntAddFarm"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
 </RelativeLayout>

@@ -8,7 +8,7 @@
     <string name="list_of_people">List of People</string>
     <string name="bntAddPlanter">Add</string>
     <string name="btnSave">Save</string>
-    <string name="btnClose">Close</string>
+    <string name="btnCancel">Cancel</string>
     <string name="list_of_ovsrs">List of Overseers</string>
     <string name="list_of_farms">Farms Masterlist</string>
     <string name="bntAddOvsr">Add</string>
@@ -110,4 +110,5 @@
         <item>Back (B)</item>
         <item>Right (R)</item>
     </string-array>
+
 </resources>

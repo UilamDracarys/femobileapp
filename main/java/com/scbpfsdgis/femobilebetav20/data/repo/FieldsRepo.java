@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.scbpfsdgis.femobilebetav20.data.DBHelper;
 import com.scbpfsdgis.femobilebetav20.data.DatabaseManager;
+import com.scbpfsdgis.femobilebetav20.data.model.Farms;
 import com.scbpfsdgis.femobilebetav20.data.model.Fields;
 
 import java.util.ArrayList;
@@ -106,14 +107,21 @@ public class FieldsRepo {
 
     //Get List of Farms
     public ArrayList<HashMap<String, String>> getFieldsList(int farmID) {
-
         //Open connection to read only
         //db = DatabaseManager.getInstance().openDatabase();
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
-        String selectQuery =  "SELECT b.fld_id as FieldID, b.fld_name as FieldName, b.fld_area as Area, s.fld_suit as Suitability, b.fld_farm_id as FarmID" +
+        String selectQuery =  "SELECT b.fld_id as FieldID, b.fld_name as FieldName, b.fld_area as Area, " +
+                "CASE s.fld_suit WHEN 'S' THEN 'Suitable' " +
+                "WHEN 'PS' THEN 'Part. Suitable' " +
+                "WHEN 'CS' THEN 'Cond. Suitable' " +
+                "WHEN 'NS' THEN 'Not Suitable' " +
+                "WHEN 'NU' THEN 'Not in Use' " +
+                "WHEN 'TBD' THEN 'TBD' END as Suitability, b.fld_farm_id as FarmID" +
                 " FROM " + Fields.TABLE_BSC + " b JOIN " + Fields.TABLE_SUIT + " s " +
-                " ON b.fld_id = s.fld_id WHERE b.fld_farm_id = ?";
+                " ON b.fld_id = s.fld_id WHERE b.fld_farm_id = " + farmID +
+                " ORDER BY FieldID COLLATE NOCASE";
+        System.out.println("Field Select Query: " + selectQuery);
 
         ArrayList<HashMap<String, String>> fieldsList = new ArrayList<HashMap<String, String>>();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -124,8 +132,7 @@ public class FieldsRepo {
                 HashMap<String, String> fields = new HashMap<String, String>();
                 fields.put("id", cursor.getString(cursor.getColumnIndex("FieldID")));
                 fields.put("fieldName", cursor.getString(cursor.getColumnIndex("FieldName")));
-                fields.put("area", cursor.getString(cursor.getColumnIndex("Area")));
-                fields.put("suit", cursor.getString(cursor.getColumnIndex("Suitability")));
+                fields.put("suitArea", cursor.getString(cursor.getColumnIndex("Suitability")) + " - " + cursor.getString(cursor.getColumnIndex("Area")));
                 fieldsList.add(fields);
             } while (cursor.moveToNext());
         }
@@ -153,6 +160,23 @@ public class FieldsRepo {
         cursor.close();
         DatabaseManager.getInstance().closeDatabase();
         return fldId;
+    }
+
+    public boolean isFieldExisting(String fieldName, int farmID) {
+        dbHelper = new DBHelper();
+        db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT fld_name FROM " + Fields.TABLE_BSC + " WHERE " + Fields.COL_FLD_NAME + " = '" + fieldName + "' AND fld_farm_id = " + farmID;
+
+        Cursor cursor = db.rawQuery(selectQuery, null );
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            DatabaseManager.getInstance().closeDatabase();
+            return true;
+        } else {
+            cursor.close();
+            DatabaseManager.getInstance().closeDatabase();
+            return false;
+        }
     }
 }
 

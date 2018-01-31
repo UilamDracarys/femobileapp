@@ -3,54 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context="com.scbpfsdgis.femobilebetav20.FieldDetailActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.scbpfsdgis.femobilebetav20.FieldDetailActivity"
+    android:paddingBottom="8dp">
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:id="@+id/titleActionBar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#69F0AE"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <TextView
+        android:id="@+id/frmName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="#B9F6CA">
-
-        <TextView
-            android:id="@+id/formTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
-            android:gravity="center_vertical"
-            android:text="Add Field to"
-            android:textSize="14sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/frmName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/formTitle"
-            android:paddingLeft="6dp"
-            android:gravity="center_vertical"
-            android:textSize="23sp"
-            android:textStyle="bold"/>
-        <Button
-            android:id="@+id/btnSaveFld"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="Save"/>
-
-    </RelativeLayout>
+        android:paddingTop="9dp"
+        android:paddingStart="5dp"
+        android:gravity="center_vertical"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@id/titleActionBar">
+        android:layout_above="@id/btnSaveFld"
+        android:layout_below="@id/my_toolbar"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/farmID"
@@ -136,7 +125,8 @@
                 android:layout_height="40dp"
                 android:ems="10"
                 android:hint="Row Width"
-                android:inputType="numberDecimal"/>
+                android:inputType="numberDecimal"
+                android:digits="0123456789."/>
 
             <Spinner
                 android:id="@+id/spnRowDir"
@@ -185,5 +175,22 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/btnSaveFld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_marginStart="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnCancel"
+        android:layout_toEndOf="@+id/btnSaveFld"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

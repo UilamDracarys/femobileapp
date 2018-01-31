@@ -3,26 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.scbpfsdgis.femobilebetav20.PeopleListActivity"
-    android:padding="16dp">
-    <TextView
-        android:id="@+id/tvListLabel"
+    android:paddingBottom="8dp">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/list_of_people"
-        android:textColor="#1B5E20"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:background="#A5D6A7"/>
+        android:layout_height="?attr/actionBarSize"
+        android:background="#69F0AE"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/lstPeople"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvListLabel"
-        android:layout_above="@+id/btnAddPerson"
-        android:layout_centerHorizontal="true"/>
+        android:layout_below="@id/my_toolbar"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
     <Button
         android:id="@+id/btnAddPerson"
@@ -30,6 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:text="@string/bntAddPlanter" />
+        android:text="@string/bntAddPlanter"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
 </RelativeLayout>

@@ -22,13 +22,12 @@ import java.util.List;
  */
 
 public class FarmsRepo {
-    private Farms farms;
-    DBHelper dbHelper;
-    SQLiteDatabase db;
+    private DBHelper dbHelper;
+    private SQLiteDatabase db;
 
 
     public FarmsRepo() {
-        farms = new Farms();
+        Farms farms = new Farms();
     }
 
     public static String createTable() {
@@ -105,15 +104,16 @@ public class FarmsRepo {
                 " FROM " + Farms.TABLE +
                 " LEFT JOIN " + Person.TABLE +
                 " ON (" + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_PLTR +
-                " AND " + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_OVSR + ")";
+                " AND " + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_OVSR + ")" +
+                " ORDER BY FarmName COLLATE NOCASE";
 
-        ArrayList<HashMap<String, String>> farmsList = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> farmsList = new ArrayList<>();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                HashMap<String, String> farms = new HashMap<String, String>();
+                HashMap<String, String> farms = new HashMap<>();
                 farms.put("id", cursor.getString(cursor.getColumnIndex("FarmID")));
                 farms.put("farmName", cursor.getString(cursor.getColumnIndex("FarmName")));
                 farms.put("planterName", "Planter: " + cursor.getString(cursor.getColumnIndex("PlanterName")));
@@ -153,5 +153,23 @@ public class FarmsRepo {
         cursor.close();
         DatabaseManager.getInstance().closeDatabase();
         return farms;
+    }
+
+    public boolean isFarmExisting(String farmName) {
+        dbHelper = new DBHelper();
+        db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT farm_name FROM " + Farms.TABLE + " WHERE " + Farms.COL_FARM_NAME + " = '" + farmName + "'";
+
+        Cursor cursor = db.rawQuery(selectQuery, null );
+        System.out.println("Select farmname query: " + selectQuery);
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            DatabaseManager.getInstance().closeDatabase();
+            return true;
+        } else {
+            cursor.close();
+            DatabaseManager.getInstance().closeDatabase();
+            return false;
+        }
     }
 }

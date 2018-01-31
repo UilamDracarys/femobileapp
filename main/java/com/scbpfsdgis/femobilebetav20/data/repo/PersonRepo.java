@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.scbpfsdgis.femobilebetav20.data.DBHelper;
 import com.scbpfsdgis.femobilebetav20.data.DatabaseManager;
+import com.scbpfsdgis.femobilebetav20.data.model.Farms;
 import com.scbpfsdgis.femobilebetav20.data.model.Person;
 
 import java.util.ArrayList;
@@ -59,16 +60,18 @@ public class PersonRepo {
         DatabaseManager.getInstance().closeDatabase();
     }
 
-    public void update(Person person, String cls) {
+    public void update(Person person) {
         dbHelper = new DBHelper();
         db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(Person.COL_PRSN_NAME, person.getPersonName());
         values.put(Person.COL_PRSN_CONT, person.getPersonCont());
+        values.put(Person.COL_PRSN_CLS, person.getPersonCls());
+
 
         // It's a good practice to use parameter ?, instead of concatenate string
-        db.update(Person.TABLE, values, Person.COL_PRSN_ID + "= ? AND " + Person.COL_PRSN_CLS + " = '" + cls + "'", new String[] { String.valueOf(person.getPersonID()) });
+        db.update(Person.TABLE, values, Person.COL_PRSN_ID + " = ? ", new String[] { String.valueOf(person.getPersonID()) });
         db.close(); // Closing database connection
     }
 
@@ -81,7 +84,7 @@ public class PersonRepo {
                 Person.COL_PRSN_ID + "," +
                 Person.COL_PRSN_NAME + "," +
                 Person.COL_PRSN_CONT + ", " +
-                Person.COL_PRSN_CLS + " FROM " + Person.TABLE + " ORDER BY person_name ASC;" ;
+                Person.COL_PRSN_CLS + " FROM " + Person.TABLE + " ORDER BY person_name COLLATE NOCASE" ;
 
         ArrayList<HashMap<String, String>> personList = new ArrayList<HashMap<String, String>>();
 
@@ -113,7 +116,7 @@ public class PersonRepo {
         if (!cls.equalsIgnoreCase("PO")) {
             selectNames += " WHERE person_class = '" + cls + "' or person_class = 'PO' ";
         }
-        selectNames += " ORDER BY person_name ASC";
+        selectNames += " ORDER BY person_name ASC COLLATE NOCASE";
 
         db =  dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectNames, null);
@@ -156,5 +159,22 @@ public class PersonRepo {
         cursor.close();
         DatabaseManager.getInstance().closeDatabase();
         return person;
+    }
+
+    public boolean isPersonExisting(String personName) {
+        dbHelper = new DBHelper();
+        db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT person_name FROM " + Person.TABLE + " WHERE " + Person.COL_PRSN_NAME + " = '" + personName + "'";
+
+        Cursor cursor = db.rawQuery(selectQuery, null );
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            DatabaseManager.getInstance().closeDatabase();
+            return true;
+        } else {
+            cursor.close();
+            DatabaseManager.getInstance().closeDatabase();
+            return false;
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FarmsListActivity extends ListActivity implements android.view.View.OnClickListener {
+public class FarmsListActivity extends AppCompatActivity implements android.view.View.OnClickListener {
 
     Button btnAdd;
     TextView tvFarmID;
@@ -43,17 +44,27 @@ public class FarmsListActivity extends ListActivity implements android.view.View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_farms_list);
 
-        btnAdd = (Button) findViewById(R.id.btnAddFarm);
+        Toolbar myToolbar =  findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        btnAdd = findViewById(R.id.btnAddFarm);
         btnAdd.setOnClickListener(this);
 
         listAll();
     }
 
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        listAll();
+    }
+
+
     private void listAll() {
         final FarmsRepo repo = new FarmsRepo();
         ArrayList<HashMap<String, String>> farmsList =  repo.getFarmsList();
         if(farmsList.size()!=0) {
-            ListView lv = getListView();
+            ListView lv = findViewById(R.id.list);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,7 +92,8 @@ public class FarmsListActivity extends ListActivity implements android.view.View
                 }
             });
             ListAdapter adapter = new SimpleAdapter( FarmsListActivity.this,farmsList, R.layout.view_farm_list_item, new String[] { "id","farmName", "planterName"}, new int[] {R.id.farmID, R.id.farmName, R.id.farmOwner});
-            setListAdapter(adapter);
+            lv.setAdapter(adapter);
+            //setListAdapter(adapter);
         }else{
             Toast.makeText(this,"No farm records!",Toast.LENGTH_SHORT).show();
         }

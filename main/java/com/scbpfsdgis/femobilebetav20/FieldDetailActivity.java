@@ -3,6 +3,8 @@ package com.scbpfsdgis.femobilebetav20;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,19 +30,28 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
     EditText etFldName, etFldArea, etRowWidth, etVar, etCmt;
     MultiSelectionSpinner mssLimits, mssCanals;
     TextView frmName;
-    Button btnSave;
+    Button btnSave, btnCancel;
     private int fieldId, farmId;
     String farmName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
 
+        btnSave = findViewById(R.id.btnSaveFld);
+        btnCancel = findViewById(R.id.btnCancel);
+
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        initialize();
+
         String[] limits = getResources().getStringArray(R.array.limitations);
-        List<String> limitList = new ArrayList<String>(Arrays.asList(limits));
+        List<String> limitList = new ArrayList<>(Arrays.asList(limits));
         String[] canals = getResources().getStringArray(R.array.canals);
-        List<String> canalList = new ArrayList<String>(Arrays.asList(canals));
+        List<String> canalList = new ArrayList<>(Arrays.asList(canals));
 
         fieldId = 0;
 
@@ -49,27 +60,16 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         farmName = intent.getStringExtra("farmName");
         fieldId = intent.getIntExtra("fieldID", 0);
 
+        getSupportActionBar().setTitle("Field Details - " + farmName);
 
-        initialize();
         frmName.setText(farmName);
         btnSave.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
 
         mssLimits.setItems(limitList);
         mssLimits.setListener(this);
         mssCanals.setItems(canalList);
         mssCanals.setListener(this);
-
-    }
-
-    @Override
-    public void selectedIndices(List<Integer> indices) {
-
-    }
-
-    @Override
-    public void selectedStrings(List<String> strings) {
-        Toast.makeText(this, strings.toString(), Toast.LENGTH_LONG).show();
-        System.out.println("Toast " + strings.toString());
     }
 
     private void initialize() {
@@ -88,10 +88,9 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         etRowWidth = findViewById(R.id.etRowWidth);
         etVar = findViewById(R.id.etFieldVar);
         etCmt = findViewById(R.id.etFldCmt);
-        btnSave = findViewById(R.id.btnSaveFld);
         frmName = findViewById(R.id.frmName);
-    }
 
+    }
 
     @Override
     public void onClick(View view) {
@@ -141,7 +140,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
                     finish();
                 }
             }
-        } else if (view== findViewById(R.id.btnClose)){
+        } else if (view == findViewById(R.id.btnCancel)){
             finish();
         }
     }
@@ -151,54 +150,90 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
     }
 
     public boolean isValid() {
-        if (etFldName.getText().toString().equalsIgnoreCase("")) {
+        String fieldName = etFldName.getText().toString();
+        String farmName = this.farmName;
+        int farmID = this.farmId;
+        FieldsRepo repo = new FieldsRepo();
+
+        if (fieldName.equalsIgnoreCase("")) {
             Toast.makeText(this,"Field name required.",Toast.LENGTH_SHORT).show();
+            etFldName.requestFocus();
             return false;
         }
-        if (etFldName.getText().toString().equalsIgnoreCase("")) {
+        if (etFldArea.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this,"Field area required.",Toast.LENGTH_SHORT).show();
+            etFldArea.requestFocus();
             return false;
         }
         if (spnSuit.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Choose suitability.",Toast.LENGTH_SHORT).show();
+            spnSuit.requestFocus();
             return false;
         }
         if (spnRdCond.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Choose road condition.",Toast.LENGTH_SHORT).show();
+            spnRdCond.requestFocus();
             return false;
         }
         if (spnMechMeth.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Mechanized method.",Toast.LENGTH_SHORT).show();
+            spnMechMeth.requestFocus();
             return false;
         }
         if (spnTract.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Tractor access.",Toast.LENGTH_SHORT).show();
+            spnTract.requestFocus();
             return false;
         }
         if (etRowWidth.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this,"Row width required.",Toast.LENGTH_SHORT).show();
+            etRowWidth.requestFocus();
             return false;
         }
         if (spnRowDir.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Choose row direction.",Toast.LENGTH_SHORT).show();
+            spnRowDir.requestFocus();
             return false;
         }
         if (spnSoilType.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Choose soil type.",Toast.LENGTH_SHORT).show();
+            spnSoilType.requestFocus();
             return false;
         }
         if (etVar.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this,"Variety required.",Toast.LENGTH_SHORT).show();
+            etVar.requestFocus();
             return false;
         }
         if (spnHarvMeth.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Choose harvest method.",Toast.LENGTH_SHORT).show();
+            spnHarvMeth.requestFocus();
             return false;
         }
         if (spnCropClass.getSelectedItemPosition() == 0) {
             Toast.makeText(this,"Choose crop class.",Toast.LENGTH_SHORT).show();
+            spnCropClass.requestFocus();
             return false;
         }
+
+        if (repo.isFieldExisting(fieldName, farmID)) {
+            Toast.makeText(this,"Field " + fieldName + " of " + farmName + " already exists.",Toast.LENGTH_SHORT).show();
+            etFldName.requestFocus();
+            return false;
+        }
+
         return true;
     }
+
+
+    @Override
+    public void selectedIndices(List<Integer> indices) {
+
+    }
+
+    @Override
+    public void selectedStrings(List<String> strings) {
+
+    }
+
 }
