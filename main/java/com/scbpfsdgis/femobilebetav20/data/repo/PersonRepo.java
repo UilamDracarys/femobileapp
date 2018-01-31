@@ -116,7 +116,7 @@ public class PersonRepo {
         if (!cls.equalsIgnoreCase("PO")) {
             selectNames += " WHERE person_class = '" + cls + "' or person_class = 'PO' ";
         }
-        selectNames += " ORDER BY person_name ASC COLLATE NOCASE";
+        selectNames += " ORDER BY person_name COLLATE NOCASE";
 
         db =  dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectNames, null);

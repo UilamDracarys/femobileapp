@@ -60,11 +60,29 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         farmName = intent.getStringExtra("farmName");
         fieldId = intent.getIntExtra("fieldID", 0);
 
-        getSupportActionBar().setTitle("Field Details - " + farmName);
+        FieldsRepo repo = new FieldsRepo();
+        Fields fields = repo.getFieldByID(fieldId);
+
+        String title = "Field Details - ";
+        if (fieldId ==0) {
+            title += farmName;
+        } else {
+            title += farmName + " Fld. " + fields.getFldName();
+        }
+        getSupportActionBar().setTitle(title);
 
         frmName.setText(farmName);
         btnSave.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+
+        if (fieldId != 0) {
+            System.out.println("Field ID in Details: " + fieldId);
+            etFldName.setText(fields.getFldName());
+            etFldArea.setText(String.valueOf(fields.getFldArea()));
+            etRowWidth.setText(fields.getFldRowWidth());
+            etVar.setText(fields.getFldVar());
+            etCmt.setText(fields.getFldCmt());
+        }
 
         mssLimits.setItems(limitList);
         mssLimits.setListener(this);

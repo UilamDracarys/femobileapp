@@ -16,8 +16,9 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scbpfsdgis.femobilebetav20.data.model.Farms;
+import com.scbpfsdgis.femobilebetav20.data.repo.FarmsRepo;
 import com.scbpfsdgis.femobilebetav20.data.repo.FieldsRepo;
-import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,21 +75,24 @@ public class FieldsListActivity extends AppCompatActivity implements android.vie
         listAll(farmID);
     }
 
-    private void listAll(int farmId) {
-        FieldsRepo repo = new FieldsRepo();
+    public void listAll(final int farmId) {
+        final FieldsRepo repo = new FieldsRepo();
         ArrayList<HashMap<String, String>> fieldsList =  repo.getFieldsList(farmId);
         if(fieldsList.size()!=0) {
             ListView lv = findViewById(R.id.lstFields);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    tvFieldID = findViewById(R.id.fieldID);
-                    String fieldID = tvFieldID.getText().toString();
-                    Intent objIndent;
-                    objIndent = new Intent(getApplicationContext(), FarmDetailActivity.class);
-                    objIndent.putExtra("farmID", fieldID);
+                    tvFieldID = view.findViewById(R.id.fieldID);
+                    int fieldID = Integer.parseInt(tvFieldID.getText().toString());
+                    FarmsRepo repo = new FarmsRepo();
+                    Farms farm = repo.getFarmByID(farmId);
+                    String farmName = farm.getFarmName();
+                    Intent objIndent = new Intent(getApplicationContext(), FieldDetailActivity.class);
+                    objIndent.putExtra("fieldID", fieldID);
+                    objIndent.putExtra("farmName", farmName);
+                    startActivity(objIndent);
                 }
-
             });
             ListAdapter adapter = new SimpleAdapter( FieldsListActivity.this,fieldsList, R.layout.view_field_list_item, new String[] { "id","fieldName", "suitArea"}, new int[] {R.id.fieldID, R.id.fieldName, R.id.fldSuitArea});
             lv.setAdapter(adapter);
@@ -97,4 +101,3 @@ public class FieldsListActivity extends AppCompatActivity implements android.vie
         }
     }
 }
-

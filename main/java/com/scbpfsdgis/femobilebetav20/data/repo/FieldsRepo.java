@@ -108,7 +108,6 @@ public class FieldsRepo {
     //Get List of Farms
     public ArrayList<HashMap<String, String>> getFieldsList(int farmID) {
         //Open connection to read only
-        //db = DatabaseManager.getInstance().openDatabase();
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT b.fld_id as FieldID, b.fld_name as FieldName, b.fld_area as Area, " +
@@ -121,7 +120,6 @@ public class FieldsRepo {
                 " FROM " + Fields.TABLE_BSC + " b JOIN " + Fields.TABLE_SUIT + " s " +
                 " ON b.fld_id = s.fld_id WHERE b.fld_farm_id = " + farmID +
                 " ORDER BY FieldID COLLATE NOCASE";
-        System.out.println("Field Select Query: " + selectQuery);
 
         ArrayList<HashMap<String, String>> fieldsList = new ArrayList<HashMap<String, String>>();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -177,6 +175,49 @@ public class FieldsRepo {
             DatabaseManager.getInstance().closeDatabase();
             return false;
         }
+    }
+
+    public Fields getFieldByID(int Id){
+        dbHelper = new DBHelper();
+        db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName, s.fld_suit as Suitability, " +
+                " b.fld_area as Area, s.fld_limits as Limits, o.fld_canals as Canals, s.fld_rdcond as RoadCond, " +
+                " o.fld_mechmeth as MechMeth, o.fld_tractacc as TractorAcc, o.fld_rowwidth as RowWidth, " +
+                " o.fld_rowdir as RowDir, b.fld_soilTyp as SoilType, b.fld_var as Variety, " +
+                " o.fld_harvmeth as HarvMeth, o.fld_cropcls as CropClass, o.fld_cmt as Comment " +
+                " FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id) " +
+                " WHERE b.fld_id =?";
+
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
+
+        Fields fields = new Fields();
+        if (cursor.moveToFirst()) {
+            do {
+                fields.setFldId(cursor.getString(cursor.getColumnIndex("FieldID")));
+                fields.setFldFarmId(cursor.getString(cursor.getColumnIndex("FarmID")));
+                fields.setFldName(cursor.getString(cursor.getColumnIndex("FieldName")));
+                fields.setFldSuit(cursor.getString(cursor.getColumnIndex("Suitability")));
+                fields.setFldArea(cursor.getDouble(cursor.getColumnIndex("Area")));
+                fields.setFldLimits(cursor.getString(cursor.getColumnIndex("Limits")));
+                fields.setFldCanals(cursor.getString(cursor.getColumnIndex("Canals")));
+                fields.setFldRdCond(cursor.getString(cursor.getColumnIndex("RoadCond")));
+                fields.setFldMechMeth(cursor.getString(cursor.getColumnIndex("MechMeth")));
+                fields.setFldTractAcc(cursor.getString(cursor.getColumnIndex("TractorAcc")));
+                fields.setFldRowWidth(cursor.getString(cursor.getColumnIndex("RowWidth")));
+                fields.setFldRowDir(cursor.getString(cursor.getColumnIndex("RowDir")));
+                fields.setFldSoilTyp(cursor.getString(cursor.getColumnIndex("SoilType")));
+                fields.setFldVar(cursor.getString(cursor.getColumnIndex("Variety")));
+                fields.setFldHarvMeth(cursor.getString(cursor.getColumnIndex("HarvMeth")));
+                fields.setFldCropCls(cursor.getString(cursor.getColumnIndex("CropClass")));
+                fields.setFldCmt(cursor.getString(cursor.getColumnIndex("Comment")));
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return fields;
     }
 }
 
