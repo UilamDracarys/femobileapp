@@ -104,6 +104,7 @@ public class FieldsListActivity extends AppCompatActivity {
                     String farmName = farm.getFarmName();
                     Intent objIndent = new Intent(getApplicationContext(), FieldDetailActivity.class);
                     objIndent.putExtra("fieldID", fieldID);
+                    objIndent.putExtra("farmID", farmId);
                     objIndent.putExtra("farmName", farmName);
                     startActivity(objIndent);
                 }
