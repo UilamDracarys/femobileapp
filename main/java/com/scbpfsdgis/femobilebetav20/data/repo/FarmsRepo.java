@@ -44,7 +44,6 @@ public class FarmsRepo {
     public void insert(Farms farms) {
         dbHelper = new DBHelper();
         db = dbHelper.getWritableDatabase();
-        //db = DatabaseManager.getInstance().openDatabase();
         ContentValues values = new ContentValues();
 
         values.put(Farms.COL_FARM_NAME, farms.getFarmName());

@@ -39,6 +39,15 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         android:layout_gravity="center"/>
 
+    <Button
+        android:id="@+id/fieldManager"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="showFieldManager"
+        android:text="@string/btnFields"
+        app:layout_constraintTop_toBottomOf="@+id/peopleList"
+        android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/peopleList"
@@ -48,16 +57,6 @@
         android:onClick="showPeople"
         android:text="@string/btnPeople"
         app:layout_constraintTop_toBottomOf="@+id/farmsList"
-        android:layout_gravity="center"/>
-
-    <Button
-        android:id="@+id/manageFields"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:onClick="showFieldManager"
-        android:text="@string/btnMngFields"
-        app:layout_constraintTop_toBottomOf="@+id/peopleList"
         android:layout_gravity="center"/>
 
 

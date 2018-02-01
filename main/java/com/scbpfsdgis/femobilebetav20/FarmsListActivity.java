@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 public class FarmsListActivity extends AppCompatActivity {
 
-    Button btnAdd;
     TextView tvFarmID;
 
     @Override
@@ -101,7 +100,6 @@ public class FarmsListActivity extends AppCompatActivity {
             });
             ListAdapter adapter = new SimpleAdapter( FarmsListActivity.this,farmsList, R.layout.view_farm_list_item, new String[] { "id","farmName", "planterName"}, new int[] {R.id.farmID, R.id.farmName, R.id.farmOwner});
             lv.setAdapter(adapter);
-            //setListAdapter(adapter);
         }else{
             Toast.makeText(this,"No farm records!",Toast.LENGTH_SHORT).show();
         }
