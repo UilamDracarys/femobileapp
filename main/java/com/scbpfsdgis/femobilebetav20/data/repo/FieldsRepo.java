@@ -71,6 +71,22 @@ public class FieldsRepo {
         db.close();
     }
 
+    public void updateBsc(Fields fields) {
+        dbHelper = new DBHelper();
+        db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(Fields.COL_FLD_NAME, fields.getFldName());
+        values.put(Fields.COL_FLD_AREA, fields.getFldArea());
+        values.put(Fields.COL_FLD_VAR, fields.getFldVar());
+        values.put(Fields.COL_FLD_SOIL, fields.getFldSoilTyp());
+        values.put(Fields.COL_FLD_FARMID, fields.getFldFarmId());
+
+        System.out.println("Updated Record of Field ID: " + fields.getFldId());
+        db.update(Fields.TABLE_BSC, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
+        db.close(); // Closing database connection
+    }
+
     public void insertSuit(Fields fields) {
         dbHelper = new DBHelper();
         db = dbHelper.getWritableDatabase();
@@ -83,6 +99,19 @@ public class FieldsRepo {
 
         db.insert(Fields.TABLE_SUIT, null, values);
         db.close();
+    }
+
+    public void updateSuit(Fields fields) {
+        dbHelper = new DBHelper();
+        db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(Fields.COL_FLD_SUIT, fields.getFldSuit());
+        values.put(Fields.COL_FLD_LIMITS, fields.getFldLimits());
+        values.put(Fields.COL_FLD_RDCOND, fields.getFldRdCond());
+
+        db.update(Fields.TABLE_SUIT, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
+        db.close(); // Closing database connection
     }
 
     public void insertOthers(Fields fields) {
@@ -100,9 +129,26 @@ public class FieldsRepo {
         values.put(Fields.COL_FLD_CROPCLS, fields.getFldCropCls());
         values.put(Fields.COL_FLD_CMT, fields.getFldCmt());
 
-
         db.insert(Fields.TABLE_OTHERS, null, values);
         db.close();
+    }
+
+    public void updateOthers(Fields fields) {
+        dbHelper = new DBHelper();
+        db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(Fields.COL_FLD_TRACT, fields.getFldTractAcc());
+        values.put(Fields.COL_FLD_HARVMETH, fields.getFldHarvMeth());
+        values.put(Fields.COL_FLD_MECHMETH, fields.getFldMechMeth());
+        values.put(Fields.COL_FLD_ROWDIR, fields.getFldRowDir());
+        values.put(Fields.COL_FLD_ROWWIDTH, fields.getFldRowWidth());
+        values.put(Fields.COL_FLD_CANAL, fields.getFldCanals());
+        values.put(Fields.COL_FLD_CROPCLS, fields.getFldCropCls());
+        values.put(Fields.COL_FLD_CMT, fields.getFldCmt());
+
+        db.update(Fields.TABLE_OTHERS, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
+        db.close(); // Closing database connection
     }
 
     //Get List of Farms

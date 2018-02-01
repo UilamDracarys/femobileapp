@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,7 +32,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
     private int fieldId, farmId;
     String farmName;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +42,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
         initialize();
 
-        String[] limits = getResources().getStringArray(R.array.limitations);
-        List<String> limitList = new ArrayList<>(Arrays.asList(limits));
-        String[] canals = getResources().getStringArray(R.array.canals);
-        List<String> canalList = new ArrayList<>(Arrays.asList(canals));
-
         fieldId = 0;
-
         Intent intent = getIntent();
         farmId = intent.getIntExtra("farmID", 0);
         farmName = intent.getStringExtra("farmName");
@@ -61,6 +51,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         FieldsRepo repo = new FieldsRepo();
         Fields fields = repo.getFieldByID(fieldId);
 
+        //Set ActionBar title
         String title = "Field Details - ";
         if (fieldId ==0) {
             title += farmName;
@@ -69,8 +60,11 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         }
         getSupportActionBar().setTitle(title);
 
-        frmName.setText(farmName);
+        //Set MultiSelectionSpinner items
+        setMSSItems(R.array.limitations, mssLimits);
+        setMSSItems(R.array.canals, mssCanals);
 
+        //Set values from database
         if (fieldId != 0) {
             System.out.println("Field ID in Details: " + fieldId);
             etFldName.setText(fields.getFldName());
@@ -78,12 +72,30 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             etRowWidth.setText(fields.getFldRowWidth());
             etVar.setText(fields.getFldVar());
             etCmt.setText(fields.getFldCmt());
+            spnSuit.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.suitability), fields.getFldSuit()));
+            spnRdCond.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.roadcond), fields.getFldRdCond()));
+            spnMechMeth.setSelection(Integer.parseInt(fields.getFldMechMeth()) + 1);
+            spnTract.setSelection(Integer.parseInt(fields.getFldTractAcc()) + 1);
+            spnRowDir.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.rowdir), fields.getFldRowDir()));
+            spnSoilType.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.soilTypes), fields.getFldSoilTyp()));
+            spnHarvMeth.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.hvstmeth), fields.getFldHarvMeth()));
+            spnCropClass.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.cropclass), fields.getFldCropCls()));
+            String[] limits = fields.getFldLimits().split(",");
+            String[] canals = fields.getFldCanals().split(",");
+            if(limits.length != 0 && !limits[0].equals("-")) {
+                mssLimits.setSelection(fields.getIndexArray(limits, getResources().getStringArray(R.array.limitations)));
+            }
+            if(canals.length != 0 && !canals[0].equals("TBD")) {
+                mssCanals.setSelection(fields.getIndexArray(canals, getResources().getStringArray(R.array.canals)));
+            }
         }
+    }
 
-        mssLimits.setItems(limitList);
-        mssLimits.setListener(this);
-        mssCanals.setItems(canalList);
-        mssCanals.setListener(this);
+    private void setMSSItems(int id, MultiSelectionSpinner mss) {
+        String[] items = getResources().getStringArray(id);
+        List<String> list = new ArrayList<>(Arrays.asList(items));
+        mss.setItems(list);
+        mss.setListener(this);
     }
 
     @Override
@@ -132,9 +144,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
     public boolean isValid() {
         String fieldName = etFldName.getText().toString();
-        String farmName = this.farmName;
-        int farmID = this.farmId;
-        FieldsRepo repo = new FieldsRepo();
 
         if (fieldName.equalsIgnoreCase("")) {
             Toast.makeText(this,"Field name required.",Toast.LENGTH_SHORT).show();
@@ -196,9 +205,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             spnCropClass.requestFocus();
             return false;
         }
-
-
-
         return true;
     }
 
@@ -208,40 +214,39 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
         if (isValid()) {
 
+            fields.setFldId(String.valueOf(fieldId));
+            fields.setFldName(etFldName.getText().toString());
+            fields.setFldArea(Double.parseDouble(etFldArea.getText().toString()));
+            fields.setFldSuit(getCode(spnSuit.getSelectedItem().toString()));
+            fields.setFldFarmId(String.valueOf(farmId));
+            System.out.println("Edit Farm ID: " + fields.getFldFarmId());
+            String limits = mssLimits.getSelectedItemsAsString();
+            String canals = mssCanals.getSelectedItemsAsString();
+            if (limits.equalsIgnoreCase("")) {
+                limits = "-";
+            }
+            if (canals.equalsIgnoreCase("")) {
+                canals = "TBD";
+            }
+            fields.setFldLimits(limits);
+            fields.setFldCanals(canals);
+            fields.setFldRdCond(getCode(spnRdCond.getSelectedItem().toString()));
+            fields.setFldMechMeth(getCode(spnMechMeth.getSelectedItem().toString()));
+            fields.setFldTractAcc(getCode(spnTract.getSelectedItem().toString()));
+            fields.setFldRowWidth(etRowWidth.getText().toString());
+            fields.setFldRowDir(getCode(spnRowDir.getSelectedItem().toString()));
+            fields.setFldSoilTyp(getCode(spnSoilType.getSelectedItem().toString()));
+            fields.setFldVar(etVar.getText().toString());
+            fields.setFldHarvMeth(getCode(spnHarvMeth.getSelectedItem().toString()));
+            fields.setFldCropCls(getCode(spnCropClass.getSelectedItem().toString()));
+            fields.setFldCmt(etCmt.getText().toString());
+
             if (fieldId == 0) {
-
-                fields.setFldName(etFldName.getText().toString());
-                fields.setFldArea(Double.parseDouble(etFldArea.getText().toString()));
-                fields.setFldSuit(getCode(spnSuit.getSelectedItem().toString()));
-                fields.setFldFarmId(String.valueOf(farmId));
-                String limits = mssLimits.getSelectedItemsAsString();
-                String canals = mssCanals.getSelectedItemsAsString();
-                if (limits.equalsIgnoreCase("")) {
-                    limits = "-";
-                }
-                if (canals.equalsIgnoreCase("")) {
-                    canals = "TBD";
-                }
-                fields.setFldLimits(limits);
-                fields.setFldCanals(canals);
-                fields.setFldRdCond(getCode(spnRdCond.getSelectedItem().toString()));
-                fields.setFldMechMeth(getCode(spnMechMeth.getSelectedItem().toString()));
-                fields.setFldTractAcc(getCode(spnTract.getSelectedItem().toString()));
-                fields.setFldRowWidth(etRowWidth.getText().toString());
-                fields.setFldRowDir(getCode(spnRowDir.getSelectedItem().toString()));
-                fields.setFldSoilTyp(getCode(spnSoilType.getSelectedItem().toString()));
-                fields.setFldVar(etVar.getText().toString());
-                fields.setFldHarvMeth(getCode(spnHarvMeth.getSelectedItem().toString()));
-                fields.setFldCropCls(getCode(spnCropClass.getSelectedItem().toString()));
-                fields.setFldCmt(etCmt.getText().toString());
-
                 if (repo.isFieldExisting(fields.getFldName(), Integer.parseInt(fields.getFldFarmId()))) {
                     Toast.makeText(this, "Field " + fields.getFldName() + " of " + farmName + " already exists.", Toast.LENGTH_SHORT).show();
                     etFldName.requestFocus();
                     return;
                 }
-
-                //fieldId = Integer.parseInt(fields.getFldId());
                 repo.insertBsc(fields);
                 fields.setFldId(String.valueOf(repo.getFldId()));
                 repo.insertSuit(fields);
@@ -249,7 +254,10 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
                 Toast.makeText(this, "New Field Added", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                //repo.update(farm);
+                System.out.println("Updated Field Name: " + fields.getFldName());
+                repo.updateBsc(fields);
+                repo.updateSuit(fields);
+                repo.updateOthers(fields);
                 Toast.makeText(this, "Field Record updated", Toast.LENGTH_SHORT).show();
                 finish();
             }

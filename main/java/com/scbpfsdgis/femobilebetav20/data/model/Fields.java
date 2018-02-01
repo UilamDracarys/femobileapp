@@ -187,4 +187,25 @@ public class Fields {
     public void setFldCmt(String fldCmt) {
         this.fldCmt = fldCmt;
     }
+
+    public int getIdxByCode(String[] array, String att) {
+        int idx = 0;
+        for (int i=0; i <array.length; i++) {
+            if(array[i].contains("(" + att + ")")) {
+                idx = i;
+                break;
+            }
+        }
+        return idx;
+    }
+
+    public int[] getIndexArray(String[] selArray, String[] array) {
+        int[] intIdxArray = new int[selArray.length];
+
+        for (int i=0; i<selArray.length;i++) {
+            intIdxArray[i] = getIdxByCode(array, selArray[i].trim());
+        }
+        return intIdxArray;
+    }
+
 }
