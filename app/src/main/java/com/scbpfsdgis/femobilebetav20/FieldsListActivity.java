@@ -30,9 +30,7 @@ import java.util.HashMap;
  */
 
 public class FieldsListActivity extends AppCompatActivity {
-    Button btnAdd;
     TextView tvFieldID;
-    TextView tvFarmName;
     String farmName;
     int farmID;
 

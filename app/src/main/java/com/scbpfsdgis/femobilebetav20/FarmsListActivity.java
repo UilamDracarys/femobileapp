@@ -33,6 +33,12 @@ public class FarmsListActivity extends AppCompatActivity {
         Toolbar myToolbar =  findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        Intent intent = getIntent();
+        String action = intent.getStringExtra("action");
+        if (action.equals("Manage Fields")) {
+            getSupportActionBar().setTitle("Select Farm");
+        }
+
         listAll();
     }
 

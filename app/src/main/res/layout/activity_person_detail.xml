@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Enter Person Contact"
-        android:inputType="textPersonName"
+        android:inputType="phone"
         android:layout_below="@+id/etPersonName"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"/>

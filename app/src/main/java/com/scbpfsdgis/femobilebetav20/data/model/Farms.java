@@ -17,6 +17,8 @@ public class Farms {
     public static final String COL_FARM_CMT = "farm_cmt";
     public static final String COL_FARM_LOC = "farm_locality";
     public static final String COL_FARM_CITY = "farm_city";
+    public static final String COL_FARM_SVY_START = "farm_svy_start";
+    public static final String COL_FARM_SVY_END = "farm_svy_end";
 
     private int farmID;
     private String farmName;
@@ -42,6 +44,24 @@ public class Farms {
     private String farmCmt;
     private String farmLoc;
     private String farmCity;
+    private String farmSvyStart;
+    private String farmSvyEnd;
+
+    public String getFarmSvyStart() {
+        return farmSvyStart;
+    }
+
+    public void setFarmSvyStart(String farmSvyStart) {
+        this.farmSvyStart = farmSvyStart;
+    }
+
+    public String getFarmSvyEnd() {
+        return farmSvyEnd;
+    }
+
+    public void setFarmSvyEnd(String farmSvyEnd) {
+        this.farmSvyEnd = farmSvyEnd;
+    }
 
     public int getFarmID() {
         return farmID;
