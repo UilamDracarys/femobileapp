@@ -9,4 +9,8 @@
         android:id="@+id/action_back"
         android:title="@string/action_back"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_exportdb"
+        android:title="@string/action_exportdb"
+        app:showAsAction="never"/>
 </menu>
