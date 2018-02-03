@@ -8,6 +8,7 @@ public class Farms {
 
     public static final String TAG = Farms.class.getSimpleName();
     public static final String TABLE = "farms";
+    public static final String TABLE_EXPORTED = "exported_farms";
 
     //Column Names
     public static final String COL_FARM_ID = "farm_id";
@@ -17,8 +18,12 @@ public class Farms {
     public static final String COL_FARM_CMT = "farm_cmt";
     public static final String COL_FARM_LOC = "farm_locality";
     public static final String COL_FARM_CITY = "farm_city";
-    public static final String COL_FARM_SVY_START = "farm_svy_start";
-    public static final String COL_FARM_SVY_END = "farm_svy_end";
+    public static final String COL_FARM_SVY = "farm_svy_start";
+
+    //Column Names (Exported Farms)
+    public static final String COL_EXP_OBJ_ID = "obj_id";
+    public static final String COL_EXP_FARM_ID = "farm_id";
+    public static final String COL_EXP_DATE = "export_date";
 
     private int farmID;
     private String farmName;
@@ -45,23 +50,14 @@ public class Farms {
     private String farmLoc;
     private String farmCity;
     private String farmSvyStart;
-    private String farmSvyEnd;
 
-    public String getFarmSvyStart() {
+    public String getFarmSvy() {
         return farmSvyStart;
     }
-
-    public void setFarmSvyStart(String farmSvyStart) {
+    public void setFarmSvy(String farmSvyStart) {
         this.farmSvyStart = farmSvyStart;
     }
 
-    public String getFarmSvyEnd() {
-        return farmSvyEnd;
-    }
-
-    public void setFarmSvyEnd(String farmSvyEnd) {
-        this.farmSvyEnd = farmSvyEnd;
-    }
 
     public int getFarmID() {
         return farmID;
