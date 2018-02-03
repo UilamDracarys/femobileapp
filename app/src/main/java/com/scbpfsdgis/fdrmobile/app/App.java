@@ -1,10 +1,10 @@
-package com.scbpfsdgis.femobilebetav20.app;
+package com.scbpfsdgis.fdrmobile.app;
 
 import android.app.Application;
 import android.content.Context;
 
-import com.scbpfsdgis.femobilebetav20.data.DBHelper;
-import com.scbpfsdgis.femobilebetav20.data.DatabaseManager;
+import com.scbpfsdgis.fdrmobile.data.DBHelper;
+import com.scbpfsdgis.fdrmobile.data.DatabaseManager;
 
 /**
  * Created by William on 1/7/2018.

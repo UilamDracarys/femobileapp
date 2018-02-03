@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,15 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.scbpfsdgis.femobilebetav20.data.model.Person;
-import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
+import com.scbpfsdgis.fdrmobile.data.model.Person;
+import com.scbpfsdgis.fdrmobile.data.repo.PersonRepo;
 
 import java.util.ArrayList;
 import java.util.List;

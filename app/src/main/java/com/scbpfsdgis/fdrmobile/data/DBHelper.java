@@ -1,18 +1,16 @@
-package com.scbpfsdgis.femobilebetav20.data;
+package com.scbpfsdgis.fdrmobile.data;
 
-import android.content.Context;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.scbpfsdgis.femobilebetav20.app.App;
-import com.scbpfsdgis.femobilebetav20.data.model.Farms;
-import com.scbpfsdgis.femobilebetav20.data.model.Fields;
-import com.scbpfsdgis.femobilebetav20.data.model.Person;
-import com.scbpfsdgis.femobilebetav20.data.repo.FarmsRepo;
-import com.scbpfsdgis.femobilebetav20.data.repo.FieldsRepo;
-import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
+import com.scbpfsdgis.fdrmobile.app.App;
+import com.scbpfsdgis.fdrmobile.data.model.Farms;
+import com.scbpfsdgis.fdrmobile.data.model.Fields;
+import com.scbpfsdgis.fdrmobile.data.model.Person;
+import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
+import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
+import com.scbpfsdgis.fdrmobile.data.repo.PersonRepo;
 
 /**
  * Created by William on 1/7/2018.

@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 /**
  Copyright 2005 Bytecode Pty Ltd.

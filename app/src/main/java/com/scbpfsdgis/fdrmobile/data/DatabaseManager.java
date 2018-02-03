@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20.data;
+package com.scbpfsdgis.fdrmobile.data;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;

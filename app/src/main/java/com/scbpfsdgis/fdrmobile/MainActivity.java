@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.content.Intent;
 import android.os.Environment;

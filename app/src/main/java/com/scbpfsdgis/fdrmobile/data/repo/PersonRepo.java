@@ -1,16 +1,12 @@
-package com.scbpfsdgis.femobilebetav20.data.repo;
+package com.scbpfsdgis.fdrmobile.data.repo;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import com.scbpfsdgis.femobilebetav20.data.DBHelper;
-import com.scbpfsdgis.femobilebetav20.data.DatabaseManager;
-import com.scbpfsdgis.femobilebetav20.data.model.Farms;
-import com.scbpfsdgis.femobilebetav20.data.model.Person;
+import com.scbpfsdgis.fdrmobile.data.DBHelper;
+import com.scbpfsdgis.fdrmobile.data.DatabaseManager;
+import com.scbpfsdgis.fdrmobile.data.model.Person;
 
 import java.util.ArrayList;
 import java.util.HashMap;

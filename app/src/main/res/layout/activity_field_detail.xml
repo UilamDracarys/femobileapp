@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.scbpfsdgis.femobilebetav20.FieldDetailActivity"
+    tools:context="com.scbpfsdgis.fdrmobile.FieldDetailActivity"
     android:paddingBottom="8dp">
 
     <android.support.v7.widget.Toolbar

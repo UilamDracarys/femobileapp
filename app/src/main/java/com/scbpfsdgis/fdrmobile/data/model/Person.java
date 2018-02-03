@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20.data.model;
+package com.scbpfsdgis.fdrmobile.data.model;
 
 /**
  * Created by William on 1/7/2018.

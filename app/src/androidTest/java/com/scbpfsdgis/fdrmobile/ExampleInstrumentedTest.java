@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.scbpfsdgis.femobilebetav20", appContext.getPackageName());
+        assertEquals("com.scbpfsdgis.fdrmobile", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,22 +10,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.scbpfsdgis.femobilebetav20.data.model.Farms;
-import com.scbpfsdgis.femobilebetav20.data.repo.FarmsRepo;
-import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
+import com.scbpfsdgis.fdrmobile.data.model.Farms;
+import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
+import com.scbpfsdgis.fdrmobile.data.repo.PersonRepo;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

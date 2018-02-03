@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,16 +16,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.scbpfsdgis.femobilebetav20.data.DBHelper;
-import com.scbpfsdgis.femobilebetav20.data.model.Farms;
-import com.scbpfsdgis.femobilebetav20.data.repo.FarmsRepo;
+import com.scbpfsdgis.fdrmobile.data.model.Farms;
+import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
+import com.scbpfsdgis.fdrmobile.data.DBHelper;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.guna.libmultispinner.MultiSelectionSpinner;
-import com.scbpfsdgis.femobilebetav20.data.model.Fields;
-import com.scbpfsdgis.femobilebetav20.data.repo.FieldsRepo;
+import com.scbpfsdgis.fdrmobile.data.model.Fields;
+import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

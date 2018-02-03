@@ -1,4 +1,4 @@
-package com.scbpfsdgis.femobilebetav20;
+package com.scbpfsdgis.fdrmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.scbpfsdgis.femobilebetav20.data.repo.PersonRepo;
+import com.scbpfsdgis.fdrmobile.data.repo.PersonRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
