@@ -175,10 +175,11 @@ public class FarmsRepo {
     public boolean isFarmExisting(String farmName) {
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
+        farmName = farmName.replaceAll("'", "''");
         String selectQuery =  "SELECT farm_name FROM " + Farms.TABLE + " WHERE " + Farms.COL_FARM_NAME + " = '" + farmName + "'";
 
-        Cursor cursor = db.rawQuery(selectQuery, null );
         System.out.println("Select farmname query: " + selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null );
         if (cursor.moveToFirst()) {
             cursor.close();
             DatabaseManager.getInstance().closeDatabase();

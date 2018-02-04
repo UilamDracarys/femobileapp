@@ -208,6 +208,7 @@ public class FieldsRepo {
     public boolean isFieldExisting(String fieldName, int farmID) {
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
+        fieldName = fieldName.replaceAll("'", "''");
         String selectQuery =  "SELECT fld_name FROM " + Fields.TABLE_BSC + " WHERE " + Fields.COL_FLD_NAME + " = '" + fieldName + "' AND fld_farm_id = " + farmID;
 
         Cursor cursor = db.rawQuery(selectQuery, null );
