@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:text="(c) GIS Section 2017"
+        android:text="@string/c_gis_section_2018"
         android:textSize="8sp"
         android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent" />

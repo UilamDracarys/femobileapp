@@ -22,6 +22,11 @@
     <string name="action_add">Add </string>
     <string name="action_back">Back</string>
     <string name="action_exportdb">Export Data as CSV</string>
+    <string name="c_gis_section_2018">© GIS Section 2018</string>
+    <string name="ExportCSV">Export to CSV</string>
+    <string name="ExportCSVConfirm">Are you sure you want to export data to CSV? Only farms with field records will be exported. Once exported, you can no longer export the same farm again so please make sure all fields have already been recorded.</string>
+    <string name="YesButton">Export</string>
+    <string name="CancelButton">Cancel</string>
     <string-array name="soilTypes">
         <item>- Soil Type -</item>
         <item>Sandy Clay Loam (SCL)</item>
