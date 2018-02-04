@@ -2,10 +2,12 @@ package com.scbpfsdgis.fdrmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,11 +33,13 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
     TextView frmName;
     private int fieldId, farmId;
     String farmName;
+    private View mLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
+        mLayout = findViewById(R.id.field_detail_layout);
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -135,7 +139,6 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         etVar = findViewById(R.id.etFieldVar);
         etCmt = findViewById(R.id.etFldCmt);
         frmName = findViewById(R.id.frmName);
-
     }
 
     public String getCode(String str) {
@@ -146,62 +149,62 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         String fieldName = etFldName.getText().toString();
 
         if (fieldName.equalsIgnoreCase("")) {
-            Toast.makeText(this,"Field name required.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Field name required.", Snackbar.LENGTH_SHORT).show();
             etFldName.requestFocus();
             return false;
         }
         if (etFldArea.getText().toString().equalsIgnoreCase("")) {
-            Toast.makeText(this,"Field area required.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Field area required.", Snackbar.LENGTH_SHORT).show();
             etFldArea.requestFocus();
             return false;
         }
         if (spnSuit.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Choose suitability.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Choose suitability.", Snackbar.LENGTH_SHORT).show();
             spnSuit.requestFocus();
             return false;
         }
         if (spnRdCond.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Choose road condition.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Choose road condition.", Snackbar.LENGTH_SHORT).show();
             spnRdCond.requestFocus();
             return false;
         }
         if (spnMechMeth.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Mechanized method.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Mechanized method required.", Snackbar.LENGTH_SHORT).show();
             spnMechMeth.requestFocus();
             return false;
         }
         if (spnTract.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Tractor access.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Tractor access required.", Snackbar.LENGTH_SHORT).show();
             spnTract.requestFocus();
             return false;
         }
         if (etRowWidth.getText().toString().equalsIgnoreCase("")) {
-            Toast.makeText(this,"Row width required.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Row width requuired.", Snackbar.LENGTH_SHORT).show();
             etRowWidth.requestFocus();
             return false;
         }
         if (spnRowDir.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Choose row direction.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Choose row direction.", Snackbar.LENGTH_SHORT).show();
             spnRowDir.requestFocus();
             return false;
         }
         if (spnSoilType.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Choose soil type.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Choose soil type.", Snackbar.LENGTH_SHORT).show();
             spnSoilType.requestFocus();
             return false;
         }
         if (etVar.getText().toString().equalsIgnoreCase("")) {
-            Toast.makeText(this,"Variety required.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Variety required.", Snackbar.LENGTH_SHORT).show();
             etVar.requestFocus();
             return false;
         }
         if (spnHarvMeth.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Choose harvest method.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Choose harvest method.", Snackbar.LENGTH_SHORT).show();
             spnHarvMeth.requestFocus();
             return false;
         }
         if (spnCropClass.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,"Choose crop class.",Toast.LENGTH_SHORT).show();
+            Snackbar.make(mLayout,"Choose crop class.", Snackbar.LENGTH_SHORT).show();
             spnCropClass.requestFocus();
             return false;
         }

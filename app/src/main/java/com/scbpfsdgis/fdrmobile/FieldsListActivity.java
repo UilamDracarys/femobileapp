@@ -57,6 +57,7 @@ public class FieldsListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the save_cancel; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.add_back, menu);
+        menu.findItem(R.id.action_exportdb).setVisible(false);
         return true;
     }
 
@@ -77,7 +78,7 @@ public class FieldsListActivity extends AppCompatActivity {
 
             case R.id.action_back:
                 finish();
-
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,13 +1,16 @@
 package com.scbpfsdgis.fdrmobile;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class FarmsListActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -78,9 +82,9 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
 
             case R.id.action_back:
                 finish();
-
+                return true;
             case R.id.action_exportdb:
-                export();
+                showDialog();
                 return true;
 
             default:
@@ -175,7 +179,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
             exportDir.mkdirs();
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         Date date = new Date();
 
         String fdFileName = "FD_" + dateFormat.format(date) + ".csv";
@@ -334,9 +338,9 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 @Override
                 public void onClick(View view) {
                     // Request the permission
-                    ActivityCompat.requestPermissions(FarmsListActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            PERMISSION_REQUEST_WRITESTORAGE);
+                        ActivityCompat.requestPermissions(FarmsListActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PERMISSION_REQUEST_WRITESTORAGE);
                 }
             }).show();
         } else {
@@ -347,5 +351,34 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_WRITESTORAGE);
         }
+    }
+    private void showDialog() throws Resources.NotFoundException {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.ExportCSV))
+                .setMessage(
+                        getResources().getString(R.string.ExportCSVConfirm))
+                .setIcon(
+                        getResources().getDrawable(
+                                android.R.drawable.ic_dialog_info))
+                .setPositiveButton(
+                        getResources().getString(R.string.YesButton),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                export();
+                            }
+                        })
+                .setNegativeButton(
+                        getResources().getString(R.string.CancelButton),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+
+                            }
+                        }).show();
     }
 }
