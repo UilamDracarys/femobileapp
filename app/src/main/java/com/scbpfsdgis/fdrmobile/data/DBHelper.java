@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private static final int DATABASE_VERSION =21;
+    private static final int DATABASE_VERSION =27;
     // Database Name
     private static final String DATABASE_NAME = "FEMobile.db";
     private static final String TAG = DBHelper.class.getSimpleName();
@@ -38,11 +38,13 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(FieldsRepo.createTableBsc());
         db.execSQL(FieldsRepo.createTableSuit());
         db.execSQL(FieldsRepo.createTableOthers());
+        db.execSQL(FieldsRepo.createTableFldAtts());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, String.format("SQLiteDatabase.onUpgrade(%d -> %d)", oldVersion, newVersion));
+        FieldsRepo repo = new FieldsRepo();
 
         // Drop table if existed, all data will be gone!!!
         db.execSQL("DROP TABLE IF EXISTS " + Person.TABLE);
@@ -51,7 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Fields.TABLE_BSC);
         db.execSQL("DROP TABLE IF EXISTS " + Fields.TABLE_SUIT);
         db.execSQL("DROP TABLE IF EXISTS " + Fields.TABLE_OTHERS);
+        db.execSQL("DROP TABLE IF EXISTS " + Fields.TABLE_ATTVALS);
         onCreate(db);
     }
-
 }

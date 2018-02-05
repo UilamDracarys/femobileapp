@@ -55,6 +55,14 @@ public class FieldsRepo {
                 Fields.COL_FLD_CMT + " TEXT)";
     }
 
+    public static String createTableFldAtts() {
+        return "CREATE TABLE " + Fields.TABLE_ATTVALS + " (" +
+                Fields.COL_FLD_OBJ_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                Fields.COL_FLD_ATT_ID + " TEXT, " +
+                Fields.COL_FLD_ATT_CODE + " TEXT, " +
+                Fields.COL_FLD_ATT_DESC + " TEXT)";
+    }
+
     public void insertBsc(Fields fields) {
         dbHelper = new DBHelper();
         db = dbHelper.getWritableDatabase();
@@ -148,6 +156,24 @@ public class FieldsRepo {
 
         db.update(Fields.TABLE_OTHERS, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
         db.close(); // Closing database connection
+    }
+
+    public void insertAttVals() {
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        String[][] fieldAtts = Fields.fldAtt;
+        int attCount = fieldAtts.length;
+        System.out.println("AttCount: " + attCount);
+        for (int i=0; i<attCount; i++) {
+            values.put(Fields.COL_FLD_ATT_ID, fieldAtts[i][0]);
+            values.put(Fields.COL_FLD_ATT_CODE, fieldAtts[i][1]);
+            values.put(Fields.COL_FLD_ATT_DESC, fieldAtts[i][2]);
+            db.insert(Fields.TABLE_ATTVALS, null, values);
+        }
+
+        db.close();
     }
 
     //Get List of Farms

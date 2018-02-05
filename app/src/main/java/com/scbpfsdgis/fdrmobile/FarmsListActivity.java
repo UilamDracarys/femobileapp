@@ -182,8 +182,8 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         Date date = new Date();
 
-        String fdFileName = "FD_" + dateFormat.format(date) + ".csv";
-        String flFileName = "FL_" + dateFormat.format(date) + ".csv";
+        String fdFileName = "FIELDS_" + dateFormat.format(date) + "_CODE.csv";
+        String flFileName = "FARMS_" + dateFormat.format(date) + ".csv";
 
         File farmDetails = new File(exportDir, fdFileName);
         File fieldsList = new File(exportDir, flFileName);
@@ -208,7 +208,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 //farmDetails.createNewFile();
                 //fieldsList.createNewFile();
                 csvWriter(farmDetails, qryFarmDetails(), fdFileName);
-                csvWriter(fieldsList, qryFieldsList(), flFileName);
+                csvWriter(fieldsList, qryFieldsCode(), flFileName);
                 repo.insertLog(repo.getFarmIDsExported(qryLogExport()), fdFileName);
                 Snackbar.make(mLayout,
                         "Farms successfully exported FDRMobile/Exports.",
@@ -296,7 +296,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
     }
 
 
-    private String qryFieldsList() {
+    private String qryFieldsCode() {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
                 "Frm.OverseerName as Overseer, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FieldName, Fld.Area as Area,\n" +

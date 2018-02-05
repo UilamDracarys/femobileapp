@@ -1,5 +1,8 @@
 package com.scbpfsdgis.fdrmobile.data.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by William on 1/7/2018.
  */
@@ -9,6 +12,7 @@ public class Fields {
     public static final String TABLE_BSC = "fldsBasic";
     public static final String TABLE_SUIT = "fldsSuit";
     public static final String TABLE_OTHERS = "fldsOthers";
+    public static final String TABLE_ATTVALS = "fldAtts";
 
     //Column Names
     ///Basic
@@ -33,6 +37,73 @@ public class Fields {
     public static final String COL_FLD_CANAL = "fld_canals";
     public static final String COL_FLD_CROPCLS = "fld_cropcls";
     public static final String COL_FLD_CMT = "fld_cmt";
+
+    ///Field Attribute Table
+    public static final String COL_FLD_OBJ_ID = "fld_att_objid";
+    public static final String COL_FLD_ATT_ID = "fld_att_id";
+    public static final String COL_FLD_ATT_DESC = "fld_att_desc";
+    public static final String COL_FLD_ATT_CODE = "fld_att_val";
+
+    //Attribute Values
+    public static final String[][] fldAtt = {{"fld_suit","Suitable","S"},
+        {"fld_suit","Partially Suitable","PS"},
+        {"fld_suit","Conditionally Suitable","CS"},
+        {"fld_suit","Not Suitable","NS"},
+        {"fld_suit","Not in Use","NU"},
+        {"fld_suit","TBD","TBD"},
+        {"fld_limits","Area less than 0.80ha","HAR"},
+        {"fld_limits","Hindrance - Boulders","HBO"},
+        {"fld_limits","Hindrance - Canal","HCA"},
+        {"fld_limits","Hindrance - Rocks","HR"},
+        {"fld_limits","Hindrance - Row width less than 1.2m","HRW"},
+        {"fld_limits","Hindrance - Soil Type","HSST"},
+        {"fld_limits","Hindrance - Stones","HST"},
+        {"fld_limits","Hindrance - Too many trees","HTR"},
+        {"fld_limits","Steepness - Slope","STSL"},
+        {"fld_limits","Steepness - Hilly","STH"},
+        {"fld_limits","Wagon access - Entry rd. inaccessible","WAI"},
+        {"fld_limits","Wagon access - No entry rd.","WAN"},
+        {"fld_limits","Wagon access - Entry via river","WARI"},
+        {"fld_limits","Wagon access - Maneuver difficult","WAMD"},
+        {"fld_mechmeth","Yes","0"},
+        {"fld_mechmeth","No","1"},
+        {"fld_tractacc","Yes","0"},
+        {"fld_tractacc","No","1"},
+        {"fld_rowdir","Along entry rd.","A"},
+        {"fld_rowdir","Perpendicular to entry rd.","P"},
+        {"fld_rdcond","Asphalt-OK-<3m","AO<3"},
+        {"fld_rdcond","Asphalt-Good-<3m","AG<3"},
+        {"fld_rdcond","Asphalt-Poor-<3m","AP<3"},
+        {"fld_rdcond","Asphalt-OK->=3m","AO>=3"},
+        {"fld_rdcond","Asphalt-Graded->=3m","AG>=3"},
+        {"fld_rdcond","Asphalt-Poor->=3m","AP>=3"},
+        {"fld_rdcond","Graded-OK-<3m","GO<3"},
+        {"fld_rdcond","Graded-Graded-<3m","GG<3"},
+        {"fld_rdcond","Graded-Poor-<3m","GP<3"},
+        {"fld_rdcond","Graded-OK->=3m","GO>=3"},
+        {"fld_rdcond","Graded-Graded->=3m","GG>=3"},
+        {"fld_rdcond","Graded-Poor->=3m","GP>=3"},
+        {"fld_rdcond","NotGraded-OK-<3m","NGO<3"},
+        {"fld_rdcond","NotGraded-Graded-<3m","NGG<3"},
+        {"fld_rdcond","NotGraded-Poor-<3m","NGP<3"},
+        {"fld_rdcond","NotGraded-OK->=3m","NGO>=3"},
+        {"fld_rdcond","NotGraded-Graded->=3m","NGG>=3"},
+        {"fld_rdcond","NotGraded-Poor->=3m","NGP>=3"},
+        {"fld_cropcls","New Plant","NP"},
+        {"fld_cropcls","1st Rtn","R1"},
+        {"fld_cropcls","2nd Rtn","R2"},
+        {"fld_cropcls","3rd Rtn","R3"},
+        {"fld_cropcls","4th Rtn","R4"},
+        {"fld_cropcls","5th Rtn","R5"},
+        {"fld_cropcls","6th Rtn","R6"},
+        {"fld_cropcls","7th Rtn","R7"},
+        {"fld_harvmeth","By Ton","T"},
+        {"fld_harvmeth","Linear","L"},
+        {"fld_canals","Front","F"},
+        {"fld_canals","Left","L"},
+        {"fld_canals","Back","B"},
+        {"fld_canals","Right","R"}};
+
 
     private String fldId;
     private String fldName;
