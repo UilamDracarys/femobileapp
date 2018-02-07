@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     String versionName = BuildConfig.VERSION_NAME;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
         initAttVals();
     }
 
@@ -92,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
 
                 .setTitle(getResources().getString(R.string.FDRMobile))
-                .setMessage(
-                        "App Version: " + versionName + "\n" +
-                                "DB Version: " + dbHelper.getDatabaseVersion() )
+                .setMessage("App Version: " + versionName + "\n" +
+                        "DB Version: " + dbHelper.getDatabaseVersion() + "\n" +
+                        "Device: " + getDeviceName())
                 .setIcon(
                         getResources().getDrawable(
                                 android.R.drawable.ic_dialog_info))
@@ -109,5 +110,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                 .show();
+    }
+
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        return manufacturer + " " + model;
     }
 }

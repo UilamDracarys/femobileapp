@@ -31,7 +31,8 @@ public class FieldsRepo {
                 Fields.COL_FLD_AREA + " DECIMAL(10,3), " +
                 Fields.COL_FLD_VAR + " TEXT, " +
                 Fields.COL_FLD_SOIL + " TEXT, " +
-                Fields.COL_FLD_FARMID + " TEXT) ";
+                Fields.COL_FLD_FARMID + " TEXT, " +
+                Fields.COL_FLD_SURVEYOR + " TEXT) ";
     }
 
     public static String createTableSuit() {
@@ -73,6 +74,7 @@ public class FieldsRepo {
         values.put(Fields.COL_FLD_VAR, fields.getFldVar());
         values.put(Fields.COL_FLD_SOIL, fields.getFldSoilTyp());
         values.put(Fields.COL_FLD_FARMID, fields.getFldFarmId());
+        values.put(Fields.COL_FLD_SURVEYOR, fields.getFldSurveyor());
 
         db.insert(Fields.TABLE_BSC, null, values);
         db.close();
@@ -88,6 +90,7 @@ public class FieldsRepo {
         values.put(Fields.COL_FLD_VAR, fields.getFldVar());
         values.put(Fields.COL_FLD_SOIL, fields.getFldSoilTyp());
         values.put(Fields.COL_FLD_FARMID, fields.getFldFarmId());
+        values.put(Fields.COL_FLD_SURVEYOR, fields.getFldSurveyor());
 
         db.update(Fields.TABLE_BSC, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
         db.close(); // Closing database connection
@@ -189,7 +192,7 @@ public class FieldsRepo {
                 "WHEN 'TBD' THEN 'TBD' END as Suitability, b.fld_farm_id as FarmID" +
                 " FROM " + Fields.TABLE_BSC + " b JOIN " + Fields.TABLE_SUIT + " s " +
                 " ON b.fld_id = s.fld_id WHERE b.fld_farm_id = " + farmID +
-                " ORDER BY FieldID COLLATE NOCASE";
+                " ORDER BY FieldName COLLATE NOCASE";
 
         ArrayList<HashMap<String, String>> fieldsList = new ArrayList<HashMap<String, String>>();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -230,6 +233,28 @@ public class FieldsRepo {
         return fldId;
     }
 
+    public String[] getSurveyors() {
+        dbHelper = new DBHelper();
+        db = dbHelper.getReadableDatabase();
+        String[] surveyors;
+
+        String selectQuery ="SELECT " + Fields.COL_FLD_SURVEYOR + " FROM " + Fields.TABLE_BSC + " GROUP BY " + Fields.COL_FLD_SURVEYOR + " ORDER BY " + Fields.COL_FLD_SURVEYOR + " COLLATE NOCASE";
+        System.out.println(selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        surveyors = new String[cursor.getCount()];
+
+        if (cursor.moveToFirst()) {
+            System.out.println("Surveyors: " + cursor.getCount());
+           for (int i=0; i<cursor.getCount(); i++) {
+               surveyors[i] = cursor.getString(0);
+               cursor.moveToNext();
+           }
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return surveyors;
+    }
+
     public boolean isFieldExisting(String fieldName, int farmID) {
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
@@ -255,7 +280,7 @@ public class FieldsRepo {
                 " b.fld_area as Area, s.fld_limits as Limits, o.fld_canals as Canals, s.fld_rdcond as RoadCond, " +
                 " o.fld_mechmeth as MechMeth, o.fld_tractacc as TractorAcc, o.fld_rowwidth as RowWidth, " +
                 " o.fld_rowdir as RowDir, b.fld_soilTyp as SoilType, b.fld_var as Variety, " +
-                " o.fld_harvmeth as HarvMeth, o.fld_cropcls as CropClass, o.fld_cmt as Comment " +
+                " o.fld_harvmeth as HarvMeth, o.fld_cropcls as CropClass, o.fld_cmt as Comment, b.fld_svyor as Surveyor" +
                 " FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id) " +
                 " WHERE b.fld_id =?";
 
@@ -282,6 +307,7 @@ public class FieldsRepo {
                 fields.setFldHarvMeth(cursor.getString(cursor.getColumnIndex("HarvMeth")));
                 fields.setFldCropCls(cursor.getString(cursor.getColumnIndex("CropClass")));
                 fields.setFldCmt(cursor.getString(cursor.getColumnIndex("Comment")));
+                fields.setFldSurveyor(cursor.getString(cursor.getColumnIndex("Surveyor")));
 
             } while (cursor.moveToNext());
         }

@@ -173,6 +173,14 @@
                 android:hint="Comments/Remarks"
                 android:inputType="textLongMessage"/>
 
+            <AutoCompleteTextView
+                android:id="@+id/etFldSvyor"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:hint="Surveyor"
+                android:inputType="textPersonName"/>
+
         </LinearLayout>
 
     </ScrollView>

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -41,11 +42,12 @@ import java.util.Locale;
 
 public class FarmsListActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-
     private static final int PERMISSION_REQUEST_WRITESTORAGE = 0;
 
     private View mLayout;
     TextView tvFarmID;
+
+    String device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
             getSupportActionBar().setTitle("Select Farm");
         }
 
+        device = MainActivity.getDeviceName();
         listAll();
     }
 
@@ -85,7 +88,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 finish();
                 return true;
             case R.id.action_exportdb:
-                showDialog();
+                export();
                 return true;
 
             default:
@@ -138,8 +141,6 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         }
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
@@ -173,24 +174,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         }
     }
 
-    private void exportCSV() {
-        File exportDir = new File(Environment.getExternalStorageDirectory() + "/FDRMobile/Exports" , "");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
-
-        DateFormat fileDF = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-        DateFormat dataDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        Date date = new Date();
-
-        String fdFileName = "FARMS_" + fileDF.format(date) + ".csv";
-        String flcFilename = "FIELDS_" + fileDF.format(date) + "_CODE.csv";
-        String fldFilename = "FIELDS_" + fileDF.format(date) + "_DESC.csv";
-
-        File farmDetails = new File(exportDir, fdFileName);
-        File fldsListDesc = new File(exportDir, fldFilename);
-        File fldsListCode = new File(exportDir, flcFilename);
-
+    private boolean isExportValid() {
         DBHelper dbhelper = new DBHelper();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
         String selectFarmsNotExported = "SELECT b.fld_id as FieldID \n" +
@@ -199,27 +183,78 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "ON b.fld_farm_id = f.farm_id \n" +
                 "WHERE f.farm_exported IS NULL";
         Cursor cursor = db.rawQuery(selectFarmsNotExported,null);
+
         if (cursor.getCount() == 0) {
             if (isThereData()) {
                 Snackbar.make(mLayout,
                         "All farms have already been exported. Please check FDRMobile/Exports directory.",
                         Snackbar.LENGTH_LONG).show();
+                return false;
             } else {
                 Snackbar.make(mLayout,
                         "No farm records found.",
                         Snackbar.LENGTH_LONG).show();
+                return false;
             }
-        } else {
+        }
+
+        return true;
+    }
+
+    private void exportCSV() {
+        File exportDir = new File(Environment.getExternalStorageDirectory() + "/FDRMobile/Exports" , "");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        DateFormat fileDF = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        final DateFormat dataDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        final Date date = new Date();
+
+        final String fdFileName = "FARMS_" + fileDF.format(date) + ".csv";
+        final String flcFilename = "FIELDS_" + fileDF.format(date) + "_CODE.csv";
+        final String fldFilename = "FIELDS_" + fileDF.format(date) + "_DESC.csv";
+
+        final File farmDetails = new File(exportDir, fdFileName);
+        final File fldsListDesc = new File(exportDir, fldFilename);
+        final File fldsListCode = new File(exportDir, flcFilename);
+
+        if (isExportValid()) {
             try {
-                csvWriter(farmDetails, qryFarmDetails(), fdFileName);
-                csvWriter(fldsListDesc, qryFieldsDesc(), fldFilename);
-                csvWriter(fldsListCode, qryFieldsCode(), flcFilename);
-                updateExportDate(dataDF.format(date));
-                Snackbar.make(mLayout,
-                        "Farms successfully exported FDRMobile/Exports.",
-                        Snackbar.LENGTH_SHORT).show();
-            }
-            catch(Exception sqlEx) {
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.ExportCSV))
+                        .setMessage(
+                                getResources().getString(R.string.ExportCSVConfirm))
+                        .setIcon(
+                                getResources().getDrawable(
+                                        android.R.drawable.ic_dialog_info))
+                        .setPositiveButton(
+                                getResources().getString(R.string.ExportButton),
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        csvWriter(farmDetails, qryFarmDetails(dataDF.format(date)), fdFileName);
+                                        csvWriter(fldsListDesc, qryFieldsDesc(), fldFilename);
+                                        csvWriter(fldsListCode, qryFieldsCode(), flcFilename);
+                                        updateExportDate(dataDF.format(date));
+                                        Snackbar.make(mLayout,
+                                                "Farms successfully exported FDRMobile/Exports.",
+                                                Snackbar.LENGTH_SHORT).show();
+                                    }
+                                })
+                        .setNegativeButton(
+                                getResources().getString(R.string.CancelButton),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+
+                                    }
+                                }).show();
+
+            } catch (Exception sqlEx) {
                 Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
             }
         }
@@ -276,7 +311,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         String[] ids;
         DBHelper dbhelper = new DBHelper();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(qryFarmDetails(), null);
+        Cursor cursor = db.rawQuery(qryFarmDetails(""), null);
         ids = new String[cursor.getCount()];
         if (cursor.moveToFirst()) {
             for (int i=0; i<cursor.getCount(); i++) {
@@ -287,11 +322,12 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         return ids;
     }
 
-    private String qryFarmDetails() {
+    private String qryFarmDetails(String expDate) {
         return "SELECT f.farm_id as FarmID, f.farm_name AS FarmName, \n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName,\n" +
-                "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment\n" +
+                "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment,\n" +
+                "\"" + expDate + "\" as DateExported, \"" + getDeviceName() + "\" as Device " +
                 "FROM farms f LEFT JOIN person p\n" +
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id) \n" +
                 "INNER JOIN fldsBasic b\n" +
@@ -300,20 +336,6 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "GROUP BY FarmID\n" +
                 "ORDER BY FarmName COLLATE NOCASE";
     }
-
-    /*private String qryLogExport() {
-        return "SELECT Frm.FarmID as FarmID\n" +
-                "FROM \n" +
-                "(SELECT f.farm_id as FarmID from farms f \n" +
-                "LEFT JOIN fldsBasic b ON f.farm_id = b.fld_farm_id\n" +
-                "WHERE b.fld_farm_id IS NOT NULL) Frm\n" +
-                "LEFT JOIN \n" +
-                "(SELECT farm_id FROM exported_farms) Exp \n" +
-                "ON FarmID = Exp.farm_id \n" +
-                "WHERE Exp.farm_id IS NULL\n" +
-                "GROUP BY FarmID";
-    }*/
-
 
     private String qryFieldsCode() {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
@@ -378,7 +400,6 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "ORDER BY FarmName, FieldName COLLATE NOCASE";
     }
 
-
     private void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -404,33 +425,10 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                     PERMISSION_REQUEST_WRITESTORAGE);
         }
     }
-    private void showDialog() throws Resources.NotFoundException {
-        new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.ExportCSV))
-                .setMessage(
-                        getResources().getString(R.string.ExportCSVConfirm))
-                .setIcon(
-                        getResources().getDrawable(
-                                android.R.drawable.ic_dialog_info))
-                .setPositiveButton(
-                        getResources().getString(R.string.ExportButton),
-                        new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                export();
-                            }
-                        })
-                .setNegativeButton(
-                        getResources().getString(R.string.CancelButton),
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-
-                            }
-                        }).show();
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        return manufacturer + " " + model;
     }
 }

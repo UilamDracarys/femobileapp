@@ -43,8 +43,8 @@ public class PersonDetailActivity extends AppCompatActivity {
         personCls = new ArrayList<String>();
 
         personCls.add("Planter");
-        personCls.add("Overseer");
-        personCls.add("Planter/Overseer");
+        personCls.add("Farm Representative");
+        personCls.add("Planter/Representative");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, personCls);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

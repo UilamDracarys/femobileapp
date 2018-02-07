@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.guna.libmultispinner.MultiSelectionSpinner;
 import com.scbpfsdgis.fdrmobile.data.model.Fields;
 import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +32,12 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
     Spinner spnMechMeth, spnTract, spnSuit, spnRdCond, spnRowDir, spnSoilType, spnCropClass, spnHarvMeth;
     EditText etFldName, etFldArea, etRowWidth, etVar, etCmt;
+    AutoCompleteTextView etFldSvyor;
     MultiSelectionSpinner mssLimits, mssCanals;
     TextView frmName;
     private int fieldId, farmId;
     String farmName;
+    String[] surveyors = null;
     private View mLayout;
 
     @Override
@@ -54,6 +59,13 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
         FieldsRepo repo = new FieldsRepo();
         Fields fields = repo.getFieldByID(fieldId);
+
+        surveyors = repo.getSurveyors();
+        if (surveyors != null) {
+            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, surveyors);
+            etFldSvyor.setAdapter(adapter);
+            etFldSvyor.setThreshold(1);
+        }
 
         //Set ActionBar title
         String title = "Field Details - ";
@@ -84,6 +96,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             spnSoilType.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.soilTypes), fields.getFldSoilTyp()));
             spnHarvMeth.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.hvstmeth), fields.getFldHarvMeth()));
             spnCropClass.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.cropclass), fields.getFldCropCls()));
+            etFldSvyor.setText(fields.getFldSurveyor());
             String[] limits = fields.getFldLimits().split(",");
             String[] canals = fields.getFldCanals().split(",");
             if(limits.length != 0 && !limits[0].equals("-")) {
@@ -139,6 +152,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         etVar = findViewById(R.id.etFieldVar);
         etCmt = findViewById(R.id.etFldCmt);
         frmName = findViewById(R.id.frmName);
+        etFldSvyor = findViewById(R.id.etFldSvyor);
     }
 
     public String getCode(String str) {
@@ -208,6 +222,11 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             spnCropClass.requestFocus();
             return false;
         }
+        if (etFldSvyor.getText().toString().equals("")) {
+            Snackbar.make(mLayout,"Surveyor name required.", Snackbar.LENGTH_SHORT).show();
+            etFldSvyor.requestFocus();
+            return false;
+        }
         return true;
     }
 
@@ -243,7 +262,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             fields.setFldHarvMeth(getCode(spnHarvMeth.getSelectedItem().toString()));
             fields.setFldCropCls(getCode(spnCropClass.getSelectedItem().toString()));
             fields.setFldCmt(etCmt.getText().toString());
-
+            fields.setFldSurveyor(etFldSvyor.getText().toString());
             if (fieldId == 0) {
                 if (repo.isFieldExisting(fields.getFldName(), Integer.parseInt(fields.getFldFarmId()))) {
                     Toast.makeText(this, "Field " + fields.getFldName() + " of " + farmName + " already exists.", Toast.LENGTH_SHORT).show();

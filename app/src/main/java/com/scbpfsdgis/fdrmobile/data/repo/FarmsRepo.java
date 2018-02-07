@@ -98,12 +98,12 @@ public class FarmsRepo {
                 " WHERE " + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_OVSR + ") As OverseerName, " +
                 Farms.TABLE + "." + Farms.COL_FARM_LOC + " As Locality, " +
                 Farms.TABLE + "." + Farms.COL_FARM_CITY+ " As City, " +
-                Farms.TABLE + "." + Farms.COL_FARM_CMT + " As Comment" +
+                Farms.TABLE + "." + Farms.COL_FARM_CMT + " As Comment " +
                 " FROM " + Farms.TABLE +
                 " LEFT JOIN " + Person.TABLE +
                 " ON (" + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_PLTR +
                 " AND " + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_OVSR + ")" +
-                " ORDER BY FarmName COLLATE NOCASE";
+                " WHERE " + Farms.TABLE + "." + Farms.COL_FARM_EXP + " IS NULL ORDER BY FarmName COLLATE NOCASE";
 
         ArrayList<HashMap<String, String>> farmsList = new ArrayList<>();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -169,4 +169,6 @@ public class FarmsRepo {
             return false;
         }
     }
+
+
 }

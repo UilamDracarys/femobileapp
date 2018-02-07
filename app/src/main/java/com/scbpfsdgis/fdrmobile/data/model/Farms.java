@@ -24,28 +24,21 @@ public class Farms {
     private int farmID;
     private String farmName;
 
-    public String getFarmPltrID() {
-        return farmPltrID;
-    }
-
-    public void setFarmPltrID(String farmPltrID) {
-        this.farmPltrID = farmPltrID;
-    }
-
-    public String getFarmOvsrID() {
-        return farmOvsrID;
-    }
-
-    public void setFarmOvsrID(String farmOvsrID) {
-        this.farmOvsrID = farmOvsrID;
-    }
-
     private String farmPltrID;
     private String farmOvsrID;
     private String farmCmt;
     private String farmLoc;
     private String farmCity;
     private String farmSvyStart;
+    private String farmExportDate;
+
+    public String getFarmExportDate() {
+        return farmExportDate;
+    }
+
+    public void setFarmExportDate(String farmExportDate) {
+        this.farmExportDate = farmExportDate;
+    }
 
     public String getFarmSvy() {
         return farmSvyStart;
@@ -93,4 +86,30 @@ public class Farms {
     public void setFarmCity(String farmCity) {
         this.farmCity = farmCity;
     }
+
+    public String getFarmPltrID() {
+        return farmPltrID;
+    }
+
+    public String getFarmSvyStart() {
+        return farmSvyStart;
+    }
+
+    public void setFarmSvyStart(String farmSvyStart) {
+        this.farmSvyStart = farmSvyStart;
+    }
+
+    public void setFarmPltrID(String farmPltrID) {
+        this.farmPltrID = farmPltrID;
+    }
+
+    public String getFarmOvsrID() {
+        return farmOvsrID;
+    }
+
+    public void setFarmOvsrID(String farmOvsrID) {
+        this.farmOvsrID = farmOvsrID;
+    }
+
+
 }

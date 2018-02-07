@@ -1,21 +1,16 @@
 <resources>
     <string name="app_name">Field Data Recorder</string>
-    <string name="btnFarms">Farms</string>
+    <string name="btnFarms">Farm Details</string>
     <string name="btnPlanters">Planters</string>
     <string name="btnOverseers">Overseers</string>
-    <string name="btnPeople">People</string>
-    <string name="list_of_planters">List of Planters</string>
-    <string name="list_of_people">List of People</string>
+    <string name="btnPeople">People &amp; Groups</string>
     <string name="bntAddPlanter">Add</string>
     <string name="btnSave">Save</string>
     <string name="btnCancel">Cancel</string>
-    <string name="list_of_ovsrs">List of Overseers</string>
-    <string name="list_of_farms">Farms Masterlist</string>
     <string name="bntAddOvsr">Add</string>
     <string name="bntAddFarm">Add</string>
-    <string name="btnFields">Fields</string>
-    <string name="list_of_fields">Fields List</string>
     <string name="bntAddField">Add</string>
+
     <string name="action_save">Save</string>
     <string name="action_settings">Settings</string>
     <string name="action_cancel">Cancel</string>
@@ -23,6 +18,7 @@
     <string name="action_back">Back</string>
     <string name="action_exportdb">Export Data as CSV</string>
     <string name="action_info">App Info</string>
+
     <string name="c_gis_section_2018">© GIS Section 2018</string>
     <string name="ExportCSV">Export to CSV</string>
     <string name="FDRMobile">FDRMobile App Info</string>
@@ -30,6 +26,8 @@
     <string name="ExportButton">Export</string>
     <string name="OKButton">OK</string>
     <string name="CancelButton">Cancel</string>
+    <string name="btnFields">Surveys</string>
+
     <string-array name="soilTypes">
         <item>- Soil Type -</item>
         <item>Sandy Clay Loam (SCL)</item>

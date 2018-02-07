@@ -25,11 +25,11 @@
             android:parentActivityName="com.scbpfsdgis.fdrmobile.FarmsListActivity"/>
 
         <activity android:name="com.scbpfsdgis.fdrmobile.PeopleListActivity"
-            android:label="People"
+            android:label="People &amp; Groups"
             android:parentActivityName="com.scbpfsdgis.fdrmobile.MainActivity"/>
 
         <activity android:name="com.scbpfsdgis.fdrmobile.PersonDetailActivity"
-            android:label="Person Detail"
+            android:label="Person/Group Detail"
             android:parentActivityName="com.scbpfsdgis.fdrmobile.PeopleListActivity"/>
 
         <activity android:name="com.scbpfsdgis.fdrmobile.FieldsListActivity"

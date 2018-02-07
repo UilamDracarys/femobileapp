@@ -22,6 +22,7 @@ public class Fields {
     public static final String COL_FLD_VAR = "fld_var";
     public static final String COL_FLD_SOIL = "fld_soilTyp";
     public static final String COL_FLD_FARMID = "fld_farm_id";
+    public static final String COL_FLD_SURVEYOR = "fld_svyor";
 
     ///Suitability
     public static final String COL_FLD_SUIT = "fld_suit";
@@ -118,6 +119,7 @@ public class Fields {
     private String fldVar;
     private String fldSoilTyp;
     private String fldFarmId;
+    private String fldSurveyor;
     private String fldSuit;
     private String fldLimits;
     private String fldRdCond;
@@ -285,5 +287,14 @@ public class Fields {
         }
         return intIdxArray;
     }
+
+    public String getFldSurveyor() {
+        return fldSurveyor;
+    }
+
+    public void setFldSurveyor(String fldSurveyor) {
+        this.fldSurveyor = fldSurveyor;
+    }
+
 
 }
