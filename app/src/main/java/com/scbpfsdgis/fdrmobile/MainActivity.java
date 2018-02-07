@@ -1,12 +1,16 @@
 package com.scbpfsdgis.fdrmobile;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.scbpfsdgis.fdrmobile.data.DBHelper;
@@ -14,8 +18,9 @@ import com.scbpfsdgis.fdrmobile.data.DatabaseManager;
 import com.scbpfsdgis.fdrmobile.data.model.Fields;
 import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
 
-import java.io.File;
 public class MainActivity extends AppCompatActivity {
+
+    String versionName = BuildConfig.VERSION_NAME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,24 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         initAttVals();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the save_cancel; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                showDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void showFarms(View view) {
@@ -62,5 +85,29 @@ public class MainActivity extends AppCompatActivity {
 
         cursor.close();
         DatabaseManager.getInstance().closeDatabase();
+    }
+
+    private void showDialog() throws Resources.NotFoundException {
+        DBHelper dbHelper = new DBHelper();
+        new AlertDialog.Builder(this)
+
+                .setTitle(getResources().getString(R.string.FDRMobile))
+                .setMessage(
+                        "App Version: " + versionName + "\n" +
+                                "DB Version: " + dbHelper.getDatabaseVersion() )
+                .setIcon(
+                        getResources().getDrawable(
+                                android.R.drawable.ic_dialog_info))
+                .setPositiveButton(
+                        getResources().getString(R.string.OKButton),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+
+                            }
+                        })
+                .show();
     }
 }

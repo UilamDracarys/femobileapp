@@ -19,11 +19,7 @@ public class Farms {
     public static final String COL_FARM_LOC = "farm_locality";
     public static final String COL_FARM_CITY = "farm_city";
     public static final String COL_FARM_SVY = "farm_svy_start";
-
-    //Column Names (Exported Farms)
-    public static final String COL_EXP_OBJ_ID = "obj_id";
-    public static final String COL_EXP_FARM_ID = "farm_id";
-    public static final String COL_EXP_DATE = "export_date";
+    public static final String COL_FARM_EXP = "farm_exported";
 
     private int farmID;
     private String farmName;
@@ -57,7 +53,6 @@ public class Farms {
     public void setFarmSvy(String farmSvyStart) {
         this.farmSvyStart = farmSvyStart;
     }
-
 
     public int getFarmID() {
         return farmID;

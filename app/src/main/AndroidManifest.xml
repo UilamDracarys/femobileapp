@@ -18,32 +18,26 @@
         </activity>
 
         <activity android:name="com.scbpfsdgis.fdrmobile.FarmsListActivity"
-            android:label = "Farms">
-            <!--<meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:valMainActivityvity" />-->
-        </activity>
+            android:label = "Farms"/>
         <activity
             android:name="com.scbpfsdgis.fdrmobile.FarmDetailActivity"
-            android:label="Farm Detail">
-        </activity>
-        <activity android:name="com.scbpfsdgis.fdrmobile.PeopleListActivity"
-            android:label="People">
-            <!--<meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:valMainActivityvity" />-->
-        </activity>
-        <activity android:name="com.scbpfsdgis.fdrmobile.PersonDetailActivity"
-            android:label="Person Detail">
-        </activity>
-        <activity android:name="com.scbpfsdgis.fdrmobile.FieldsListActivity"
-            android:label="Fields List">
+            android:label="Farm Detail"
+            android:parentActivityName="com.scbpfsdgis.fdrmobile.FarmsListActivity"/>
 
-            <!--<meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:valMainActivityvity" />-->
-        </activity>
+        <activity android:name="com.scbpfsdgis.fdrmobile.PeopleListActivity"
+            android:label="People"
+            android:parentActivityName="com.scbpfsdgis.fdrmobile.MainActivity"/>
+
+        <activity android:name="com.scbpfsdgis.fdrmobile.PersonDetailActivity"
+            android:label="Person Detail"
+            android:parentActivityName="com.scbpfsdgis.fdrmobile.PeopleListActivity"/>
+
+        <activity android:name="com.scbpfsdgis.fdrmobile.FieldsListActivity"
+            android:label="Fields List"
+            android:parentActivityName="com.scbpfsdgis.fdrmobile.FarmsListActivity"/>
+
         <activity android:name="com.scbpfsdgis.fdrmobile.FieldDetailActivity"
-            android:label="Field Details"/>
+            android:label="Field Details"
+            android:parentActivityName="com.scbpfsdgis.fdrmobile.FieldsListActivity"/>
     </application>
 </manifest>

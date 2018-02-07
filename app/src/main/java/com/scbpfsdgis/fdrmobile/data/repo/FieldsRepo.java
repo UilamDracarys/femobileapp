@@ -25,7 +25,7 @@ public class FieldsRepo {
     }
 
     public static String createTableBsc() {
-        return "CREATE TABLE " + Fields.TABLE_BSC + " (" +
+        return "CREATE TABLE IF NOT EXISTS " + Fields.TABLE_BSC + " (" +
                 Fields.COL_FLD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 Fields.COL_FLD_NAME + " TEXT, " +
                 Fields.COL_FLD_AREA + " DECIMAL(10,3), " +
@@ -35,7 +35,7 @@ public class FieldsRepo {
     }
 
     public static String createTableSuit() {
-        return "CREATE TABLE " + Fields.TABLE_SUIT + " (" +
+        return "CREATE TABLE IF NOT EXISTS " + Fields.TABLE_SUIT + " (" +
                 Fields.COL_FLD_ID + " INTEGER PRIMARY KEY, " +
                 Fields.COL_FLD_SUIT + " TEXT, " +
                 Fields.COL_FLD_LIMITS + " TEXT, " +
@@ -43,7 +43,7 @@ public class FieldsRepo {
     }
 
     public static String createTableOthers() {
-        return "CREATE TABLE " + Fields.TABLE_OTHERS + " (" +
+        return "CREATE TABLE IF NOT EXISTS " + Fields.TABLE_OTHERS + " (" +
                 Fields.COL_FLD_ID + " INTEGER PRIMARY KEY, " +
                 Fields.COL_FLD_TRACT + " TEXT, " +
                 Fields.COL_FLD_HARVMETH + " TEXT, " +
@@ -56,7 +56,7 @@ public class FieldsRepo {
     }
 
     public static String createTableFldAtts() {
-        return "CREATE TABLE " + Fields.TABLE_ATTVALS + " (" +
+        return "CREATE TABLE IF NOT EXISTS " + Fields.TABLE_ATTVALS + " (" +
                 Fields.COL_FLD_OBJ_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 Fields.COL_FLD_ATT_ID + " TEXT, " +
                 Fields.COL_FLD_ATT_CODE + " TEXT, " +
@@ -89,7 +89,6 @@ public class FieldsRepo {
         values.put(Fields.COL_FLD_SOIL, fields.getFldSoilTyp());
         values.put(Fields.COL_FLD_FARMID, fields.getFldFarmId());
 
-        System.out.println("Updated Record of Field ID: " + fields.getFldId());
         db.update(Fields.TABLE_BSC, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
         db.close(); // Closing database connection
     }
@@ -168,8 +167,8 @@ public class FieldsRepo {
         System.out.println("AttCount: " + attCount);
         for (int i=0; i<attCount; i++) {
             values.put(Fields.COL_FLD_ATT_ID, fieldAtts[i][0]);
-            values.put(Fields.COL_FLD_ATT_CODE, fieldAtts[i][1]);
-            values.put(Fields.COL_FLD_ATT_DESC, fieldAtts[i][2]);
+            values.put(Fields.COL_FLD_ATT_DESC, fieldAtts[i][1]);
+            values.put(Fields.COL_FLD_ATT_CODE, fieldAtts[i][2]);
             db.insert(Fields.TABLE_ATTVALS, null, values);
         }
 

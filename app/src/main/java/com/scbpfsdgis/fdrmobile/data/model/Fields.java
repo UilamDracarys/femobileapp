@@ -41,11 +41,18 @@ public class Fields {
     ///Field Attribute Table
     public static final String COL_FLD_OBJ_ID = "fld_att_objid";
     public static final String COL_FLD_ATT_ID = "fld_att_id";
+    public static final String COL_FLD_ATT_CODE = "fld_att_code";
     public static final String COL_FLD_ATT_DESC = "fld_att_desc";
-    public static final String COL_FLD_ATT_CODE = "fld_att_val";
 
     //Attribute Values
-    public static final String[][] fldAtt = {{"fld_suit","Suitable","S"},
+    public static final String[][] fldAtt = {{"fld_soiltyp","Sandy Loam","SL"},
+        {"fld_soiltyp","Sandy","S"},
+        {"fld_soiltyp","Loamy Sand","LS"},
+        {"fld_soiltyp","Loam","L"},
+        {"fld_soiltyp","Clay Loam","CL"},
+        {"fld_soiltyp","Clay","C"},
+        {"fld_soiltyp","Heavy Clay","HC"},
+        {"fld_suit","Suitable","S"},
         {"fld_suit","Partially Suitable","PS"},
         {"fld_suit","Conditionally Suitable","CS"},
         {"fld_suit","Not Suitable","NS"},

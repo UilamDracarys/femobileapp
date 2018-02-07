@@ -27,7 +27,7 @@ public class FarmsRepo {
     }
 
     public static String createTable() {
-        return "CREATE TABLE " + Farms.TABLE + " (" +
+        return "CREATE TABLE IF NOT EXISTS " + Farms.TABLE + " (" +
                 Farms.COL_FARM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 Farms.COL_FARM_NAME + " TEXT, " +
                 Farms.COL_FARM_PLTR + " TEXT, " +
@@ -35,15 +35,10 @@ public class FarmsRepo {
                 Farms.COL_FARM_LOC + " TEXT, " +
                 Farms.COL_FARM_CITY + " TEXT, " +
                 Farms.COL_FARM_SVY + " TEXT, " +
-                Farms.COL_FARM_CMT + " TEXT)";
+                Farms.COL_FARM_CMT + " TEXT," +
+                Farms.COL_FARM_EXP + " TEXT)";
     }
 
-    public static String createTableExported() {
-        return "CREATE TABLE " + Farms.TABLE_EXPORTED + " (" +
-                Farms.COL_EXP_OBJ_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                Farms.COL_EXP_FARM_ID + " INTEGER, " +
-                Farms.COL_EXP_DATE + " TEXT)";
-    }
 
     public void insert(Farms farms) {
         dbHelper = new DBHelper();
@@ -63,24 +58,9 @@ public class FarmsRepo {
         db.close();
     }
 
-    public void insertLog(List<String> list, String filename) {
-        dbHelper = new DBHelper();
-        db = dbHelper.getWritableDatabase();
-        for (int i=0; i<list.size(); i++) {
-            ContentValues values = new ContentValues();
-            values.put(Farms.COL_EXP_FARM_ID, list.get(i));
-            values.put(Farms.COL_EXP_DATE, filename);
-            // Inserting Row
-            db.insert(Farms.TABLE_EXPORTED, null, values);
-        }
-        db.close();
-    }
 
     public void delete( ) {
-        /*SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         //TODO: Code to delete farms records;
-        db.delete(Farms.TABLE, null,null);
-        DatabaseManager.getInstance().closeDatabase();*/
     }
 
     public void update(Farms farms) {
@@ -149,7 +129,6 @@ public class FarmsRepo {
         db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT * FROM " + Farms.TABLE + " WHERE " + Farms.COL_FARM_ID + " =?";
 
-        int iCount =0;
         Farms farms = new Farms();
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
@@ -189,22 +168,5 @@ public class FarmsRepo {
             DatabaseManager.getInstance().closeDatabase();
             return false;
         }
-    }
-
-    public List<String> getFarmIDsExported(String query) {
-        List<String> ids = new ArrayList<>();
-
-        DBHelper dbHelper = new DBHelper();
-        db =  dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                ids.add(cursor.getString(0));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        DatabaseManager.getInstance().closeDatabase();
-        return  ids;
     }
 }

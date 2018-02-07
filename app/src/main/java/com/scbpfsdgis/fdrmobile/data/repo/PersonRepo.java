@@ -27,7 +27,7 @@ public class PersonRepo {
     }
 
     public static String createTable() {
-        return "CREATE TABLE " + Person.TABLE + " (" +
+        return "CREATE TABLE IF NOT EXISTS " + Person.TABLE + " (" +
                 Person.COL_PRSN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 Person.COL_PRSN_NAME + " TEXT, " +
                 Person.COL_PRSN_CLS + " TEXT, " +

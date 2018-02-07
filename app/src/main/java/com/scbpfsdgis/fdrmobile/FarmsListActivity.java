@@ -1,6 +1,7 @@
 package com.scbpfsdgis.fdrmobile;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -174,24 +175,30 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
 
     private void exportCSV() {
         File exportDir = new File(Environment.getExternalStorageDirectory() + "/FDRMobile/Exports" , "");
-        if (!exportDir.exists())
-        {
+        if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        DateFormat fileDF = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        DateFormat dataDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
 
-        String fdFileName = "FIELDS_" + dateFormat.format(date) + "_CODE.csv";
-        String flFileName = "FARMS_" + dateFormat.format(date) + ".csv";
+        String fdFileName = "FARMS_" + fileDF.format(date) + ".csv";
+        String flcFilename = "FIELDS_" + fileDF.format(date) + "_CODE.csv";
+        String fldFilename = "FIELDS_" + fileDF.format(date) + "_DESC.csv";
 
         File farmDetails = new File(exportDir, fdFileName);
-        File fieldsList = new File(exportDir, flFileName);
+        File fldsListDesc = new File(exportDir, fldFilename);
+        File fldsListCode = new File(exportDir, flcFilename);
 
         DBHelper dbhelper = new DBHelper();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(qryLogExport(),null);
-        FarmsRepo repo = new FarmsRepo();
+        String selectFarmsNotExported = "SELECT b.fld_id as FieldID \n" +
+                "FROM fldsBasic b \n" +
+                "INNER JOIN farms f \n" +
+                "ON b.fld_farm_id = f.farm_id \n" +
+                "WHERE f.farm_exported IS NULL";
+        Cursor cursor = db.rawQuery(selectFarmsNotExported,null);
         if (cursor.getCount() == 0) {
             if (isThereData()) {
                 Snackbar.make(mLayout,
@@ -202,14 +209,12 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                         "No farm records found.",
                         Snackbar.LENGTH_LONG).show();
             }
-
         } else {
             try {
-                //farmDetails.createNewFile();
-                //fieldsList.createNewFile();
                 csvWriter(farmDetails, qryFarmDetails(), fdFileName);
-                csvWriter(fieldsList, qryFieldsCode(), flFileName);
-                repo.insertLog(repo.getFarmIDsExported(qryLogExport()), fdFileName);
+                csvWriter(fldsListDesc, qryFieldsDesc(), fldFilename);
+                csvWriter(fldsListCode, qryFieldsCode(), flcFilename);
+                updateExportDate(dataDF.format(date));
                 Snackbar.make(mLayout,
                         "Farms successfully exported FDRMobile/Exports.",
                         Snackbar.LENGTH_SHORT).show();
@@ -253,28 +258,50 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         }
     }
 
+    public void updateExportDate(String value) {
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        String[] ids = getFarmIDsToUpdate();
+
+        for (int i=0; i<ids.length; i++) {
+            values.put(Farms.COL_FARM_EXP, value);
+            db.update(Farms.TABLE, values, Farms.COL_FARM_ID + "= ? ", new String[] { ids[i] });
+        }
+
+        db.close(); // Closing database connection
+    }
+
+    private String[] getFarmIDsToUpdate() {
+        String[] ids;
+        DBHelper dbhelper = new DBHelper();
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(qryFarmDetails(), null);
+        ids = new String[cursor.getCount()];
+        if (cursor.moveToFirst()) {
+            for (int i=0; i<cursor.getCount(); i++) {
+                ids[i] = cursor.getString(cursor.getColumnIndex("FarmID"));
+                cursor.moveToNext();
+            }
+        }
+        return ids;
+    }
 
     private String qryFarmDetails() {
-        return "SELECT Frm.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
-                "Frm.OverseerName as Overseer, Frm.Locality as Barangay, Frm.City as City, Frm.Comment as Comment\n" +
-                "FROM\n" +
-                "(SELECT f.farm_id as FarmID, f.farm_name AS FarmName, \n" +
+        return "SELECT f.farm_id as FarmID, f.farm_name AS FarmName, \n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName,\n" +
-                "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment \n" +
+                "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment\n" +
                 "FROM farms f LEFT JOIN person p\n" +
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id) \n" +
                 "INNER JOIN fldsBasic b\n" +
-                "on f.farm_id = b.fld_farm_id) Frm\n" +
-                "LEFT JOIN \n" +
-                "exported_farms Exp\n" +
-                "on Frm.FarmID = Exp.farm_id\n" +
-                "WHERE Exp.farm_id IS NULL\n" +
+                "on f.farm_id = b.fld_farm_id \n" +
+                "WHERE f.farm_exported IS NULL\n" +
                 "GROUP BY FarmID\n" +
                 "ORDER BY FarmName COLLATE NOCASE";
     }
 
-    private String qryLogExport() {
+    /*private String qryLogExport() {
         return "SELECT Frm.FarmID as FarmID\n" +
                 "FROM \n" +
                 "(SELECT f.farm_id as FarmID from farms f \n" +
@@ -285,31 +312,24 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "ON FarmID = Exp.farm_id \n" +
                 "WHERE Exp.farm_id IS NULL\n" +
                 "GROUP BY FarmID";
-        /***return "SELECT Frm.FarmID as FarmID " +
-         "FROM (SELECT f.farm_id as FarmID, f.farm_name AS FarmName, \n" +
-         "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName, " +
-         "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName, " +
-         "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment FROM farms f \n" +
-         "LEFT JOIN person p ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)) as Frm " +
-         "LEFT JOIN (SELECT farm_id FROM exported_farms) as Exp ON FarmID = Exp.farm_id " +
-         "WHERE Exp.farm_id IS NULL ORDER BY FarmName COLLATE NOCASE";***/
-    }
+    }*/
 
 
     private String qryFieldsCode() {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
                 "Frm.OverseerName as Overseer, Frm.Locality as Barangay, Frm.City as City,\n" +
-                "Frm.Comment as FarmComment, Fld.FieldName as FieldName, Fld.Area as Area,\n" +
-                "Fld.Suitability as Suitability, Fld.Limits as Limitations, Fld.Canals as Canals,\n" +
-                "Fld.RoadCond as RoadCondition, Fld.MechMeth as MechanizedMethod, Fld.TractorAcc as TractorAccess,\n" +
-                "Fld.RowWidth as RowWidth, Fld.RowDir as RowDirection, Fld.SoilType as SoilType,\n" +
-                "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.Comment as FieldComment\n" +
+                "Frm.Comment as FarmComment, Fld.FieldName as FldName, Fld.Area as OwnArea,\n" +
+                "Fld.Suitability as FldSuit, Fld.Limits as MainLim, \n" +
+                "\"-\" AS SecLim, \"-\" AS TertLim, Fld.Canals as Canal,\n" +
+                "Fld.RoadCond as FldRoad, Fld.MechMeth as MechMeth, Fld.TractorAcc as TractAcc,\n" +
+                "Fld.RowWidth as RowWidth, Fld.RowDir as RowDir, Fld.SoilType as SoiTyp,\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, Fld.Comment as FldComnt\n" +
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
                 "s.fld_suit as Suitability, b.fld_area as Area, s.fld_limits as Limits,\n" +
                 "o.fld_canals as Canals, s.fld_rdcond as RoadCond, o.fld_mechmeth as MechMeth,\n" +
                 "o.fld_tractacc as TractorAcc, o.fld_rowwidth as RowWidth, o.fld_rowdir as RowDir,\n" +
-                "b.fld_soilTyp as SoilType, b.fld_var as Variety, o.fld_harvmeth as HarvMeth,\n" +
+                "b.fld_soiltyp as SoilType, b.fld_var as Variety, o.fld_harvmeth as HarvMeth,\n" +
                 "o.fld_cropcls as CropClass, o.fld_cmt as Comment\n" +
                 "FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o\n" +
                 "ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id)) Fld\n" +
@@ -320,8 +340,40 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment\n" +
                 "FROM farms f LEFT JOIN person p\n" +
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)\n" +
-                "LEFT JOIN exported_farms x on f.farm_id = x.farm_id\n" +
-                "WHERE x.farm_id IS NULL) Frm\n" +
+                "WHERE f.farm_exported IS NULL) Frm\n" +
+                "ON Fld.FarmID = Frm.FarmID\n" +
+                "ORDER BY FarmName, FieldName COLLATE NOCASE";
+    }
+
+    private String qryFieldsDesc() {
+        return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
+                "Frm.OverseerName as Overseer, Frm.Locality as Barangay, Frm.City as City,\n" +
+                "Frm.Comment as FarmComment, Fld.FieldName as FieldName, Fld.Area as Area,\n" +
+                "Fld.Suitability as Suitability, Fld.Limits as Limitations, Fld.Canals as Canals,\n" +
+                "Fld.RoadCond as RoadCondition, Fld.MechMeth as MechanizedMethod, Fld.TractorAcc as TractorAccess,\n" +
+                "Fld.RowWidth as RowWidth, Fld.RowDir as RowDirection, Fld.SoilType as SoilType,\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.Comment as FieldComment\n" +
+                "FROM\n" +
+                "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = s.fld_suit and fld_att_id = 'fld_suit') as Suitability, \n" +
+                "b.fld_area as Area, s.fld_limits as Limits, o.fld_canals as Canals, \n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = s.fld_rdcond and fld_att_id = 'fld_rdcond') as RoadCond, \n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_mechmeth and fld_att_id = 'fld_mechmeth') as MechMeth,\n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_tractacc and fld_att_id = 'fld_tractacc') as TractorAcc, o.fld_rowwidth as RowWidth, \n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code =  o.fld_rowdir and fld_att_id = 'fld_rowdir') as RowDir,\n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = b.fld_soilTyp and fld_att_id = 'fld_soiltyp') as SoilType, b.fld_var as Variety, \n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_harvmeth and fld_att_id = 'fld_harvmeth') as HarvMeth,\n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_cropcls and fld_att_id = 'fld_cropcls') as CropClass, o.fld_cmt as Comment\n" +
+                "FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o\n" +
+                "ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id)) Fld\n" +
+                "INNER JOIN\n" +
+                "(SELECT f.farm_id as FarmID, f.farm_name AS FarmName,\n" +
+                "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
+                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName,\n" +
+                "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment\n" +
+                "FROM farms f LEFT JOIN person p\n" +
+                "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)\n" +
+                "WHERE f.farm_exported IS NULL) Frm\n" +
                 "ON Fld.FarmID = Frm.FarmID\n" +
                 "ORDER BY FarmName, FieldName COLLATE NOCASE";
     }
@@ -361,7 +413,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                         getResources().getDrawable(
                                 android.R.drawable.ic_dialog_info))
                 .setPositiveButton(
-                        getResources().getString(R.string.YesButton),
+                        getResources().getString(R.string.ExportButton),
                         new DialogInterface.OnClickListener() {
 
                             @Override
