@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:paddingStart="8dp"
+        tools:ignore="RtlSymmetry"
+        android:contentDescription="TODO" />
+
+    <LinearLayout
+        android:layout_toEndOf="@id/icon"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:paddingVertical="5dp"
+        tools:ignore="UseCompoundDrawables,UselessParent">
+
+        <TextView
+            android:id="@+id/menuName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:fontFamily="sans-serif"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlSymmetry" />
+        <TextView
+            android:id="@+id/menuPrev"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:fontFamily="sans-serif"
+            android:textSize="12sp"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="TODO" />
+</RelativeLayout>

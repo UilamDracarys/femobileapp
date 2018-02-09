@@ -5,10 +5,8 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -25,7 +23,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scbpfsdgis.fdrmobile.data.model.Farms;
 import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
@@ -106,8 +103,10 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
     private void listAll() {
         final FarmsRepo repo = new FarmsRepo();
         ArrayList<HashMap<String, String>> farmsList =  repo.getFarmsList();
+        ListView lv = findViewById(R.id.list);
+        ListAdapter adapter;
         if(farmsList.size()!=0) {
-            ListView lv = findViewById(R.id.list);
+            lv = findViewById(R.id.list);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -134,10 +133,11 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                     }
                 }
             });
-            ListAdapter adapter = new SimpleAdapter( FarmsListActivity.this,farmsList, R.layout.view_farm_list_item, new String[] { "id","farmName", "planterName"}, new int[] {R.id.farmID, R.id.farmName, R.id.farmOwner});
+            adapter = new SimpleAdapter( FarmsListActivity.this,farmsList, R.layout.view_farm_list_item, new String[] { "id","farmName", "pltrAreaCount"}, new int[] {R.id.farmID, R.id.farmName, R.id.pltrAreaCount});
             lv.setAdapter(adapter);
-        }else{
-            Toast.makeText(this,"No farm records!",Toast.LENGTH_SHORT).show();
+        } else {
+            adapter = null;
+            lv.setAdapter(adapter);
         }
     }
 
@@ -242,6 +242,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                                         Snackbar.make(mLayout,
                                                 "Farms successfully exported FDRMobile/Exports.",
                                                 Snackbar.LENGTH_SHORT).show();
+                                        listAll();
                                     }
                                 })
                         .setNegativeButton(
@@ -325,9 +326,16 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
     private String qryFarmDetails(String expDate) {
         return "SELECT f.farm_id as FarmID, f.farm_name AS FarmName, \n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
-                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName,\n" +
-                "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment,\n" +
-                "\"" + expDate + "\" as DateExported, \"" + getDeviceName() + "\" as Device " +
+                "(SELECT person_contact FROM person WHERE person_id = f.farm_pltr_id) as PlanterMobile,\n" +
+                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As FarmRepName,\n" +
+                "(SELECT person_contact FROM person WHERE person_id = f.farm_ovsr_id) as FarmRepMobile,\n" +
+                "f.farm_locality As Locality, f.farm_city As City,\n" +
+                "(SELECT SUM(fld_area) FROM fldsBasic WHERE fld_farm_id = f.farm_id) AS TotalArea,\n" +
+                "(SELECT COUNT(fld_id) FROM fldsBasic WHERE fld_farm_id = f.farm_id) AS FieldCount,\n" +
+                "f.farm_svy_start as DateSurveyed," +
+                "(SELECT GROUP_CONCAT(DISTINCT fld_svyor) FROM fldsBasic WHERE fld_farm_id = f.farm_id) as Surveyors," +
+                "f.farm_cmt As Comment,\n" +
+                "\"" + expDate + "\" as DateExported, \"" + MainActivity.getDeviceName() + "\" as Device " +
                 "FROM farms f LEFT JOIN person p\n" +
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id) \n" +
                 "INNER JOIN fldsBasic b\n" +
@@ -339,26 +347,28 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
 
     private String qryFieldsCode() {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
-                "Frm.OverseerName as Overseer, Frm.Locality as Barangay, Frm.City as City,\n" +
+                "Frm.FarmRepName as FarmRep, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FldName, Fld.Area as OwnArea,\n" +
                 "Fld.Suitability as FldSuit, Fld.Limits as MainLim, \n" +
                 "\"-\" AS SecLim, \"-\" AS TertLim, Fld.Canals as Canal,\n" +
                 "Fld.RoadCond as FldRoad, Fld.MechMeth as MechMeth, Fld.TractorAcc as TractAcc,\n" +
                 "Fld.RowWidth as RowWidth, Fld.RowDir as RowDir, Fld.SoilType as SoiTyp,\n" +
-                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, Fld.Comment as FldComnt\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, Fld.Comment as FldComnt,\n" +
+                "Fld.Surveyor as Surveyor\n" +
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
                 "s.fld_suit as Suitability, b.fld_area as Area, s.fld_limits as Limits,\n" +
                 "o.fld_canals as Canals, s.fld_rdcond as RoadCond, o.fld_mechmeth as MechMeth,\n" +
                 "o.fld_tractacc as TractorAcc, o.fld_rowwidth as RowWidth, o.fld_rowdir as RowDir,\n" +
                 "b.fld_soiltyp as SoilType, b.fld_var as Variety, o.fld_harvmeth as HarvMeth,\n" +
-                "o.fld_cropcls as CropClass, o.fld_cmt as Comment\n" +
+                "o.fld_cropcls as CropClass, o.fld_cmt as Comment,\n" +
+                "b.fld_svyor as Surveyor\n" +
                 "FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o\n" +
                 "ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id)) Fld\n" +
                 "INNER JOIN\n" +
                 "(SELECT f.farm_id as FarmID, f.farm_name AS FarmName,\n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
-                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName,\n" +
+                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As FarmRepName,\n" +
                 "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment\n" +
                 "FROM farms f LEFT JOIN person p\n" +
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)\n" +
@@ -369,12 +379,13 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
 
     private String qryFieldsDesc() {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
-                "Frm.OverseerName as Overseer, Frm.Locality as Barangay, Frm.City as City,\n" +
+                "Frm.FarmRepName as FarmRep, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FieldName, Fld.Area as Area,\n" +
                 "Fld.Suitability as Suitability, Fld.Limits as Limitations, Fld.Canals as Canals,\n" +
                 "Fld.RoadCond as RoadCondition, Fld.MechMeth as MechanizedMethod, Fld.TractorAcc as TractorAccess,\n" +
                 "Fld.RowWidth as RowWidth, Fld.RowDir as RowDirection, Fld.SoilType as SoilType,\n" +
-                "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.Comment as FieldComment\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.Comment as FieldComment,\n" +
+                "Fld.Surveyor as Surveyor\n" +
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = s.fld_suit and fld_att_id = 'fld_suit') as Suitability, \n" +
@@ -385,13 +396,14 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code =  o.fld_rowdir and fld_att_id = 'fld_rowdir') as RowDir,\n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = b.fld_soilTyp and fld_att_id = 'fld_soiltyp') as SoilType, b.fld_var as Variety, \n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_harvmeth and fld_att_id = 'fld_harvmeth') as HarvMeth,\n" +
-                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_cropcls and fld_att_id = 'fld_cropcls') as CropClass, o.fld_cmt as Comment\n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_cropcls and fld_att_id = 'fld_cropcls') as CropClass, o.fld_cmt as Comment,\n" +
+                "b.fld_svyor as Surveyor\n" +
                 "FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o\n" +
                 "ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id)) Fld\n" +
                 "INNER JOIN\n" +
                 "(SELECT f.farm_id as FarmID, f.farm_name AS FarmName,\n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
-                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As OverseerName,\n" +
+                "(SELECT person_name FROM person WHERE person_id = f.farm_ovsr_id) As FarmRepName,\n" +
                 "f.farm_locality As Locality, f.farm_city As City, f.farm_cmt As Comment\n" +
                 "FROM farms f LEFT JOIN person p\n" +
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)\n" +
@@ -424,11 +436,5 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_WRITESTORAGE);
         }
-    }
-
-    public static String getDeviceName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        return manufacturer + " " + model;
     }
 }

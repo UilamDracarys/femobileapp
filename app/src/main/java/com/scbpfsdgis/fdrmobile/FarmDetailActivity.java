@@ -1,9 +1,10 @@
 package com.scbpfsdgis.fdrmobile;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -77,7 +78,67 @@ public class FarmDetailActivity extends AppCompatActivity implements DatePickerD
             ovsrID = 0;
         }
         loadPlanters(farmID, planterID);
-        loadOverseers(farmID, ovsrID);
+        loadFarmRep(farmID, ovsrID);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showDiscardDialog(farmID);
+    }
+
+    private void showDiscardDialog(int farmID) {
+        FarmsRepo repo = new FarmsRepo();
+        Farms farms = repo.getFarmByID(farmID);
+        DateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+
+        String[] defaults;
+        if(farmID == 0) {
+            defaults = new String[]{"", "0", "0", "", "", "Date Surveyed", ""};
+        } else {
+            defaults = new String[]{farms.getFarmName(), farms.getFarmPltrID(), farms.getFarmOvsrID(), farms.getFarmLoc(), farms.getFarmCity(), df.format(strToDate(farms.getFarmSvy())), farms.getFarmCmt()};
+        }
+        String[] currentInput = {etFarmName.getText().toString(), String.valueOf(spnPltr.getSelectedItemPosition()), String.valueOf(spnOvsr.getSelectedItemPosition()), etFarmLoc.getText().toString(), etFarmCity.getText().toString(),
+        tvSurveyDate.getText().toString(), etFarmCmt.getText().toString()};
+
+        int count = 0;
+
+        for (int i=0; i<defaults.length; i++) {
+            System.out.println(i + " " + defaults[i] + " vs " + currentInput[i]);
+            if (!defaults[i].equals(currentInput[i])) {
+                count += 1;
+            }
+        }
+
+        if (count > 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.discard))
+                    .setMessage(
+                            getResources().getString(R.string.discardMsg))
+                    .setIcon(
+                            getResources().getDrawable(
+                                    android.R.drawable.ic_dialog_alert))
+                    .setPositiveButton(
+                            getResources().getString(R.string.DiscardBtn),
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    finish();
+                                }
+                            })
+                    .setNegativeButton(
+                            getResources().getString(R.string.CancelButton),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+
+                                }
+                            }).show();
+        } else {
+            finish();
+        }
     }
 
 
@@ -125,7 +186,7 @@ public class FarmDetailActivity extends AppCompatActivity implements DatePickerD
                 save();
                 return true;
             case R.id.action_cancel:
-                finish();
+                showDiscardDialog(farmID);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -168,11 +229,11 @@ public class FarmDetailActivity extends AppCompatActivity implements DatePickerD
         if (cls.equalsIgnoreCase("P")) {
             list.add(0, "- Planter -");
         } else {
-            list.add(0, "- Overseer -");
+            list.add(0, "- Farm Representative -");
         }
     }
 
-    private void loadOverseers(int farmID, int ovsrID) {
+    private void loadFarmRep(int farmID, int farmRepID) {
         String cls = "O";
         PersonRepo pltrRepo = new PersonRepo();
         List<String> ovsrList = pltrRepo.getPersonNamesList("O");
@@ -183,7 +244,7 @@ public class FarmDetailActivity extends AppCompatActivity implements DatePickerD
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnOvsr.setAdapter(adapter);
             if (farmID != 0) {
-                ovsrName = pltrRepo.getPersonByID(ovsrID).getPersonName() + " - ID:" + ovsrID;
+                ovsrName = pltrRepo.getPersonByID(farmRepID).getPersonName() + " - ID:" + farmRepID;
                 int spnPost = adapter.getPosition(ovsrName);
                 spnOvsr.setSelection(spnPost);
             }
@@ -234,19 +295,29 @@ public class FarmDetailActivity extends AppCompatActivity implements DatePickerD
 
     private boolean isValid() {
         String farmName = etFarmName.getText().toString();
+        Date date = new Date();
 
         if (farmName.equals("")) {
             Snackbar.make(mLayout,"Farm Name required.", Snackbar.LENGTH_SHORT).show();
+            etFarmName.requestFocus();
             return false;
         }
 
         if (spnPltr.getSelectedItemPosition() == 0) {
             Snackbar.make(mLayout,"Select planter.", Snackbar.LENGTH_SHORT).show();
+            spnPltr.requestFocus();
             return false;
         }
 
         if (surveyDate == null) {
             Snackbar.make(mLayout,"Select survey date.", Snackbar.LENGTH_SHORT).show();
+            tvSurveyDate.requestFocus();
+            return false;
+        }
+
+        if (surveyDate.after(date)) {
+            Snackbar.make(mLayout,"Invalid survey date.", Snackbar.LENGTH_SHORT).show();
+            tvSurveyDate.requestFocus();
             return false;
         }
 

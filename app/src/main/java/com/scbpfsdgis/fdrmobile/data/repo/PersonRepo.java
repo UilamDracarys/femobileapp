@@ -137,7 +137,6 @@ public class PersonRepo {
                 Person.COL_PRSN_CLS + " FROM " + Person.TABLE + " WHERE " + Person.COL_PRSN_ID + "=?";
         // It's a good practice to use parameter ?, instead of concatenate string
 
-        int iCount =0;
         Person person = new Person();
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
@@ -148,7 +147,6 @@ public class PersonRepo {
                 person.setPersonName(cursor.getString(cursor.getColumnIndex(Person.COL_PRSN_NAME)));
                 person.setPersonCont(cursor.getString(cursor.getColumnIndex(Person.COL_PRSN_CONT)));
                 person.setPersonCls(cursor.getString(cursor.getColumnIndex(Person.COL_PRSN_CLS)));
-                System.out.println("Person calss = " + person.getPersonCls());
             } while (cursor.moveToNext());
         }
 

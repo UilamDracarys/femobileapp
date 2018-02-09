@@ -21,12 +21,16 @@
 
     <string name="c_gis_section_2018">© GIS Section 2018</string>
     <string name="ExportCSV">Export to CSV</string>
-    <string name="FDRMobile">FDRMobile App Info</string>
+    <string name="AppInfo">App Info</string>
     <string name="ExportCSVConfirm">Are you sure you want to export data to CSV? Only farms with field records will be exported. Once exported, you can no longer export the same farm again so please make sure all fields have already been recorded.</string>>
     <string name="ExportButton">Export</string>
     <string name="OKButton">OK</string>
     <string name="CancelButton">Cancel</string>
     <string name="btnFields">Surveys</string>
+    <string name="mnuFarm">Farm Details</string>
+    <string name="discard">Discard Changes?</string>
+    <string name="discardMsg">Your changes will not be saved.</string>
+    <string name="DiscardBtn">Discard</string>
 
     <string-array name="soilTypes">
         <item>- Soil Type -</item>

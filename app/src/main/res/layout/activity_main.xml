@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.scbpfsdgis.fdrmobile.MainActivity">
+    tools:context="com.scbpfsdgis.fdrmobile.MainActivity"
+    android:background="#F5F5F5">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -17,6 +18,14 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+    <ListView
+        android:id="@+id/menuList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="2dp"/>
+
+    <!--Previous Layout
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -58,7 +67,7 @@
         android:onClick="showPeople"
         android:text="@string/btnPeople"
         app:layout_constraintTop_toBottomOf="@+id/farmsList"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"/>-->
 
 
     <TextView

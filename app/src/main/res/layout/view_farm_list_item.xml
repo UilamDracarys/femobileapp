@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
     <TextView
         android:id="@+id/farmID"
         android:layout_width="fill_parent"
@@ -12,18 +14,15 @@
         android:id="@+id/farmName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="6dp"
-        android:paddingTop="6dp"
         android:textSize="22sp"
         android:textColor="#1B5E20" />
 
     <TextView
-        android:id="@+id/farmOwner"
+        android:id="@+id/pltrAreaCount"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="6dp"
-        android:paddingTop="6dp"
         android:textSize="14sp"
         />
+
 
 </LinearLayout>

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.scbpfsdgis.fdrmobile.PeopleListActivity"
-    android:paddingBottom="8dp">
+    android:paddingBottom="8dp"
+    android:background="#F5F5F5">
 
 
     <android.support.v7.widget.Toolbar
@@ -22,8 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/my_toolbar"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"/>
+        android:background="@android:color/white"
+        android:elevation="2dp"/>
 
 </RelativeLayout>

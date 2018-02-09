@@ -1,8 +1,10 @@
 package com.scbpfsdgis.fdrmobile;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,13 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.guna.libmultispinner.MultiSelectionSpinner;
+import com.scbpfsdgis.fdrmobile.data.model.Farms;
 import com.scbpfsdgis.fdrmobile.data.model.Fields;
+import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
 import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
 
-import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by William on 1/27/2018.
@@ -62,14 +68,14 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
         surveyors = repo.getSurveyors();
         if (surveyors != null) {
-            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, surveyors);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, surveyors);
             etFldSvyor.setAdapter(adapter);
             etFldSvyor.setThreshold(1);
         }
 
         //Set ActionBar title
         String title = "Field Details - ";
-        if (fieldId ==0) {
+        if (fieldId == 0) {
             title += farmName;
         } else {
             title += farmName + " Fld. " + fields.getFldName();
@@ -108,6 +114,70 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        showDiscardDialog(fieldId);
+    }
+
+
+    private void showDiscardDialog(int fieldId) {
+        FieldsRepo repo = new FieldsRepo();
+        Fields fld = repo.getFieldByID(fieldId);
+        DateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+
+        String[] defaults;
+        if (fieldId == 0) {
+            defaults = new String[]{"", "", "0", "", "", "0", "0", "0", "", "0", "0", "", "0", "0", "", ""};
+        } else {
+            defaults = new String[]{fld.getFldName(), String.valueOf(fld.getFldArea()), fld.getFldSuit(), fld.getFldLimits(), fld.getFldCanals(), fld.getFldRdCond(),
+                    fld.getFldMechMeth(), fld.getFldTractAcc(), fld.getFldRowWidth(), fld.getFldRowDir(), fld.getFldSoilTyp(), fld.getFldVar(), fld.getFldHarvMeth(),
+                    fld.getFldCropCls(), fld.getFldCmt(), fld.getFldSurveyor()};
+        }
+        String[] currentInput = {etFldName.getText().toString(), etFldArea.getText().toString(), String.valueOf(spnSuit.getSelectedItemPosition()), mssLimits.getSelectedItemsAsString(), mssCanals.getSelectedItemsAsString(), String.valueOf(spnRdCond.getSelectedItemPosition()),
+                String.valueOf(spnMechMeth.getSelectedItemPosition()), String.valueOf(spnTract.getSelectedItemPosition()), String.valueOf(etRowWidth.getText().toString()), String.valueOf(spnRowDir.getSelectedItemPosition()),
+                String.valueOf(spnSoilType.getSelectedItemPosition()), etVar.getText().toString(), String.valueOf(spnHarvMeth.getSelectedItemPosition()),
+                String.valueOf(spnCropClass.getSelectedItemPosition()), etCmt.getText().toString(), etFldSvyor.getText().toString()};
+
+        int count = 0;
+
+        for (int i = 0; i < defaults.length; i++) {
+            if (!defaults[i].equals(currentInput[i])) {
+                count += 1;
+            }
+        }
+
+        if (count > 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.discard))
+                    .setMessage(
+                            getResources().getString(R.string.discardMsg))
+                    .setIcon(
+                            getResources().getDrawable(
+                                    android.R.drawable.ic_dialog_alert))
+                    .setPositiveButton(
+                            getResources().getString(R.string.DiscardBtn),
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    finish();
+                                }
+                            })
+                    .setNegativeButton(
+                            getResources().getString(R.string.CancelButton),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+
+                                }
+                            }).show();
+        } else {
+            finish();
+        }
+    }
+
     private void setMSSItems(int id, MultiSelectionSpinner mss) {
         String[] items = getResources().getStringArray(id);
         List<String> list = new ArrayList<>(Arrays.asList(items));
@@ -129,7 +199,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
                 save();
                 return true;
             case R.id.action_cancel:
-                finish();
+                showDiscardDialog(fieldId);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -194,6 +264,11 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         }
         if (etRowWidth.getText().toString().equalsIgnoreCase("")) {
             Snackbar.make(mLayout,"Row width requuired.", Snackbar.LENGTH_SHORT).show();
+            etRowWidth.requestFocus();
+            return false;
+        }
+        if (Double.parseDouble(etRowWidth.getText().toString()) >= 2) {
+            Snackbar.make(mLayout,"Allowed row width is < 2m only.", Snackbar.LENGTH_SHORT).show();
             etRowWidth.requestFocus();
             return false;
         }

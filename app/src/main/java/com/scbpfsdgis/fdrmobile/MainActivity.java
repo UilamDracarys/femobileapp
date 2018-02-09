@@ -1,5 +1,7 @@
 package com.scbpfsdgis.fdrmobile;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,9 +12,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.scbpfsdgis.fdrmobile.data.DBHelper;
 import com.scbpfsdgis.fdrmobile.data.DatabaseManager;
@@ -23,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     String versionName = BuildConfig.VERSION_NAME;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +40,108 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         initAttVals();
+
+        initMenus();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        initMenus();
+    }
+
+    private void initMenus() {
+        ListView menus = findViewById(R.id.menuList);
+        String[] textString = {"Farm Details", "Surveys", "People & Groups"};
+        String[] menuPreviews = {getFarmsSubTitle(), getFieldsSubtitle(), getPeopleSubtitle()};
+
+        int[] drawableIds = {R.drawable.ic_farms, R.drawable.ic_surveys, R.drawable.ic_people};
+        int[] drawableArrows = {R.drawable.ic_arrow, R.drawable.ic_arrow, R.drawable.ic_arrow};
+        CustomAdapter adapter = new CustomAdapter(this, textString, menuPreviews, drawableIds, drawableArrows);
+        menus.setAdapter(adapter);
+
+        menus.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        showFarms();
+                        return;
+                    case 1:
+                        showFieldManager();
+                        return;
+                    case 2:
+                        showPeople();
+                        return;
+                    default:
+                }
+            }
+
+        });
+    }
+
+    private String getFarmsSubTitle() {
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String str = "";
+
+        String query = "SELECT COUNT(*) as TotalFarms, COUNT(farm_exported) as Exported , \n" +
+                "(SELECT COUNT(DISTINCT f.farm_id) FROM farms f \n" +
+                "JOIN fldsBasic b ON f.farm_id = b.fld_farm_id WHERE f.farm_exported IS NULL) as ExportReady,\n" +
+                "(SELECT COUNT (distinct f.farm_id) AS NoFlds FROM farms f \n" +
+                "LEFT JOIN fldsBasic b ON f.farm_id = b.fld_farm_id \n" +
+                "WHERE f.farm_exported IS NULL AND b.fld_farm_id IS NULL) as NoFlds\n" +
+                "FROM farms\n";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (cursor.getInt(0) > 0) {
+            str += cursor.getString(0) + " farm/s:\n" +
+                    " • Ready to export: " + cursor.getString(2) +"\n" +
+                    " • Without fields: " + cursor.getString (3) + "\n"+
+                    " • Exported: " + cursor.getString(1);
+        } else {
+            str += "No records.";
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return str;
+    }
+
+    private String getFieldsSubtitle() {
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String str = "";
+
+        String query = "SELECT COUNT(*), SUM(fld_area) FROM fldsBasic";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (cursor.getInt(0) > 0) {
+            str += cursor.getString(0) + " flds, " + cursor.getString(1) + " has";
+        } else {
+            str += "No records.";
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return str;
+    }
+
+    private String getPeopleSubtitle() {
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String str = "";
+
+        String query = "SELECT COUNT(*) FROM person";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (cursor.getInt(0) > 0) {
+            str += cursor.getString(0) + " record/s";
+        } else {
+            str += "No records.";
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return str;
     }
 
     @Override
@@ -52,19 +162,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void showFarms(View view) {
+    public void showFarms() {
         Intent intent = new Intent(this, FarmsListActivity.class);
         intent.putExtra("action", "Farm Details");
         startActivity(intent);
     }
 
-    public void showFieldManager(View view) {
+    public void showFieldManager() {
         Intent intent = new Intent(this, FarmsListActivity.class);
         intent.putExtra("action", "Manage Fields");
         startActivity(intent);
     }
 
-    public void showPeople(View view) {
+    public void showPeople() {
         Intent intent = new Intent(this, PeopleListActivity.class);
         startActivity(intent);
     }
@@ -92,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         DBHelper dbHelper = new DBHelper();
         new AlertDialog.Builder(this)
 
-                .setTitle(getResources().getString(R.string.FDRMobile))
+                .setTitle(getResources().getString(R.string.AppInfo))
                 .setMessage("App Version: " + versionName + "\n" +
                         "DB Version: " + dbHelper.getDatabaseVersion() + "\n" +
                         "Device: " + getDeviceName())
@@ -116,5 +226,58 @@ public class MainActivity extends AppCompatActivity {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         return manufacturer + " " + model;
+    }
+
+
+
+    public class CustomAdapter extends BaseAdapter {
+
+        private Context mContext;
+        private String[] Title;
+        private String[] SubTitle;
+        private int[] mnuIcon;
+        private int[] rightArrow;
+
+        public CustomAdapter(Context context, String[] menuTitle, String[] menuSubTitle, int[] imageIds, int[] arrows) {
+            mContext = context;
+            Title = menuTitle;
+            SubTitle = menuSubTitle;
+            mnuIcon = imageIds;
+            rightArrow = arrows;
+        }
+
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return Title.length;
+        }
+
+        public Object getItem(int arg0) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public long getItemId(int position) {
+            // TODO Auto-generated method stub
+            return position;
+        }
+
+        @SuppressLint("ViewHolder")
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row;
+            row = inflater.inflate(R.layout.view_main_menu_item, parent, false);
+            TextView title, subtitle;
+            ImageView i1, ar;
+            i1 = row.findViewById(R.id.icon);
+            title = row.findViewById(R.id.menuName);
+            subtitle = row.findViewById(R.id.menuPrev);
+            ar = row.findViewById(R.id.arrow);
+            title.setText(Title[position]);
+            i1.setImageResource(mnuIcon[position]);
+            ar.setImageResource(rightArrow[position]);
+            subtitle.setText(SubTitle[position]);
+            return (row);
+        }
     }
 }

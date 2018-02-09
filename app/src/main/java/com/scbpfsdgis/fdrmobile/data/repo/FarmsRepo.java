@@ -80,6 +80,14 @@ public class FarmsRepo {
         db.close(); // Closing database connection
     }
 
+    public void resetExportDates() {
+        dbHelper = new DBHelper();
+        db = dbHelper.getWritableDatabase();
+        String update = "UPDATE " + Farms.TABLE + " SET " + Farms.COL_FARM_EXP + " = NULL ";
+        db.execSQL(update);
+        db.close(); // Closing database connection
+    }
+
     //Get List of Farms
     public ArrayList<HashMap<String, String>> getFarmsList() {
 
@@ -87,23 +95,13 @@ public class FarmsRepo {
         //db = DatabaseManager.getInstance().openDatabase();
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
-        String selectQuery =  "SELECT " +
-                Farms.TABLE + "." + Farms.COL_FARM_ID + " As FarmID, " +
-                Farms.TABLE + "." + Farms.COL_FARM_NAME + " As FarmName, " +
-                "(SELECT " + Person.COL_PRSN_NAME +
-                " FROM " + Person.TABLE +
-                " WHERE " + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_PLTR + ") As PlanterName, " +
-                "(SELECT " + Person.COL_PRSN_NAME +
-                " FROM " + Person.TABLE +
-                " WHERE " + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_OVSR + ") As OverseerName, " +
-                Farms.TABLE + "." + Farms.COL_FARM_LOC + " As Locality, " +
-                Farms.TABLE + "." + Farms.COL_FARM_CITY+ " As City, " +
-                Farms.TABLE + "." + Farms.COL_FARM_CMT + " As Comment " +
-                " FROM " + Farms.TABLE +
-                " LEFT JOIN " + Person.TABLE +
-                " ON (" + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_PLTR +
-                " AND " + Person.TABLE + "." + Person.COL_PRSN_ID + " = " + Farms.TABLE + "." + Farms.COL_FARM_OVSR + ")" +
-                " WHERE " + Farms.TABLE + "." + Farms.COL_FARM_EXP + " IS NULL ORDER BY FarmName COLLATE NOCASE";
+        String selectQuery = "SELECT farm_id As FarmID, farm_name As FarmName, \n" +
+                "(SELECT person_name FROM person WHERE person_id = farms.farm_pltr_id) As PlanterName,\n" +
+                "(SELECT SUM(fld_area) FROM fldsBasic WHERE fld_farm_id = farms.farm_id) As Area,\n" +
+                "(SELECT COUNT(fld_id) FROM fldsBasic WHERE fld_farm_id = farms.farm_id) As FldCount\n" +
+                "FROM farms WHERE farm_exported IS NULL ORDER BY FarmName COLLATE NOCASE";
+
+        System.out.println("FarmsListQuery: " +selectQuery);
 
         ArrayList<HashMap<String, String>> farmsList = new ArrayList<>();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -114,7 +112,11 @@ public class FarmsRepo {
                 HashMap<String, String> farms = new HashMap<>();
                 farms.put("id", cursor.getString(cursor.getColumnIndex("FarmID")));
                 farms.put("farmName", cursor.getString(cursor.getColumnIndex("FarmName")));
-                farms.put("planterName", "Planter: " + cursor.getString(cursor.getColumnIndex("PlanterName")));
+                if (cursor.getInt(cursor.getColumnIndex("FldCount")) == 0) {
+                    farms.put("pltrAreaCount", cursor.getString(cursor.getColumnIndex("PlanterName")) + " | No fields added.");
+                } else {
+                    farms.put("pltrAreaCount", cursor.getString(cursor.getColumnIndex("PlanterName")) + " | " + cursor.getString(cursor.getColumnIndex("Area")) + " has., " + cursor.getString(cursor.getColumnIndex("FldCount")) + " fld/s");
+                }
                 farmsList.add(farms);
             } while (cursor.moveToNext());
         }
