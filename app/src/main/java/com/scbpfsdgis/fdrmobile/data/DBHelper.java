@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private static final int DATABASE_VERSION =33;
+    private static final int DATABASE_VERSION =34;
     // Database Name
     private static final String DATABASE_NAME = "FEMobile.db";
     private static final String TAG = DBHelper.class.getSimpleName();
@@ -51,6 +51,9 @@ public class DBHelper extends SQLiteOpenHelper {
         if (oldVersion <= 21) {
             db.execSQL("ALTER TABLE " + Fields.TABLE_BSC + " ADD " + Fields.COL_FLD_SURVEYOR + " TEXT");
             db.execSQL("ALTER TABLE " + Farms.TABLE + " ADD " + Farms.COL_FARM_EXP + " TEXT");
+        }
+        if (oldVersion <=33) {
+            db.execSQL("UPDATE fldAtts SET " + Fields.COL_FLD_ATT_CODE + " = 'P' WHERE " + Fields.COL_FLD_ATT_ID + " = 'fld_suit' AND " + Fields.COL_FLD_ATT_DESC + " = 'Partially Suitable' ");
         }
         onCreate(db);
     }

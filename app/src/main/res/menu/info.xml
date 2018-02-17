@@ -6,4 +6,8 @@
         android:title="@string/action_info"
         android:icon="@drawable/ic_info"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_whatsnew"
+        android:title="@string/action_whatsnew"
+        app:showAsAction="never"/>
 </menu>

@@ -54,7 +54,7 @@ public class Fields {
         {"fld_soiltyp","Clay","C"},
         {"fld_soiltyp","Heavy Clay","HC"},
         {"fld_suit","Suitable","S"},
-        {"fld_suit","Partially Suitable","PS"},
+        {"fld_suit","Partially Suitable","P"},
         {"fld_suit","Conditionally Suitable","CS"},
         {"fld_suit","Not Suitable","NS"},
         {"fld_suit","Not in Use","NU"},
@@ -79,6 +79,7 @@ public class Fields {
         {"fld_tractacc","No","1"},
         {"fld_rowdir","Along entry rd.","A"},
         {"fld_rowdir","Perpendicular to entry rd.","P"},
+        {"fld_cropcls","To be Determined","TBD"},
         {"fld_rdcond","Asphalt-OK-<3m","AO<3"},
         {"fld_rdcond","Asphalt-Good-<3m","AG<3"},
         {"fld_rdcond","Asphalt-Poor-<3m","AP<3"},
@@ -105,13 +106,13 @@ public class Fields {
         {"fld_cropcls","5th Rtn","R5"},
         {"fld_cropcls","6th Rtn","R6"},
         {"fld_cropcls","7th Rtn","R7"},
+        {"fld_cropcls","FAL","F"},
         {"fld_harvmeth","By Ton","T"},
         {"fld_harvmeth","Linear","L"},
         {"fld_canals","Front","F"},
         {"fld_canals","Left","L"},
         {"fld_canals","Back","B"},
         {"fld_canals","Right","R"}};
-
 
     private String fldId;
     private String fldName;

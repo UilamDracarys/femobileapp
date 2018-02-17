@@ -185,7 +185,7 @@ public class FieldsRepo {
         db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT b.fld_id as FieldID, b.fld_name as FieldName, b.fld_area as Area, " +
                 "CASE s.fld_suit WHEN 'S' THEN 'Suitable' " +
-                "WHEN 'PS' THEN 'Part. Suitable' " +
+                "WHEN 'P' THEN 'Part. Suitable' " +
                 "WHEN 'CS' THEN 'Cond. Suitable' " +
                 "WHEN 'NS' THEN 'Not Suitable' " +
                 "WHEN 'NU' THEN 'Not in Use' " +
@@ -233,12 +233,13 @@ public class FieldsRepo {
         return fldId;
     }
 
-    public String[] getSurveyors() {
+    public String[] getValues(String col, String table) {
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
         String[] surveyors;
 
-        String selectQuery ="SELECT " + Fields.COL_FLD_SURVEYOR + " FROM " + Fields.TABLE_BSC + " GROUP BY " + Fields.COL_FLD_SURVEYOR + " ORDER BY " + Fields.COL_FLD_SURVEYOR + " COLLATE NOCASE";
+
+        String selectQuery ="SELECT " + col + " FROM " + table + " GROUP BY " + col + " ORDER BY " + col + " COLLATE NOCASE";
         System.out.println(selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         surveyors = new String[cursor.getCount()];

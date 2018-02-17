@@ -31,6 +31,17 @@
     <string name="discard">Discard Changes?</string>
     <string name="discardMsg">Your changes will not be saved.</string>
     <string name="DiscardBtn">Discard</string>
+    <string name="action_resetallexp">Reset All Exports</string>
+    <string name="Reset">Reset</string>
+    <string name="ResetExpConfirm">This will delete previous export dates and enable you to export all farms again. Contents of the FDRMobile/Exports folder will also be deleted.</string>
+    <string name="ResetTitle">Reset Exports?</string>
+    <string name="action_backupdb">Backup DB</string>
+    <string name="action_resetsel">Reset Selected Exports</string>
+    <string name="BackupDBTitle">Backup DB</string>
+    <string name="BackupDBConfirm">You are about to create a backup of the whole database.</string>
+    <string name="Backup">Backup</string>
+    <string name="action_whatsnew">Whats New?</string>
+    <string name="WhatsNew">Whats New?</string>
 
     <string-array name="soilTypes">
         <item>- Soil Type -</item>
@@ -46,11 +57,11 @@
     <string-array name="suitability">
         <item>- Suitability -</item>
         <item>Suitable (S)</item>
-        <item>Partially Suitable (PS)</item>
+        <item>Partially Suitable (P)</item>
         <item>Conditionally Suitable (CS)</item>
         <item>Not Suitable (NS)</item>
         <item>Not in Use (NU)</item>
-        <item>TBD (TBD)</item>
+        <item>To be Determined (TBD)</item>
     </string-array>
     <string-array name="limitations">
         <item>Area less than 0.80ha (HAR)</item>
@@ -82,6 +93,7 @@
         <item>- Row Direction -</item>
         <item>Along entry rd. (A)</item>
         <item>Perpendicular to entry rd. (P)</item>
+        <item>To be Determined (TBD)</item>
     </string-array>
     <string-array name="roadcond">
         <item>- Road Condition -</item>
@@ -114,6 +126,7 @@
         <item>5th Rtn (R5)</item>
         <item>6th Rtn (R6)</item>
         <item>7th Rtn (R7)</item>
+        <item>FAL (F)</item>
     </string-array>
     <string-array name="hvstmeth">
         <item>- Harvest Method -</item>

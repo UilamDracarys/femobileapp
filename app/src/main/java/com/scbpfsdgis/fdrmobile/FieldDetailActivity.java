@@ -18,9 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.guna.libmultispinner.MultiSelectionSpinner;
-import com.scbpfsdgis.fdrmobile.data.model.Farms;
 import com.scbpfsdgis.fdrmobile.data.model.Fields;
-import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
 import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
 
 import java.text.DateFormat;
@@ -37,13 +35,13 @@ import java.util.Locale;
 public class FieldDetailActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener{
 
     Spinner spnMechMeth, spnTract, spnSuit, spnRdCond, spnRowDir, spnSoilType, spnCropClass, spnHarvMeth;
-    EditText etFldName, etFldArea, etRowWidth, etVar, etCmt;
-    AutoCompleteTextView etFldSvyor;
+    EditText etFldName, etFldArea, etRowWidth, etCmt;
+    AutoCompleteTextView etFldSvyor, etVar;
     MultiSelectionSpinner mssLimits, mssCanals;
     TextView frmName;
     private int fieldId, farmId;
     String farmName;
-    String[] surveyors = null;
+    String[] surveyors = null, varieties = null;
     private View mLayout;
 
     @Override
@@ -66,11 +64,17 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         FieldsRepo repo = new FieldsRepo();
         Fields fields = repo.getFieldByID(fieldId);
 
-        surveyors = repo.getSurveyors();
+        surveyors = repo.getValues(Fields.COL_FLD_SURVEYOR, Fields.TABLE_BSC);
+        varieties = repo.getValues(Fields.COL_FLD_VAR, Fields.TABLE_BSC);
         if (surveyors != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, surveyors);
             etFldSvyor.setAdapter(adapter);
-            etFldSvyor.setThreshold(1);
+            etFldSvyor.setThreshold(0);
+        }
+        if (varieties != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, varieties);
+            etVar.setAdapter(adapter);
+            etVar.setThreshold(2);
         }
 
         //Set ActionBar title
@@ -133,14 +137,41 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
                     fld.getFldMechMeth(), fld.getFldTractAcc(), fld.getFldRowWidth(), fld.getFldRowDir(), fld.getFldSoilTyp(), fld.getFldVar(), fld.getFldHarvMeth(),
                     fld.getFldCropCls(), fld.getFldCmt(), fld.getFldSurveyor()};
         }
-        String[] currentInput = {etFldName.getText().toString(), etFldArea.getText().toString(), String.valueOf(spnSuit.getSelectedItemPosition()), mssLimits.getSelectedItemsAsString(), mssCanals.getSelectedItemsAsString(), String.valueOf(spnRdCond.getSelectedItemPosition()),
-                String.valueOf(spnMechMeth.getSelectedItemPosition()), String.valueOf(spnTract.getSelectedItemPosition()), String.valueOf(etRowWidth.getText().toString()), String.valueOf(spnRowDir.getSelectedItemPosition()),
-                String.valueOf(spnSoilType.getSelectedItemPosition()), etVar.getText().toString(), String.valueOf(spnHarvMeth.getSelectedItemPosition()),
-                String.valueOf(spnCropClass.getSelectedItemPosition()), etCmt.getText().toString(), etFldSvyor.getText().toString()};
+
+        String ciSuit = spnSuit.getSelectedItem().toString();
+        ciSuit = ciSuit.substring(ciSuit.indexOf("(")+1, ciSuit.indexOf(")"));
+        String ciMechMeth = spnMechMeth.getSelectedItem().toString();
+        ciMechMeth = ciMechMeth.substring(ciMechMeth.indexOf("(")+1, ciMechMeth.indexOf(")"));
+        String ciTractAcc = spnTract.getSelectedItem().toString();
+        ciTractAcc = ciTractAcc.substring(ciTractAcc.indexOf("(")+1, ciTractAcc.indexOf(")"));
+        String ciRowDir = spnRowDir.getSelectedItem().toString();
+        ciRowDir = ciRowDir.substring(ciRowDir.indexOf("(")+1, ciRowDir.indexOf(")"));
+        String ciSoilType = spnSoilType.getSelectedItem().toString();
+        ciSoilType = ciSoilType.substring(ciSoilType.indexOf("(")+1, ciSoilType.indexOf(")"));
+        String ciHarvMeth = spnHarvMeth.getSelectedItem().toString();
+        ciHarvMeth = ciHarvMeth.substring(ciHarvMeth.indexOf("(")+1, ciHarvMeth.indexOf(")"));
+        String ciRdCond = spnRdCond.getSelectedItem().toString();
+        ciRdCond = ciRdCond.substring(ciRdCond.indexOf("(")+1, ciRdCond.indexOf(")"));
+        String ciCropCls = spnCropClass.getSelectedItem().toString();
+        ciCropCls = ciCropCls.substring(ciCropCls.indexOf("(")+1, ciCropCls.indexOf(")"));
+        String limits = mssLimits.getSelectedItemsAsString();
+        if (limits.equalsIgnoreCase("")) {
+            limits = "-";
+        }
+        String canals = mssCanals.getSelectedItemsAsString();
+        if (canals.equalsIgnoreCase("")) {
+            canals = "TBD";
+        }
+
+        String[] currentInput = {etFldName.getText().toString(), etFldArea.getText().toString(), ciSuit, limits, canals,
+                ciRdCond, ciMechMeth, ciTractAcc, String.valueOf(etRowWidth.getText().toString()),
+                ciRowDir, ciSoilType, etVar.getText().toString(), ciHarvMeth,
+                ciCropCls, etCmt.getText().toString(), etFldSvyor.getText().toString()};
 
         int count = 0;
 
         for (int i = 0; i < defaults.length; i++) {
+            System.out.println(i + " " + defaults[i] + " vs " + currentInput[i]);
             if (!defaults[i].equals(currentInput[i])) {
                 count += 1;
             }
@@ -300,6 +331,21 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         if (etFldSvyor.getText().toString().equals("")) {
             Snackbar.make(mLayout,"Surveyor name required.", Snackbar.LENGTH_SHORT).show();
             etFldSvyor.requestFocus();
+            return false;
+        }
+        if (mssLimits.getSelectedItemsAsString().equalsIgnoreCase("HCA") && mssCanals.getSelectedItemsAsString().equalsIgnoreCase("")) {
+            Snackbar.make(mLayout,"You have canals as your limitations. Please select canal locations.", Snackbar.LENGTH_LONG).show();
+            mssCanals.requestFocus();
+            return false;
+        }
+        if (mssLimits.getSelectedItemsAsString().equalsIgnoreCase("HAR") && Double.parseDouble(etFldArea.getText().toString()) >= 0.8) {
+            Snackbar.make(mLayout,"You have 'Area < 0.80ha' as your limitations but entered area is >= 0.80", Snackbar.LENGTH_LONG).show();
+            etFldArea.requestFocus();
+            return false;
+        }
+        if (mssLimits.getSelectedItemsAsString().equalsIgnoreCase("HRW") && Double.parseDouble(etRowWidth.getText().toString()) >= 1.2) {
+            Snackbar.make(mLayout,"You have 'Row width < 1.2m' as your limitations but entered row width is >= 1.2", Snackbar.LENGTH_LONG).show();
+            etRowWidth.requestFocus();
             return false;
         }
         return true;

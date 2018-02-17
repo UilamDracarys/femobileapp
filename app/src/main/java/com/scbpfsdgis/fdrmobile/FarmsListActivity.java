@@ -29,7 +29,11 @@ import com.scbpfsdgis.fdrmobile.data.repo.FarmsRepo;
 import com.scbpfsdgis.fdrmobile.data.DBHelper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +44,8 @@ import java.util.Locale;
 public class FarmsListActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int PERMISSION_REQUEST_WRITESTORAGE = 0;
+
+    private String backupFileName ="";
 
     private View mLayout;
     TextView tvFarmID;
@@ -80,17 +86,192 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 intent.putExtra("farmID",0);
                 startActivity(intent);
                 return true;
-
             case R.id.action_back:
                 finish();
                 return true;
             case R.id.action_exportdb:
                 export();
                 return true;
-
+            case R.id.action_resetallexp:
+                showResetAllDialog();
+                return true;
+            case R.id.action_resetsel:
+                resetSelected();
+                return true;
+            case R.id.action_backupdb:
+                showBackupDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void resetSelected() {
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose farms to reset...");
+
+        String selectExpQuery = "SELECT farm_id, farm_name FROM farms WHERE farm_exported IS NOT NULL ORDER BY farm_name COLLATE NOCASE ";
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectExpQuery, null);
+        String[] exportedFarms = null;
+        int[] exportedFarmIDs = null;
+        boolean[] checkedFarms = null;
+        if (c.moveToFirst()) {
+            int count = c.getCount();
+            exportedFarms = new String[count];
+            exportedFarmIDs = new int[count];
+            checkedFarms = new boolean[count];
+            for (int i = 0; i < count; i++) {
+                exportedFarms[i] = c.getString(1);
+                exportedFarmIDs[i] = c.getInt(0);
+                checkedFarms[i] = false;
+                c.moveToNext();
+            }
+            c.close();
+        } else {
+            Snackbar.make(mLayout,
+                    "No farms to reset.",
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        final boolean[] finalCheckedFarms = checkedFarms;
+        builder.setMultiChoiceItems(exportedFarms, null, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                finalCheckedFarms[which] = isChecked;
+            }
+        });
+
+        // add OK and Cancel buttons
+        final int[] finalExportedFarmIDs = exportedFarmIDs;
+        builder.setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FarmsRepo repo = new FarmsRepo();
+                for (int i=0; i<finalCheckedFarms.length; i++) {
+                    boolean checked = finalCheckedFarms[i];
+                    if (checked) {
+                        repo.resetExportDates(finalExportedFarmIDs[i]);
+                    }
+                }
+                Snackbar.make(mLayout,
+                        "Successfully reset export dates." ,
+                        Snackbar.LENGTH_SHORT).show();
+                listAll();
+            }
+
+        });
+        builder.setNegativeButton("Cancel", null).show();
+
+    }
+
+    private void showResetAllDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.ResetTitle))
+                .setMessage(
+                        getResources().getString(R.string.ResetExpConfirm))
+                .setIcon(
+                        getResources().getDrawable(
+                                android.R.drawable.ic_dialog_info))
+                .setPositiveButton(
+                        getResources().getString(R.string.Reset),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                FarmsRepo reset = new FarmsRepo();
+                                reset.resetExportDates(0);
+                                deleteExports();
+                                Snackbar.make(mLayout,
+                                        "Successfully reset export dates.",
+                                        Snackbar.LENGTH_SHORT).show();
+                                listAll();
+                            }
+                        })
+                .setNegativeButton(
+                        getResources().getString(R.string.CancelButton),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+
+                            }
+                        }).show();
+    }
+
+    private void showBackupDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.BackupDBTitle))
+                .setMessage(
+                        getResources().getString(R.string.BackupDBConfirm))
+                .setIcon(
+                        getResources().getDrawable(
+                                android.R.drawable.ic_dialog_info))
+                .setPositiveButton(
+                        getResources().getString(R.string.Backup),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                try {
+                                    backupDB();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Snackbar.make(mLayout,
+                                        "Database successfully backed up to " + backupFileName,
+                                        Snackbar.LENGTH_LONG).show();
+                                listAll();
+                            }
+                        })
+                .setNegativeButton(
+                        getResources().getString(R.string.CancelButton),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+
+                            }
+                        }).show();
+    }
+
+    private void backupDB() throws IOException {
+
+        String backupDirectory = Environment.getExternalStorageDirectory() + "/FDRMobile/Backups/";
+        File backupDir = new File( backupDirectory, "");
+        if (!backupDir.exists()) {
+            backupDir.mkdirs();
+        }
+        final String inFileName = "/data/data/com.scbpfsdgis.fdrmobile/databases/FEMobile.db";
+        File dbFile = new File(inFileName);
+        FileInputStream fis = new FileInputStream(dbFile);
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("YYYY-MM-dd_HHMMSS", Locale.getDefault());
+
+        String bakFile = "BAK_" + df.format(date) + ".db";
+        this.backupFileName = bakFile;
+        backupDirectory += bakFile;
+
+        // Open the empty db as the output stream
+        OutputStream output = new FileOutputStream(backupDirectory);
+
+        // Transfer bytes from the inputfile to the outputfile
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = fis.read(buffer))>0){
+            output.write(buffer, 0, length);
+        }
+
+        // Close the streams
+        output.flush();
+        output.close();
+        fis.close();
     }
 
     @Override
@@ -323,6 +504,16 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         return ids;
     }
 
+    private void deleteExports() {
+        File exportDir = new File(Environment.getExternalStorageDirectory() + "/FDRMobile/Exports" , "");
+        if (exportDir.isDirectory()) {
+            String[] children = exportDir.list();
+            for (int i=0; i<children.length; i++) {
+                new File(exportDir, children[i]).delete();
+            }
+        }
+    }
+
     private String qryFarmDetails(String expDate) {
         return "SELECT f.farm_id as FarmID, f.farm_name AS FarmName, \n" +
                 "(SELECT person_name FROM person WHERE person_id = f.farm_pltr_id) As PlanterName,\n" +
@@ -350,11 +541,21 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "Frm.FarmRepName as FarmRep, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FldName, Fld.Area as OwnArea,\n" +
                 "Fld.Suitability as FldSuit, Fld.Limits as MainLim, \n" +
-                "\"-\" AS SecLim, \"-\" AS TertLim, Fld.Canals as Canal,\n" +
+                "\"-\" AS SecLim, \"-\" AS TertLim, " +
+                "(SELECT \n" +
+                "CASE WHEN LIKE('TBD', Fld.Canals) THEN 'TBD' ELSE\n" +
+                "\tCASE WHEN LIKE('F%', Fld.Canals) = 1 THEN 'F' ELSE '_' END || ',' ||\n" +
+                "\tCASE WHEN LIKE('L%', Fld.Canals) = 1 THEN 'L' ELSE '_' END || ',' ||\n" +
+                "\tCASE WHEN LIKE('B%', Fld.Canals) = 1 THEN 'B' ELSE '_' END || ',' ||\n" +
+                "\tCASE WHEN LIKE('R%', Fld.Canals) = 1 THEN 'R' ELSE '_' END\n" +
+                "END)\n" +
+                "AS Canal,\n" +
                 "Fld.RoadCond as FldRoad, Fld.MechMeth as MechMeth, Fld.TractorAcc as TractAcc,\n" +
                 "Fld.RowWidth as RowWidth, Fld.RowDir as RowDir, Fld.SoilType as SoiTyp,\n" +
-                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, Fld.Comment as FldComnt,\n" +
-                "Fld.Surveyor as Surveyor\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, '11*' AS Cropcycl,\n" +
+                "Fld.Comment as FldComnt,\n" +
+                "Fld.Surveyor as Surveyor,\n" +
+                "NULL as DatePlanted, NULL AS ProjHarvDate\n" +
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
                 "s.fld_suit as Suitability, b.fld_area as Area, s.fld_limits as Limits,\n" +
@@ -381,7 +582,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
                 "Frm.FarmRepName as FarmRep, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FieldName, Fld.Area as Area,\n" +
-                "Fld.Suitability as Suitability, Fld.Limits as Limitations, Fld.Canals as Canals,\n" +
+                "Fld.Suitability as Suitability, Fld.Limits as Limitations, Fld.Canal as Canal,\n" +
                 "Fld.RoadCond as RoadCondition, Fld.MechMeth as MechanizedMethod, Fld.TractorAcc as TractorAccess,\n" +
                 "Fld.RowWidth as RowWidth, Fld.RowDir as RowDirection, Fld.SoilType as SoilType,\n" +
                 "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.Comment as FieldComment,\n" +
@@ -389,7 +590,15 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = s.fld_suit and fld_att_id = 'fld_suit') as Suitability, \n" +
-                "b.fld_area as Area, s.fld_limits as Limits, o.fld_canals as Canals, \n" +
+                "b.fld_area as Area, s.fld_limits as Limits, " +
+                "(SELECT \n" +
+                "CASE WHEN LIKE('TBD', o.fld_canals) THEN 'TBD' ELSE\n" +
+                "\tCASE WHEN LIKE('F%', o.fld_canals) = 1 THEN 'F' ELSE '_' END || ',' ||\n" +
+                "\tCASE WHEN LIKE('L%', o.fld_canals) = 1 THEN 'L' ELSE '_' END || ',' ||\n" +
+                "\tCASE WHEN LIKE('B%', o.fld_canals) = 1 THEN 'B' ELSE '_' END || ',' ||\n" +
+                "\tCASE WHEN LIKE('R%', o.fld_canals) = 1 THEN 'R' ELSE '_' END\n" +
+                "END)\n" +
+                "AS Canal, \n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = s.fld_rdcond and fld_att_id = 'fld_rdcond') as RoadCond, \n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_mechmeth and fld_att_id = 'fld_mechmeth') as MechMeth,\n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_tractacc and fld_att_id = 'fld_tractacc') as TractorAcc, o.fld_rowwidth as RowWidth, \n" +

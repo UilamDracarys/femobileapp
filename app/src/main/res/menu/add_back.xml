@@ -13,4 +13,19 @@
         android:id="@+id/action_exportdb"
         android:title="@string/action_exportdb"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_resetallexp"
+        android:title="@string/action_resetallexp"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_resetsel"
+        android:title="@string/action_resetsel"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_backupdb"
+        android:title="@string/action_backupdb"
+        app:showAsAction="never"/>
 </menu>

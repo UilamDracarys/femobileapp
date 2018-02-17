@@ -1,13 +1,17 @@
 package com.scbpfsdgis.fdrmobile;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,17 +34,22 @@ import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int READ_PHONE_STATE_PERM = 0;
     String versionName = BuildConfig.VERSION_NAME;
+    private View mLayout;
+
+    String manufacturer, build, serial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLayout = findViewById(R.id.main_layout);
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        initAttVals();
 
+        initAttVals();
         initMenus();
     }
 
@@ -155,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_info:
-                showDialog();
+                showAppInfoDlg();
+                return true;
+            case R.id.action_whatsnew:
+                showWhatsNew();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -198,7 +210,41 @@ public class MainActivity extends AppCompatActivity {
         DatabaseManager.getInstance().closeDatabase();
     }
 
-    private void showDialog() throws Resources.NotFoundException {
+
+
+    private void showWhatsNew() {
+        DBHelper dbHelper = new DBHelper();
+        new AlertDialog.Builder(this)
+
+                .setTitle(getResources().getString(R.string.WhatsNew))
+                .setMessage("NEW: \n" +
+                        "• Added ‘Reset Selected Exports’, ‘Backup DB’ menu items in Farms List.\n" +
+                        "• ‘Cropcycl’ column in CODE csv with default value of 11*.\n" +
+                        "• Data validation for limitations:\n" +
+                        "    - Need to input canal locations when limitation is HCA\n" +
+                        "    - Need to adjust when limitation is HAR and area is >= 0.80ha\n" +
+                        "    - Need to adjust when limitation is HRW and row width is >= 1.2m\n" +
+                        "• Added TBD attribute value for Row Direction, FAL for Crop Class for fields that are vacant\n" +
+                        "\n" +
+                        "FIX:\n" +
+                        "• Changed code for Partially Suitable to P.\n" +
+                        "• Discard dialog in Field Details shows even when no changes made.")
+                .setIcon(
+                        getResources().getDrawable(
+                                android.R.drawable.ic_dialog_info))
+                .setPositiveButton(
+                        getResources().getString(R.string.OKButton),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+
+                            }
+                        })
+                .show();
+    }
+    private void showAppInfoDlg() throws Resources.NotFoundException {
         DBHelper dbHelper = new DBHelper();
         new AlertDialog.Builder(this)
 
@@ -225,10 +271,9 @@ public class MainActivity extends AppCompatActivity {
     public static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
+        //String serial = Build.getSerial();
         return manufacturer + " " + model;
     }
-
-
 
     public class CustomAdapter extends BaseAdapter {
 
@@ -280,4 +325,63 @@ public class MainActivity extends AppCompatActivity {
             return (row);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        // BEGIN_INCLUDE(onRequestPermissionsResult)
+        if (requestCode == READ_PHONE_STATE_PERM) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted. Start camera preview Activity.
+                Snackbar.make(mLayout, "Storage access granted. Exporting file.",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+                export();
+            } else {
+                // Permission request was denied.
+                Snackbar.make(mLayout, "Phone State access denied.",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        // END_INCLUDE(onRequestPermissionsResult)
+    }
+
+    private void export() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED) {
+            // Permission is already available, start camera preview
+            //TODO
+        } else {
+            // Permission is missing and must be requested.
+            requestPhoneStatePerm();
+        }
+    }
+    private void requestPhoneStatePerm() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_PHONE_STATE)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with a button to request the missing permission.
+            Snackbar.make(mLayout, "Permission to access storage is required.",
+                    Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Request the permission
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.READ_PHONE_STATE},
+                            READ_PHONE_STATE_PERM);
+                }
+            }).show();
+        } else {
+            Snackbar.make(mLayout,
+                    "Permission is not available. Requesting storage permission.",
+                    Snackbar.LENGTH_SHORT).show();
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
+                    READ_PHONE_STATE_PERM);
+        }
+    }
+
 }
