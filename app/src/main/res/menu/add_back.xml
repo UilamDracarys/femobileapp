@@ -15,13 +15,13 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_resetallexp"
-        android:title="@string/action_resetallexp"
+        android:id="@+id/action_restoreall"
+        android:title="@string/action_restoreall"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_resetsel"
-        android:title="@string/action_resetsel"
+        android:id="@+id/action_restoresel"
+        android:title="@string/action_restoresel"
         app:showAsAction="never"/>
 
     <item

@@ -213,12 +213,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showWhatsNew() {
-        DBHelper dbHelper = new DBHelper();
         new AlertDialog.Builder(this)
 
                 .setTitle(getResources().getString(R.string.WhatsNew))
                 .setMessage("NEW: \n" +
-                        "• Added ‘Reset Selected Exports’, ‘Backup DB’ menu items in Farms List.\n" +
+                        "• Added ‘Restore Selected Farms’, ‘Backup DB’ menu items in Farms List.\n" +
                         "• ‘Cropcycl’ column in CODE csv with default value of 11*.\n" +
                         "• Data validation for limitations:\n" +
                         "    - Need to input canal locations when limitation is HCA\n" +
@@ -228,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
                         "\n" +
                         "FIX:\n" +
                         "• Changed code for Partially Suitable to P.\n" +
-                        "• Discard dialog in Field Details shows even when no changes made.")
+                        "• Discard dialog in Field Details shows even when no changes made." +
+                        "• Changed 'reset' to 'restore'.")
                 .setIcon(
                         getResources().getDrawable(
                                 android.R.drawable.ic_dialog_info))

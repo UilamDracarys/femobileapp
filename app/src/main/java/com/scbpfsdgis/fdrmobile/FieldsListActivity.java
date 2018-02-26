@@ -58,6 +58,9 @@ public class FieldsListActivity extends AppCompatActivity {
         // Inflate the save_cancel; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.add_back, menu);
         menu.findItem(R.id.action_exportdb).setVisible(false);
+        menu.findItem(R.id.action_restoreall).setVisible(false);
+        menu.findItem(R.id.action_restoresel).setVisible(false);
+        menu.findItem(R.id.action_backupdb).setVisible(false);
         return true;
     }
 

@@ -92,11 +92,11 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
             case R.id.action_exportdb:
                 export();
                 return true;
-            case R.id.action_resetallexp:
-                showResetAllDialog();
+            case R.id.action_restoreall:
+                restoreAll();
                 return true;
-            case R.id.action_resetsel:
-                resetSelected();
+            case R.id.action_restoresel:
+                restoreSelected();
                 return true;
             case R.id.action_backupdb:
                 showBackupDialog();
@@ -106,10 +106,10 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         }
     }
 
-    private void resetSelected() {
+    private void restoreSelected() {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose farms to reset...");
+        builder.setTitle("Choose farms to restore...");
 
         String selectExpQuery = "SELECT farm_id, farm_name FROM farms WHERE farm_exported IS NOT NULL ORDER BY farm_name COLLATE NOCASE ";
         DBHelper dbHelper = new DBHelper();
@@ -133,7 +133,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
             c.close();
         } else {
             Snackbar.make(mLayout,
-                    "No farms to reset.",
+                    "No farms to restore.",
                     Snackbar.LENGTH_SHORT).show();
             return;
         }
@@ -148,18 +148,18 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
 
         // add OK and Cancel buttons
         final int[] finalExportedFarmIDs = exportedFarmIDs;
-        builder.setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Restore", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 FarmsRepo repo = new FarmsRepo();
                 for (int i=0; i<finalCheckedFarms.length; i++) {
                     boolean checked = finalCheckedFarms[i];
                     if (checked) {
-                        repo.resetExportDates(finalExportedFarmIDs[i]);
+                        repo.restoreFarms(finalExportedFarmIDs[i]);
                     }
                 }
                 Snackbar.make(mLayout,
-                        "Successfully reset export dates." ,
+                        "Selected farms have been restored." ,
                         Snackbar.LENGTH_SHORT).show();
                 listAll();
             }
@@ -169,39 +169,57 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
 
     }
 
-    private void showResetAllDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.ResetTitle))
-                .setMessage(
-                        getResources().getString(R.string.ResetExpConfirm))
-                .setIcon(
-                        getResources().getDrawable(
-                                android.R.drawable.ic_dialog_info))
-                .setPositiveButton(
-                        getResources().getString(R.string.Reset),
-                        new DialogInterface.OnClickListener() {
+    /*private void showCheckBoxes() {
+        ListView lv = findViewById(R.id.list);
+        lv.
+    }*/
 
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                FarmsRepo reset = new FarmsRepo();
-                                reset.resetExportDates(0);
-                                deleteExports();
-                                Snackbar.make(mLayout,
-                                        "Successfully reset export dates.",
-                                        Snackbar.LENGTH_SHORT).show();
-                                listAll();
-                            }
-                        })
-                .setNegativeButton(
-                        getResources().getString(R.string.CancelButton),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
+    private void restoreAll() {
+        String selectExpQuery = "SELECT farm_id, farm_name FROM farms WHERE farm_exported IS NOT NULL ORDER BY farm_name COLLATE NOCASE ";
+        DBHelper dbHelper = new DBHelper();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-                            }
-                        }).show();
+        Cursor c = db.rawQuery(selectExpQuery, null);
+        if (c.getCount() != 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.RestoreTitle))
+                    .setMessage(
+                            getResources().getString(R.string.RestoreConfirm))
+                    .setIcon(
+                            getResources().getDrawable(
+                                    android.R.drawable.ic_dialog_info))
+                    .setPositiveButton(
+                            getResources().getString(R.string.Restore),
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    FarmsRepo restore = new FarmsRepo();
+                                    restore.restoreFarms(0);
+                                    deleteExports();
+                                    Snackbar.make(mLayout,
+                                            "All farms have been restored.",
+                                            Snackbar.LENGTH_SHORT).show();
+                                    listAll();
+                                }
+                            })
+                    .setNegativeButton(
+                            getResources().getString(R.string.CancelButton),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+
+                                }
+                            }).show();
+        } else {
+            Snackbar.make(mLayout,
+                    "No farms to restore.",
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        c.close();
     }
 
     private void showBackupDialog() {
@@ -289,6 +307,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         if(farmsList.size()!=0) {
             lv = findViewById(R.id.list);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

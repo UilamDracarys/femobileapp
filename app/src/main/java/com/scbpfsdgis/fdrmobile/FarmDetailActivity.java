@@ -97,7 +97,11 @@ public class FarmDetailActivity extends AppCompatActivity implements DatePickerD
         } else {
             defaults = new String[]{farms.getFarmName(), farms.getFarmPltrID(), farms.getFarmOvsrID(), farms.getFarmLoc(), farms.getFarmCity(), df.format(strToDate(farms.getFarmSvy())), farms.getFarmCmt()};
         }
-        String[] currentInput = {etFarmName.getText().toString(), String.valueOf(spnPltr.getSelectedItemPosition()), String.valueOf(spnOvsr.getSelectedItemPosition()), etFarmLoc.getText().toString(), etFarmCity.getText().toString(),
+        String ciOvsr = String.valueOf(spnOvsr.getSelectedItemPosition());
+        if (ciOvsr.equalsIgnoreCase("0")) {
+            ciOvsr = "N/A";
+        }
+        String[] currentInput = {etFarmName.getText().toString(), String.valueOf(spnPltr.getSelectedItemPosition()), ciOvsr, etFarmLoc.getText().toString(), etFarmCity.getText().toString(),
         tvSurveyDate.getText().toString(), etFarmCmt.getText().toString()};
 
         int count = 0;

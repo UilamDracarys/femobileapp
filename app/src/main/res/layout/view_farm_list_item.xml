@@ -1,28 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="12dp"
     android:paddingVertical="8dp">
-    <TextView
-        android:id="@+id/farmID"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/farmName"
-        android:layout_width="fill_parent"
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:textColor="#1B5E20" />
+        android:layout_gravity="center_vertical"
+        android:paddingRight="8dp"
+        android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/pltrAreaCount"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/farmID"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/farmName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textColor="#1B5E20" />
+
+        <TextView
+            android:id="@+id/pltrAreaCount"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -52,7 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + Fields.TABLE_BSC + " ADD " + Fields.COL_FLD_SURVEYOR + " TEXT");
             db.execSQL("ALTER TABLE " + Farms.TABLE + " ADD " + Farms.COL_FARM_EXP + " TEXT");
         }
-        if (oldVersion <=33) {
+        if (oldVersion <=33 && oldVersion > 21) {
             db.execSQL("UPDATE fldAtts SET " + Fields.COL_FLD_ATT_CODE + " = 'P' WHERE " + Fields.COL_FLD_ATT_ID + " = 'fld_suit' AND " + Fields.COL_FLD_ATT_DESC + " = 'Partially Suitable' ");
         }
         onCreate(db);

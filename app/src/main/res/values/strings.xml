@@ -31,12 +31,12 @@
     <string name="discard">Discard Changes?</string>
     <string name="discardMsg">Your changes will not be saved.</string>
     <string name="DiscardBtn">Discard</string>
-    <string name="action_resetallexp">Reset All Exports</string>
-    <string name="Reset">Reset</string>
-    <string name="ResetExpConfirm">This will delete previous export dates and enable you to export all farms again. Contents of the FDRMobile/Exports folder will also be deleted.</string>
-    <string name="ResetTitle">Reset Exports?</string>
+    <string name="action_restoreall">Restore All Farms</string>
+    <string name="Restore">Restore</string>
+    <string name="RestoreConfirm">This will delete previous export dates and enable you to export all farms again. Contents of the FDRMobile/Exports folder will also be deleted.</string>
+    <string name="RestoreTitle">Restore Farms?</string>
     <string name="action_backupdb">Backup DB</string>
-    <string name="action_resetsel">Reset Selected Exports</string>
+    <string name="action_restoresel">Restore Selected Farms</string>
     <string name="BackupDBTitle">Backup DB</string>
     <string name="BackupDBConfirm">You are about to create a backup of the whole database.</string>
     <string name="Backup">Backup</string>

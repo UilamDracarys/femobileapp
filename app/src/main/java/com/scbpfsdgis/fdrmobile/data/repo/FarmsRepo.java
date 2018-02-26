@@ -80,7 +80,7 @@ public class FarmsRepo {
         db.close(); // Closing database connection
     }
 
-    public void resetExportDates(int farmID) {
+    public void restoreFarms(int farmID) {
         dbHelper = new DBHelper();
         db = dbHelper.getWritableDatabase();
         String update = "UPDATE " + Farms.TABLE + " SET " + Farms.COL_FARM_EXP + " = NULL ";
