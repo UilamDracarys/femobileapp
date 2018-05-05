@@ -84,19 +84,19 @@ public class Fields {
         {"fld_rdcond","Asphalt-Good-<3m","AG<3"},
         {"fld_rdcond","Asphalt-Poor-<3m","AP<3"},
         {"fld_rdcond","Asphalt-OK->=3m","AO>=3"},
-        {"fld_rdcond","Asphalt-Graded->=3m","AG>=3"},
+        {"fld_rdcond","Asphalt-Good->=3m","AG>=3"},//
         {"fld_rdcond","Asphalt-Poor->=3m","AP>=3"},
         {"fld_rdcond","Graded-OK-<3m","GO<3"},
-        {"fld_rdcond","Graded-Graded-<3m","GG<3"},
+        {"fld_rdcond","Graded-Good-<3m","GG<3"},//
         {"fld_rdcond","Graded-Poor-<3m","GP<3"},
         {"fld_rdcond","Graded-OK->=3m","GO>=3"},
-        {"fld_rdcond","Graded-Graded->=3m","GG>=3"},
+        {"fld_rdcond","Graded-Good->=3m","GG>=3"},//
         {"fld_rdcond","Graded-Poor->=3m","GP>=3"},
         {"fld_rdcond","NotGraded-OK-<3m","NGO<3"},
-        {"fld_rdcond","NotGraded-Graded-<3m","NGG<3"},
+        {"fld_rdcond","NotGraded-Good-<3m","NGG<3"},//
         {"fld_rdcond","NotGraded-Poor-<3m","NGP<3"},
         {"fld_rdcond","NotGraded-OK->=3m","NGO>=3"},
-        {"fld_rdcond","NotGraded-Graded->=3m","NGG>=3"},
+        {"fld_rdcond","NotGraded-Good->=3m","NGG>=3"},//
         {"fld_rdcond","NotGraded-Poor->=3m","NGP>=3"},
         {"fld_cropcls","New Plant","NP"},
         {"fld_cropcls","1st Rtn","R1"},

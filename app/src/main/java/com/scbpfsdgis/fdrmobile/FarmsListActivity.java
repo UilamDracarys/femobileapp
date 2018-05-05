@@ -402,22 +402,18 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
     }
 
     private void exportCSV() {
-        File exportDir = new File(Environment.getExternalStorageDirectory() + "/FDRMobile/Exports" , "");
+        final File exportDir = new File(Environment.getExternalStorageDirectory() + "/FDRMobile/Exports" , "");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
-        DateFormat fileDF = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        final DateFormat fileDF = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         final DateFormat dataDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         final Date date = new Date();
+        final String strDate = fileDF.format(date);
 
-        final String fdFileName = "FARMS_" + fileDF.format(date) + ".csv";
-        final String flcFilename = "FIELDS_" + fileDF.format(date) + "_CODE.csv";
-        final String fldFilename = "FIELDS_" + fileDF.format(date) + "_DESC.csv";
-
+        final String fdFileName = "FARMS_" + strDate + ".csv";
         final File farmDetails = new File(exportDir, fdFileName);
-        final File fldsListDesc = new File(exportDir, fldFilename);
-        final File fldsListCode = new File(exportDir, flcFilename);
 
         if (isExportValid()) {
             try {
@@ -436,8 +432,22 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                                     public void onClick(DialogInterface dialog,
                                                         int which) {
                                         csvWriter(farmDetails, qryFarmDetails(dataDF.format(date)), fdFileName);
-                                        csvWriter(fldsListDesc, qryFieldsDesc(), fldFilename);
-                                        csvWriter(fldsListCode, qryFieldsCode(), flcFilename);
+
+                                        DBHelper dbhelper = new DBHelper();
+                                        SQLiteDatabase db = dbhelper.getReadableDatabase();
+                                        Cursor cursor = db.rawQuery(qryFarmsForExp(), null);
+
+                                        File fldsListCode, fldsListDesc;
+                                        String farmName;
+                                        while (cursor.moveToNext()) {
+                                            farmName = cursor.getString(0).replace("/", "_");
+                                            fldsListCode = new File(exportDir, "FIELDS_" + farmName + "_" + strDate + "_CODE.csv");
+                                            csvWriter(fldsListCode, qryFieldsCode(cursor.getString(0)), "");
+
+                                            fldsListDesc = new File(exportDir, "FIELDS_" + farmName + "_" + strDate + "_DESC.csv");
+                                            csvWriter(fldsListDesc, qryFieldsDesc(cursor.getString(0)), "");
+                                        }
+
                                         updateExportDate(dataDF.format(date));
                                         Snackbar.make(mLayout,
                                                 "Farms successfully exported FDRMobile/Exports.",
@@ -555,7 +565,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "ORDER BY FarmName COLLATE NOCASE";
     }
 
-    private String qryFieldsCode() {
+    private String qryFieldsCode(String farmName) {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
                 "Frm.FarmRepName as FarmRep, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FldName, Fld.Area as OwnArea,\n" +
@@ -594,10 +604,20 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)\n" +
                 "WHERE f.farm_exported IS NULL) Frm\n" +
                 "ON Fld.FarmID = Frm.FarmID\n" +
+                "WHERE FarmName = '" + farmName + "'\n" +
                 "ORDER BY FarmName, FieldName COLLATE NOCASE";
     }
 
-    private String qryFieldsDesc() {
+    private String qryFarmsForExp() {
+        return "SELECT f.farm_name as FarmName\n" +
+                "FROM farms f \n" +
+                "INNER JOIN fldsBasic b\n" +
+                "on f.farm_id = b.fld_farm_id \n" +
+                "WHERE f.farm_exported IS NULL\n" +
+                "GROUP BY FarmName";
+    }
+
+    private String qryFieldsDesc(String farmName) {
         return "SELECT Fld.FarmID as FarmID, Frm.FarmName as FarmName, Frm.PlanterName as Planter,\n" +
                 "Frm.FarmRepName as FarmRep, Frm.Locality as Barangay, Frm.City as City,\n" +
                 "Frm.Comment as FarmComment, Fld.FieldName as FieldName, Fld.Area as Area,\n" +
@@ -637,6 +657,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "ON (f.farm_pltr_id = p.person_id AND f.farm_ovsr_id = p.person_id)\n" +
                 "WHERE f.farm_exported IS NULL) Frm\n" +
                 "ON Fld.FarmID = Frm.FarmID\n" +
+                "WHERE FarmName = '" + farmName + "'\n" +
                 "ORDER BY FarmName, FieldName COLLATE NOCASE";
     }
 

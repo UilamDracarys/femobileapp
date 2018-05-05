@@ -22,7 +22,8 @@
     <string name="c_gis_section_2018">© GIS Section 2018</string>
     <string name="ExportCSV">Export to CSV</string>
     <string name="AppInfo">App Info</string>
-    <string name="ExportCSVConfirm">Are you sure you want to export data to CSV? Only farms with field records will be exported. Once exported, you can no longer export the same farm again so please make sure all fields have already been recorded.</string>>
+    <string name="ExportCSVConfirm">Are you sure you want to export data to CSV? Only farms with field records will be exported. Once exported, you can no longer export the same farm again so please make sure all fields have already been recorded.</string>
+    >
     <string name="ExportButton">Export</string>
     <string name="OKButton">OK</string>
     <string name="CancelButton">Cancel</string>
@@ -101,19 +102,19 @@
         <item>Asphalt-Good-&lt;3m (AG&lt;3)</item>
         <item>Asphalt-Poor-&lt;3m (AP&lt;3)</item>
         <item>Asphalt-OK-&gt;=3m (AO&gt;=3)</item>
-        <item>Asphalt-Graded-&gt;=3m (AG&gt;=3)</item>
+        <item>Asphalt-Good-&gt;=3m (AG&gt;=3)</item>
         <item>Asphalt-Poor-&gt;=3m (AP&gt;=3</item>
         <item>Graded-OK-&lt;3m (GO&lt;3)</item>
-        <item>Graded-Graded-&lt;3m (GG&lt;3)</item>
+        <item>Graded-Good-&lt;3m (GG&lt;3)</item>
         <item>Graded-Poor-&lt;3m (GP&lt;3)</item>
         <item>Graded-OK-&gt;=3m (GO&gt;=3)</item>
         <item>Graded-Graded-&gt;=3m (GG&gt;=3)</item>
         <item>Graded-Poor-&gt;=3m (GP&gt;=3)</item>
         <item>NotGraded-OK-&lt;3m (NGO&lt;3)</item>
-        <item>NotGraded-Graded-&lt;3m (NGG&lt;3)</item>
+        <item>NotGraded-Good-&lt;3m (NGG&lt;3)</item>
         <item>NotGraded-Poor-&lt;3m (NGP&lt;3)</item>
         <item>NotGraded-OK-&gt;=3m (NGO&gt;=3)</item>
-        <item>NotGraded-Graded-&gt;=3m (NGG&gt;=3)</item>
+        <item>NotGraded-Good-&gt;=3m (NGG&gt;=3)</item>
         <item>NotGraded-Poor-&gt;=3m (NGP&gt;=3)</item>
     </string-array>
     <string-array name="cropclass">

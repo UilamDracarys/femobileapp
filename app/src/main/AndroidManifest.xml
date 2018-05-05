@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.scbpfsdgis.fdrmobile">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
-        android:name="com.scbpfsdgis.fdrmobile.app.App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.scbpfsdgis.fdrmobile.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.scbpfsdgis.fdrmobile.FarmsListActivity"
-            android:label = "Farms"/>
         <activity
-            android:name="com.scbpfsdgis.fdrmobile.FarmDetailActivity"
+            android:name=".FarmsListActivity"
+            android:label="Farms" />
+        <activity
+            android:name=".FarmDetailActivity"
             android:label="Farm Detail"
-            android:parentActivityName="com.scbpfsdgis.fdrmobile.FarmsListActivity"/>
-
-        <activity android:name="com.scbpfsdgis.fdrmobile.PeopleListActivity"
+            android:parentActivityName=".FarmsListActivity" />
+        <activity
+            android:name=".PeopleListActivity"
             android:label="People &amp; Groups"
-            android:parentActivityName="com.scbpfsdgis.fdrmobile.MainActivity"/>
-
-        <activity android:name="com.scbpfsdgis.fdrmobile.PersonDetailActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".PersonDetailActivity"
             android:label="Person/Group Detail"
-            android:parentActivityName="com.scbpfsdgis.fdrmobile.PeopleListActivity"/>
-
-        <activity android:name="com.scbpfsdgis.fdrmobile.FieldsListActivity"
+            android:parentActivityName=".PeopleListActivity" />
+        <activity
+            android:name=".FieldsListActivity"
             android:label="Fields List"
-            android:parentActivityName="com.scbpfsdgis.fdrmobile.FarmsListActivity"/>
-
-        <activity android:name="com.scbpfsdgis.fdrmobile.FieldDetailActivity"
+            android:parentActivityName=".FarmsListActivity" />
+        <activity
+            android:name=".FieldDetailActivity"
             android:label="Field Details"
-            android:parentActivityName="com.scbpfsdgis.fdrmobile.FieldsListActivity"/>
+            android:parentActivityName=".FieldsListActivity" />
     </application>
+
 </manifest>

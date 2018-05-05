@@ -217,18 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
                 .setTitle(getResources().getString(R.string.WhatsNew))
                 .setMessage("NEW: \n" +
-                        "• Added ‘Restore Selected Farms’, ‘Backup DB’ menu items in Farms List.\n" +
-                        "• ‘Cropcycl’ column in CODE csv with default value of 11*.\n" +
-                        "• Data validation for limitations:\n" +
-                        "    - Need to input canal locations when limitation is HCA\n" +
-                        "    - Need to adjust when limitation is HAR and area is >= 0.80ha\n" +
-                        "    - Need to adjust when limitation is HRW and row width is >= 1.2m\n" +
-                        "• Added TBD attribute value for Row Direction, FAL for Crop Class for fields that are vacant\n" +
-                        "\n" +
-                        "FIX:\n" +
-                        "• Changed code for Partially Suitable to P.\n" +
-                        "• Discard dialog in Field Details shows even when no changes made." +
-                        "• Changed 'reset' to 'restore'.")
+                        "• Export to multiple files (CODE & DESC) per farm.")
                 .setIcon(
                         getResources().getDrawable(
                                 android.R.drawable.ic_dialog_info))
