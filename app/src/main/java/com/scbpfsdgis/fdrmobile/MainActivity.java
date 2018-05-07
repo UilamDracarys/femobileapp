@@ -217,7 +217,10 @@ public class MainActivity extends AppCompatActivity {
 
                 .setTitle(getResources().getString(R.string.WhatsNew))
                 .setMessage("NEW: \n" +
-                        "• Export to multiple files (CODE & DESC) per farm.")
+                        "• Harvest schedule as field attributes.\n" +
+                        "\n" +
+                        "FIX:\n" +
+                        "• Rename some varieties.")
                 .setIcon(
                         getResources().getDrawable(
                                 android.R.drawable.ic_dialog_info))

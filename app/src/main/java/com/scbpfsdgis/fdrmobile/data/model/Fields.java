@@ -23,6 +23,9 @@ public class Fields {
     public static final String COL_FLD_SOIL = "fld_soilTyp";
     public static final String COL_FLD_FARMID = "fld_farm_id";
     public static final String COL_FLD_SURVEYOR = "fld_svyor";
+    public static final String COL_FLD_DP = "fld_dp";
+    public static final String COL_FLD_CROPCYCLE = "fld_cropCycle";
+    public static final String COL_FLD_HD = "fld_hd";
 
     ///Suitability
     public static final String COL_FLD_SUIT = "fld_suit";
@@ -132,6 +135,33 @@ public class Fields {
     private String fldCanals;
     private String fldCropCls;
     private String fldCmt;
+    private String fldCropCycle;
+    private String fldDatePlanted;
+    private String fldHarvestDate;
+
+    public String getFldCropCycle() {
+        return fldCropCycle;
+    }
+
+    public void setFldCropCycle(String fldCropCycle) {
+        this.fldCropCycle = fldCropCycle;
+    }
+
+    public String getFldDatePlanted() {
+        return fldDatePlanted;
+    }
+
+    public void setFldDatePlanted(String fldDatePlanted) {
+        this.fldDatePlanted = fldDatePlanted;
+    }
+
+    public String getFldHarvestDate() {
+        return fldHarvestDate;
+    }
+
+    public void setFldHarvestDate(String fldHarvestDate) {
+        this.fldHarvestDate = fldHarvestDate;
+    }
 
     public String getFldId() {
         return fldId;

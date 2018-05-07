@@ -108,7 +108,7 @@
         <item>Graded-Good-&lt;3m (GG&lt;3)</item>
         <item>Graded-Poor-&lt;3m (GP&lt;3)</item>
         <item>Graded-OK-&gt;=3m (GO&gt;=3)</item>
-        <item>Graded-Graded-&gt;=3m (GG&gt;=3)</item>
+        <item>Graded-Good-&gt;=3m (GG&gt;=3)</item>
         <item>Graded-Poor-&gt;=3m (GP&gt;=3)</item>
         <item>NotGraded-OK-&lt;3m (NGO&lt;3)</item>
         <item>NotGraded-Good-&lt;3m (NGG&lt;3)</item>
@@ -139,6 +139,18 @@
         <item>Left (L)</item>
         <item>Back (B)</item>
         <item>Right (R)</item>
+    </string-array>
+    <string-array name="harvestSched">
+        <item>Date Planted</item>
+        <item>Harvest Date</item>
+    </string-array>
+    <string-array name="cropCycle">
+        <item>- Crop Cycle -</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
     </string-array>
 
 </resources>

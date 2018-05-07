@@ -581,10 +581,10 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "AS Canal,\n" +
                 "Fld.RoadCond as FldRoad, Fld.MechMeth as MechMeth, Fld.TractorAcc as TractAcc,\n" +
                 "Fld.RowWidth as RowWidth, Fld.RowDir as RowDir, Fld.SoilType as SoiTyp,\n" +
-                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, '11*' AS Cropcycl,\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvMeth, Fld.CropClass as CropClas, Fld.CropCycle AS Cropcycl,\n" +
                 "Fld.Comment as FldComnt,\n" +
                 "Fld.Surveyor as Surveyor,\n" +
-                "NULL as DatePlanted, NULL AS ProjHarvDate\n" +
+                "Fld.DatePlanted as DatePlanted, Fld.HarvestDate as ProjHarvDate\n" +
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
                 "s.fld_suit as Suitability, b.fld_area as Area, s.fld_limits as Limits,\n" +
@@ -592,7 +592,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "o.fld_tractacc as TractorAcc, o.fld_rowwidth as RowWidth, o.fld_rowdir as RowDir,\n" +
                 "b.fld_soiltyp as SoilType, b.fld_var as Variety, o.fld_harvmeth as HarvMeth,\n" +
                 "o.fld_cropcls as CropClass, o.fld_cmt as Comment,\n" +
-                "b.fld_svyor as Surveyor\n" +
+                "b.fld_svyor as Surveyor, b.fld_cropCycle as CropCycle, b.fld_dp as DatePlanted, b.fld_hd as HarvestDate\n" +
                 "FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o\n" +
                 "ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id)) Fld\n" +
                 "INNER JOIN\n" +
@@ -624,7 +624,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "Fld.Suitability as Suitability, Fld.Limits as Limitations, Fld.Canal as Canal,\n" +
                 "Fld.RoadCond as RoadCondition, Fld.MechMeth as MechanizedMethod, Fld.TractorAcc as TractorAccess,\n" +
                 "Fld.RowWidth as RowWidth, Fld.RowDir as RowDirection, Fld.SoilType as SoilType,\n" +
-                "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.Comment as FieldComment,\n" +
+                "Fld.Variety as Variety, Fld.HarvMeth as HarvestMethod, Fld.CropClass as CropClass, Fld.CropCycle as Cropcycl, Fld.DatePlanted as DatePlanted, Fld.HarvestDate as ProjHarvDate, Fld.Comment as FieldComment,\n" +
                 "Fld.Surveyor as Surveyor\n" +
                 "FROM\n" +
                 "(SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName,\n" +
@@ -644,7 +644,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code =  o.fld_rowdir and fld_att_id = 'fld_rowdir') as RowDir,\n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = b.fld_soilTyp and fld_att_id = 'fld_soiltyp') as SoilType, b.fld_var as Variety, \n" +
                 "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_harvmeth and fld_att_id = 'fld_harvmeth') as HarvMeth,\n" +
-                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_cropcls and fld_att_id = 'fld_cropcls') as CropClass, o.fld_cmt as Comment,\n" +
+                "(SELECT fld_att_desc FROM fldAtts WHERE fld_att_code = o.fld_cropcls and fld_att_id = 'fld_cropcls') as CropClass, b.fld_cropCycle as CropCycle, b.fld_dp as DatePlanted, b.fld_hd as HarvestDate, o.fld_cmt as Comment,\n" +
                 "b.fld_svyor as Surveyor\n" +
                 "FROM fldsBasic b JOIN fldsSuit s JOIN fldsOthers o\n" +
                 "ON (b.fld_id = o.fld_id) AND (b.fld_id = s.fld_id)) Fld\n" +

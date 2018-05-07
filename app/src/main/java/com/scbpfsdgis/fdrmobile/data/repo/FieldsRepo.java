@@ -75,6 +75,9 @@ public class FieldsRepo {
         values.put(Fields.COL_FLD_SOIL, fields.getFldSoilTyp());
         values.put(Fields.COL_FLD_FARMID, fields.getFldFarmId());
         values.put(Fields.COL_FLD_SURVEYOR, fields.getFldSurveyor());
+        values.put(Fields.COL_FLD_CROPCYCLE, fields.getFldCropCycle());
+        values.put(Fields.COL_FLD_DP, fields.getFldDatePlanted());
+        values.put(Fields.COL_FLD_HD, fields.getFldHarvestDate());
 
         db.insert(Fields.TABLE_BSC, null, values);
         db.close();
@@ -91,6 +94,9 @@ public class FieldsRepo {
         values.put(Fields.COL_FLD_SOIL, fields.getFldSoilTyp());
         values.put(Fields.COL_FLD_FARMID, fields.getFldFarmId());
         values.put(Fields.COL_FLD_SURVEYOR, fields.getFldSurveyor());
+        values.put(Fields.COL_FLD_CROPCYCLE, fields.getFldCropCycle());
+        values.put(Fields.COL_FLD_DP, fields.getFldDatePlanted());
+        values.put(Fields.COL_FLD_HD, fields.getFldHarvestDate());
 
         db.update(Fields.TABLE_BSC, values, Fields.COL_FLD_ID + "= ? ", new String[] { String.valueOf(fields.getFldId()) });
         db.close(); // Closing database connection
@@ -278,7 +284,7 @@ public class FieldsRepo {
         dbHelper = new DBHelper();
         db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT b.fld_id as FieldID, b.fld_farm_id as FarmID, b.fld_name as FieldName, s.fld_suit as Suitability, " +
-                " b.fld_area as Area, s.fld_limits as Limits, o.fld_canals as Canals, s.fld_rdcond as RoadCond, " +
+                " b.fld_area as Area, b.fld_cropCycle as CropCycle, b.fld_dp as DatePlanted, b.fld_hd as HarvestDate, s.fld_limits as Limits, o.fld_canals as Canals, s.fld_rdcond as RoadCond, " +
                 " o.fld_mechmeth as MechMeth, o.fld_tractacc as TractorAcc, o.fld_rowwidth as RowWidth, " +
                 " o.fld_rowdir as RowDir, b.fld_soilTyp as SoilType, b.fld_var as Variety, " +
                 " o.fld_harvmeth as HarvMeth, o.fld_cropcls as CropClass, o.fld_cmt as Comment, b.fld_svyor as Surveyor" +
@@ -309,6 +315,9 @@ public class FieldsRepo {
                 fields.setFldCropCls(cursor.getString(cursor.getColumnIndex("CropClass")));
                 fields.setFldCmt(cursor.getString(cursor.getColumnIndex("Comment")));
                 fields.setFldSurveyor(cursor.getString(cursor.getColumnIndex("Surveyor")));
+                fields.setFldCropCycle(cursor.getString(cursor.getColumnIndex("CropCycle")));
+                fields.setFldDatePlanted(cursor.getString(cursor.getColumnIndex("DatePlanted")));
+                fields.setFldHarvestDate(cursor.getString(cursor.getColumnIndex("HarvestDate")));
 
             } while (cursor.moveToNext());
         }

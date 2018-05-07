@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private static final int DATABASE_VERSION =35;
+    private static final int DATABASE_VERSION =37;
     // Database Name
     private static final String DATABASE_NAME = "FEMobile.db";
     private static final String TAG = DBHelper.class.getSimpleName();
@@ -61,6 +61,14 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE fldAtts SET " + Fields.COL_FLD_ATT_DESC + " = 'Graded-Good->=3m' WHERE " + Fields.COL_FLD_ATT_ID + " = 'GG>=3'");
             db.execSQL("UPDATE fldAtts SET " + Fields.COL_FLD_ATT_DESC + " = 'NotGraded-Good->=3m' WHERE " + Fields.COL_FLD_ATT_ID + " = 'NGG>=3'");
             db.execSQL("UPDATE fldAtts SET " + Fields.COL_FLD_ATT_DESC + " = 'NotGraded-Good-<3m' WHERE " + Fields.COL_FLD_ATT_ID + " = 'NGG<3'");
+        }
+        if (oldVersion <=35) {
+            db.execSQL("ALTER TABLE " + Fields.TABLE_BSC + " ADD " + Fields.COL_FLD_CROPCYCLE + " TEXT");
+            db.execSQL("ALTER TABLE " + Fields.TABLE_BSC + " ADD " + Fields.COL_FLD_DP + " TEXT");
+            db.execSQL("ALTER TABLE " + Fields.TABLE_BSC + " ADD " + Fields.COL_FLD_HD + " TEXT");
+            db.execSQL("UPDATE " + Fields.TABLE_BSC + " SET " + Fields.COL_FLD_VAR + " = '86-550' WHERE " + Fields.COL_FLD_VAR + " LIKE '86%55O'");
+            db.execSQL("UPDATE " + Fields.TABLE_BSC + " SET " + Fields.COL_FLD_VAR + " = '84-524' WHERE " + Fields.COL_FLD_VAR + " LIKE '84%524'");
+            db.execSQL("UPDATE " + Fields.TABLE_BSC + " SET " +  Fields.COL_FLD_DP + " = '2018-05-01' WHERE " + Fields.COL_FLD_ID + " = '6'" );
         }
         onCreate(db);
     }

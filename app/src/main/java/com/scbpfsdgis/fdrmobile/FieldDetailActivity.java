@@ -2,6 +2,7 @@ package com.scbpfsdgis.fdrmobile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -20,11 +22,15 @@ import android.widget.Toast;
 import com.guna.libmultispinner.MultiSelectionSpinner;
 import com.scbpfsdgis.fdrmobile.data.model.Fields;
 import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,17 +38,19 @@ import java.util.Locale;
  * Created by William on 1/27/2018.
  */
 
-public class FieldDetailActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener{
+public class FieldDetailActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, DatePickerDialog.OnDateSetListener,  android.view.View.OnClickListener{
 
-    Spinner spnMechMeth, spnTract, spnSuit, spnRdCond, spnRowDir, spnSoilType, spnCropClass, spnHarvMeth;
+    Spinner spnMechMeth, spnTract, spnSuit, spnRdCond, spnRowDir, spnSoilType, spnCropClass, spnHarvMeth, spnHS, spnCropCycle;
     EditText etFldName, etFldArea, etRowWidth, etCmt;
     AutoCompleteTextView etFldSvyor, etVar;
     MultiSelectionSpinner mssLimits, mssCanals;
-    TextView frmName;
+    TextView frmName, tvHS;
+    Date harvestSched = null;
     private int fieldId, farmId;
     String farmName;
     String[] surveyors = null, varieties = null;
     private View mLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +100,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
         //Set values from database
         if (fieldId != 0) {
+            DateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
             System.out.println("Field ID in Details: " + fieldId);
             etFldName.setText(fields.getFldName());
             etFldArea.setText(String.valueOf(fields.getFldArea()));
@@ -107,6 +116,33 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             spnHarvMeth.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.hvstmeth), fields.getFldHarvMeth()));
             spnCropClass.setSelection(fields.getIdxByCode(getResources().getStringArray(R.array.cropclass), fields.getFldCropCls()));
             etFldSvyor.setText(fields.getFldSurveyor());
+
+            String strHS = "";
+
+            if (fields.getFldDatePlanted() == null) {
+                if (fields.getFldHarvestDate() == null) {
+                    System.out.println("NO HS SET!");
+                    spnHS.setSelection(0);
+                    spnCropCycle.setSelection(0);
+                    strHS = "Tap to Set";
+                } else {
+                    System.out.println("DP: " + fields.getFldDatePlanted());
+                    spnHS.setSelection(1);
+                    spnCropCycle.setVisibility(View.GONE);
+                    harvestSched = strToDate(fields.getFldHarvestDate());
+                }
+            } else {
+                harvestSched = strToDate(fields.getFldDatePlanted());
+                spnCropCycle.setVisibility(View.VISIBLE);
+                spnCropCycle.setSelection(Integer.parseInt(fields.getFldCropCycle()) - 9);
+            }
+
+            if (strHS.equals("Tap to Set")) {
+                tvHS.setText(strHS);
+            } else {
+                tvHS.setText(df.format(harvestSched));
+            }
+
             String[] limits = fields.getFldLimits().split(",");
             String[] canals = fields.getFldCanals().split(",");
             if(limits.length != 0 && !limits[0].equals("-")) {
@@ -116,6 +152,44 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
                 mssCanals.setSelection(fields.getIndexArray(canals, getResources().getStringArray(R.array.canals)));
             }
         }
+
+        spnHS = findViewById(R.id.spnHS);
+        spnCropCycle = findViewById(R.id.spnCropCycle);
+        spnHS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (spnHS.getSelectedItemPosition() == 1) {
+                    spnCropCycle.setVisibility(View.GONE);
+                } else {
+                    spnCropCycle.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+
+        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == findViewById(R.id.tvHSDate)) {
+            System.out.println("DATECLICKED");
+            showDatePicker();
+        }
+    }
+
+    private void showDatePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                FieldDetailActivity.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.show(getFragmentManager(), "HarvestSched");
     }
 
     @Override
@@ -139,21 +213,38 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         }
 
         String ciSuit = spnSuit.getSelectedItem().toString();
-        ciSuit = ciSuit.substring(ciSuit.indexOf("(")+1, ciSuit.indexOf(")"));
+        if (spnSuit.getSelectedItemPosition() !=0) {
+            ciSuit = ciSuit.substring(ciSuit.indexOf("(")+1, ciSuit.indexOf(")"));
+        }
+
         String ciMechMeth = spnMechMeth.getSelectedItem().toString();
-        ciMechMeth = ciMechMeth.substring(ciMechMeth.indexOf("(")+1, ciMechMeth.indexOf(")"));
+        if (spnMechMeth.getSelectedItemPosition() !=0) {
+            ciMechMeth = ciMechMeth.substring(ciMechMeth.indexOf("(") + 1, ciMechMeth.indexOf(")"));
+        }
         String ciTractAcc = spnTract.getSelectedItem().toString();
-        ciTractAcc = ciTractAcc.substring(ciTractAcc.indexOf("(")+1, ciTractAcc.indexOf(")"));
+        if (spnTract.getSelectedItemPosition() !=0) {
+            ciTractAcc = ciTractAcc.substring(ciTractAcc.indexOf("(") + 1, ciTractAcc.indexOf(")"));
+        }
         String ciRowDir = spnRowDir.getSelectedItem().toString();
-        ciRowDir = ciRowDir.substring(ciRowDir.indexOf("(")+1, ciRowDir.indexOf(")"));
+        if (spnRowDir.getSelectedItemPosition() !=0) {
+            ciRowDir = ciRowDir.substring(ciRowDir.indexOf("(")+1, ciRowDir.indexOf(")"));
+        }
         String ciSoilType = spnSoilType.getSelectedItem().toString();
-        ciSoilType = ciSoilType.substring(ciSoilType.indexOf("(")+1, ciSoilType.indexOf(")"));
+        if (spnSoilType.getSelectedItemPosition() !=0) {
+            ciSoilType = ciSoilType.substring(ciSoilType.indexOf("(")+1, ciSoilType.indexOf(")"));
+        }
         String ciHarvMeth = spnHarvMeth.getSelectedItem().toString();
-        ciHarvMeth = ciHarvMeth.substring(ciHarvMeth.indexOf("(")+1, ciHarvMeth.indexOf(")"));
+        if (spnHarvMeth.getSelectedItemPosition() !=0) {
+            ciHarvMeth = ciHarvMeth.substring(ciHarvMeth.indexOf("(")+1, ciHarvMeth.indexOf(")"));
+        }
         String ciRdCond = spnRdCond.getSelectedItem().toString();
-        ciRdCond = ciRdCond.substring(ciRdCond.indexOf("(")+1, ciRdCond.indexOf(")"));
+        if (spnRdCond.getSelectedItemPosition() !=0) {
+            ciRdCond = ciRdCond.substring(ciRdCond.indexOf("(")+1, ciRdCond.indexOf(")"));
+        }
         String ciCropCls = spnCropClass.getSelectedItem().toString();
-        ciCropCls = ciCropCls.substring(ciCropCls.indexOf("(")+1, ciCropCls.indexOf(")"));
+        if (spnCropClass.getSelectedItemPosition() !=0) {
+            ciCropCls = ciCropCls.substring(ciCropCls.indexOf("(")+1, ciCropCls.indexOf(")"));
+        }
         String limits = mssLimits.getSelectedItemsAsString();
         if (limits.equalsIgnoreCase("")) {
             limits = "-";
@@ -254,6 +345,10 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
         etCmt = findViewById(R.id.etFldCmt);
         frmName = findViewById(R.id.frmName);
         etFldSvyor = findViewById(R.id.etFldSvyor);
+        tvHS = findViewById(R.id.tvHSDate);
+        tvHS.setOnClickListener(this);
+        spnHS = findViewById(R.id.spnHS);
+        spnCropCycle = findViewById(R.id.spnCropCycle);
     }
 
     public String getCode(String str) {
@@ -262,6 +357,7 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
     public boolean isValid() {
         String fieldName = etFldName.getText().toString();
+        Date date = new Date();
 
         if (fieldName.equalsIgnoreCase("")) {
             Snackbar.make(mLayout,"Field name required.", Snackbar.LENGTH_SHORT).show();
@@ -348,20 +444,78 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
             etRowWidth.requestFocus();
             return false;
         }
+        if(!etVar.getText().toString().equalsIgnoreCase("f") && !etVar.getText().toString().equalsIgnoreCase("n/a")) {
+            if (tvHS.getText().equals("Tap to Set")) {
+                Snackbar.make(mLayout,"Please set plant/harvest date.", Snackbar.LENGTH_LONG).show();
+                tvHS.requestFocus();
+                return false;
+            }
+            if (spnHS.getSelectedItemPosition() == 0 && spnCropCycle.getSelectedItemPosition() == 0) {
+                Snackbar.make(mLayout,"Crop cycle required for date planted.", Snackbar.LENGTH_LONG).show();
+                tvHS.requestFocus();
+                return false;
+            }
+            if (spnHS.getSelectedItemPosition() == 1 && harvestSched.before(date)) {
+                Snackbar.make(mLayout,"Chosen harvest date has passed.", Snackbar.LENGTH_LONG).show();
+                tvHS.requestFocus();
+                return false;
+            }
+            if (spnHS.getSelectedItemPosition() == 0 && harvestSched.after(date)) {
+                Snackbar.make(mLayout,"Chosen plant date has not yet passed.", Snackbar.LENGTH_LONG).show();
+                tvHS.requestFocus();
+                return false;
+            }
+            return true;
+        }
+
         return true;
+    }
+
+    private Date incrementDate(Date date, int months) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, months);
+        Date newDate = cal.getTime();
+        DateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+        System.out.println(df.format(newDate));
+        return newDate;
     }
 
     private void save() {
         FieldsRepo repo = new FieldsRepo();
         Fields fields = new Fields();
+        Date harvestDate = null;
+        int cropCycle;
 
         if (isValid()) {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
             fields.setFldId(String.valueOf(fieldId));
             fields.setFldName(etFldName.getText().toString());
             fields.setFldArea(Double.parseDouble(etFldArea.getText().toString()));
             fields.setFldSuit(getCode(spnSuit.getSelectedItem().toString()));
             fields.setFldFarmId(String.valueOf(farmId));
+
+            cropCycle = spnCropCycle.getSelectedItemPosition() + 9;
+            if (etVar.getText().toString().equalsIgnoreCase("f") || etVar.getText().toString().equalsIgnoreCase("n/a")) {
+                fields.setFldCropCycle(null);
+                fields.setFldDatePlanted(null);
+                fields.setFldHarvestDate(null);
+            } else {
+                if (spnHS.getSelectedItemPosition() == 0) {
+                    harvestDate = incrementDate(harvestSched, cropCycle);
+                    fields.setFldCropCycle(String.valueOf(cropCycle));
+                    fields.setFldDatePlanted(df.format(harvestSched));
+                    fields.setFldHarvestDate(df.format(harvestDate));
+                } else {
+
+                    fields.setFldCropCycle("11*");
+                    fields.setFldDatePlanted(null);
+                    fields.setFldHarvestDate(df.format(harvestSched));
+                }
+            }
+
+
             System.out.println("Edit Farm ID: " + fields.getFldFarmId());
             String limits = mssLimits.getSelectedItemsAsString();
             String canals = mssCanals.getSelectedItemsAsString();
@@ -417,4 +571,28 @@ public class FieldDetailActivity extends AppCompatActivity implements MultiSelec
 
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, monthOfYear, dayOfMonth);
+        Date date = cal.getTime();
+        harvestSched = date;
+        DateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+        tvHS.setTextColor(Color.BLACK);
+        tvHS.setText(df.format(date));
+    }
+    private Date strToDate(String strDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = null;
+        if (strDate == null) {
+            strDate = "0000-00-00";
+        }
+        try {
+            date = format.parse(strDate);
+            System.out.println(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

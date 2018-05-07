@@ -181,6 +181,40 @@
                 android:hint="Surveyor"
                 android:inputType="textPersonName"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Harvest Schedule:"
+                android:textColor="#424242"
+                android:textStyle="italic"
+                android:background="#E0E0E0"/>
+
+            <Spinner
+                android:id="@+id/spnHS"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/harvestSched"/>
+
+            <Spinner
+                android:id="@+id/spnCropCycle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:entries="@array/cropCycle"/>
+
+            <TextView
+                android:id="@+id/tvHSDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:text="Tap to Set"
+                android:textColor="#808080"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="8dp"/>
+
         </LinearLayout>
 
     </ScrollView>
