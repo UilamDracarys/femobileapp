@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 ext.versionMajor = 2
 ext.versionMinor = 3
-ext.versionPatch = 1
+ext.versionPatch = 5
 ext.versionClassifier = null
 ext.minimumSdkVersion = 19
 
@@ -26,7 +26,9 @@ android {
 }
 
 private Integer generateVersionCode() {
-    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+    int versionCode = ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+    return versionCode
+
 }
 
 private String generateVersionName() {
@@ -39,6 +41,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.firebase:firebase-crash:11.8.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -46,4 +49,7 @@ dependencies {
     compile 'com.android.support:design:26.1.0'
     compile 'com.android.support:support-fragment:26.1.0'
     compile 'com.wdullaer:materialdatetimepicker:3.5.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 }
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'

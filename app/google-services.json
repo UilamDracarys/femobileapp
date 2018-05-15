@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "562382282730",
+    "firebase_url": "https://scbpfdrmobile.firebaseio.com",
+    "project_id": "scbpfdrmobile",
+    "storage_bucket": "scbpfdrmobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562382282730:android:bc4acb77645b47cb",
+        "android_client_info": {
+          "package_name": "com.scbpfsdgis.fdrmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "562382282730-0g4bc3b9td27c71el1vanqmg3r7ainlj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.scbpfsdgis.fdrmobile",
+            "certificate_hash": "8e7648ca97de4207a68aef28916f5aa1b9729f09"
+          }
+        },
+        {
+          "client_id": "562382282730-eo195bv1gvehcun9a8b8g0bhjimmjf8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSel8YlnYE49sKn3-bWAdSudPcgAn77t4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "562382282730-eo195bv1gvehcun9a8b8g0bhjimmjf8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

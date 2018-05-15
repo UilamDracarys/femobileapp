@@ -266,11 +266,12 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
         if (!backupDir.exists()) {
             backupDir.mkdirs();
         }
-        final String inFileName = "/data/data/com.scbpfsdgis.fdrmobile/databases/FEMobile.db";
+        //final String inFileName = "/data/data/com.scbpfsdgis.fdrmobile/databases/FEMobile.db";
+        final String inFileName = getApplicationContext().getDatabasePath("FEMobile.db").toString();
         File dbFile = new File(inFileName);
         FileInputStream fis = new FileInputStream(dbFile);
         Date date = new Date();
-        DateFormat df = new SimpleDateFormat("YYYY-MM-dd_HHMMSS", Locale.getDefault());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHMMSS", Locale.getDefault());
 
         String bakFile = "BAK_" + df.format(date) + ".db";
         this.backupFileName = bakFile;
@@ -366,7 +367,7 @@ public class FarmsListActivity extends AppCompatActivity implements ActivityComp
     private void export() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            // Permission is already available, start camera preview
+            // Permission is already available
             exportCSV();
         } else {
             // Permission is missing and must be requested.
