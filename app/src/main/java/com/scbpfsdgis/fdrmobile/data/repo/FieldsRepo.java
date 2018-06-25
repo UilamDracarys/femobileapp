@@ -32,7 +32,10 @@ public class FieldsRepo {
                 Fields.COL_FLD_VAR + " TEXT, " +
                 Fields.COL_FLD_SOIL + " TEXT, " +
                 Fields.COL_FLD_FARMID + " TEXT, " +
-                Fields.COL_FLD_SURVEYOR + " TEXT) ";
+                Fields.COL_FLD_SURVEYOR + " TEXT, " +
+                Fields.COL_FLD_CROPCYCLE + " TEXT, " +
+                Fields.COL_FLD_DP + " TEXT, " +
+                Fields.COL_FLD_HD + " TEXT) ";
     }
 
     public static String createTableSuit() {

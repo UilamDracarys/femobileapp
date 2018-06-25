@@ -31,8 +31,9 @@ import com.scbpfsdgis.fdrmobile.data.DBHelper;
 import com.scbpfsdgis.fdrmobile.data.DatabaseManager;
 import com.scbpfsdgis.fdrmobile.data.model.Fields;
 import com.scbpfsdgis.fdrmobile.data.repo.FieldsRepo;
+import com.scbpfsdgis.fdrmobile.data.repo.UpdateHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UpdateHelper.OnUpdateCheckListener{
 
     private static final int READ_PHONE_STATE_PERM = 0;
     String versionName = BuildConfig.VERSION_NAME;
@@ -51,6 +52,32 @@ public class MainActivity extends AppCompatActivity {
 
         initAttVals();
         initMenus();
+
+        UpdateHelper.with(this)
+                .onUpdateCheck(this)
+                .check();
+    }
+
+    @Override
+    public void onUpdateCheckListener(String urlApp) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+                .setTitle("New Version Available")
+                .setMessage("A new version is available for download.")
+                .setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
     }
 
     @Override
